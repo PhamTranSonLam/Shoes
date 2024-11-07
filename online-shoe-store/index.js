@@ -50,7 +50,7 @@ app.use('/api/product', upload.single('image'), productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/cart', cartRouters);
 app.use('/api/orders', orderRoutes);  
-app.use('/contact', contactRoutes);
+app.use('/api/contact', contactRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/review', reviewRouters);
 app.use('/api/color', colorRouters);

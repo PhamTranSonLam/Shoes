@@ -7,13 +7,13 @@ const router = express.Router();
 router.post('/submit', ContactController.submitContactForm);
 
 // Route to get all contact forms (admin only)
-router.get('/', auth, ContactController.getContactForms);
+router.get('/',  ContactController.getContactForms);
 
 // Route to get a specific contact form by ID (admin only)
-router.get('/:id', auth, ContactController.getContactFormById);
+router.get('/:id', ContactController.getContactFormById);
 
-// Route to delete a contact form by ID (admin only)
-router.delete('/:id', auth, ContactController.deleteContactForm);
+// Route to delete a contact form by ID (admin only)s
+router.delete('/:id',  ContactController.deleteContactForm);
 //POST /api/orders
 router.post('/orders', async (req, res) => {
     const { items, shippingInfo, paymentMethod, totalAmount } = req.body;

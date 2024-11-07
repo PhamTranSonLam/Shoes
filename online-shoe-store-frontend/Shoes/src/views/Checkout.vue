@@ -56,6 +56,7 @@
         </div>
 
         <!-- Order Button -->
+         
         <button @click="submitOrder">Place Order</button>
       </div>
     </div>
@@ -151,6 +152,7 @@ export default {
             window.location.href = paymentResponse.data.data?.url;
           }
         } else {
+          this.$router.push('/Products');
           alert("Order placed successfully. You will pay upon receipt.");
         }
       } catch (error) {

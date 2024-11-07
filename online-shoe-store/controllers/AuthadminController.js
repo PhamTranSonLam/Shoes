@@ -55,7 +55,7 @@ exports.getByUser = async (req, res) => {
         }
         // Tìm người dùng theo _id
         const admin = await Admin.findById(userId); // populate để lấy chi tiết sản phẩm
-        res.json(admin);
+        res.status(200).json(admin);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

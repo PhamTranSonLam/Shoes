@@ -27,7 +27,7 @@
               <i class="far fa-times-circle"></i>
             </a>
           </td>
-          <td><img :src="`http://localhost:5000/${item.product.imageUrl}`" alt="Product Image" class="img-fluid bg-light" /></td>
+          <td><img v-if="item.product" :src="`http://localhost:5000/${item.product.imageUrl}`" alt="Product Image" class="img-fluid bg-light" /></td>
           <td>{{ item.product.name }}</td>
           <td>{{ item.size }}</td>
           <td>{{ item.color }}</td>
@@ -103,6 +103,17 @@ export default {
           },
         });
         this.cartItems = response.data.items || []; // Ensure cartItems is always an array
+        // console.log(this.cartItems);
+        // let newCart = [];
+        // for(let item in this.cartItems) {
+        //   const response = await axios.get(`http://localhost:5000/api/product/${item.product}`, {
+        //     headers: {
+        //     Authorization: `Bearer ${this.UserStore.token}`,
+        //     },
+        //   });
+        //   newCart.push(response.data);
+        // }
+        // console.log(newCart)
       } catch (error) {
         console.error('Error fetching cart items:', error);
       }

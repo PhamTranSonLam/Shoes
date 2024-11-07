@@ -17,12 +17,12 @@
         <h6>Home / Shoes</h6>
         <h3 class="py-4">{{ product.name }}</h3>
         <h2>{{ product.price | currency }} VNĐ</h2>
-        <p> Quantity: {{ product.quantity }}</p>
+        <p>Quantity:{{ calculateTotalQuantity(product.sizes) }}</p>
 
         <!-- Chọn kích thước -->
         <select class="my-3" v-model="selectedSize">
           <option disabled value=""> Size</option>
-          <option v-for="size in product.sizes" :key="size">{{ size.value }}</option>
+          <option v-for="size in product.sizes" :key="size">{{ size.size }}</option>
         </select>
          <!-- Chọn màu sắc -->
          <select class="my-3" v-model="selectedColor">
@@ -162,11 +162,11 @@ export default {
           },
           { headers: { Authorization: `Bearer ${userStore.token}` } }
         );
-        alert('Sản phẩm đã được thêm vào giỏ hàng thành công!');
+        alert('Product has been successfully added to cart!');
         this.$router.push({ name: 'Cart' }); // chuyển sang giỏ hàng
       } catch (error) {
         console.error('Lỗi khi thêm sản phẩm vào giỏ hàng:', error.response ? error.response.data : error.message);
-        alert('Thêm sản phẩm vào giỏ hàng thất bại.');
+        alert('Adding product to cart failed or product is out of stock!');
       }
     },
     calculateTotalQuantity(sizes) {

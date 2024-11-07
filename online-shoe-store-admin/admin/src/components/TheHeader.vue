@@ -52,6 +52,12 @@
           <span>Quản lý màu sắc</span>
         </router-link>
       </li>
+      <li>
+        <router-link to="/contact">
+          <i class="fas fa-paint-brush"></i>
+          <span>Quản lý liên lạc</span>
+        </router-link>
+      </li>
       <li class="logout">
         <a href="#">
           <i class="fas fa-sign-out-alt"></i>

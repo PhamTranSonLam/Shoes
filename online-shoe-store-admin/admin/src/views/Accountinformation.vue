@@ -1,107 +1,104 @@
 <template>
-    <section class="body" id="account-info">
-      <div class="account-container">
-        <h2>Account Information</h2>
-  
-        <form @submit.prevent="updateAccount">
-          <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" v-model="user.username" id="username" required />
-          </div>
-  
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" v-model="user.email" id="email" required />
-          </div>
-  
-          <div class="form-group">
-            <label for="address">Address</label>
-            <input type="text" v-model="user.address" id="address" required />
-          </div>
-  
-          <div class="form-group">
-            <label for="phone">Phone Number</label>
-            <input type="text" v-model="user.phone" id="phone" required />
-          </div>
-  
-          <button type="submit">Update Information</button>
-        </form>
-      </div>
-    </section>
-  </template>
-  
-  <script>
-  import axios from 'axios';
-  import { useUserStore } from '../store/user';
-  
-  export default {
-    data() {
-      return {
-        user: {
-          username: '',
-          email: '',
-          address: '',
-          phone: '',
-        },
-      };
-    },
-    computed: {
-      currentUser() {
-        return this.UserStore.user;
+  <section class="body" id="account-info">
+    <div class="account-container">
+      <h2>Account Information</h2>
+
+      <form @submit.prevent="updateUseradmin">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" v-model="user.username" id="username" required />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" v-model="user.email" id="email" required />
+        </div>
+
+        <div class="form-group">
+          <label for="address">Address</label>
+          <input type="text" v-model="user.address" id="address" required />
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="text" v-model="user.phone" id="phone" required />
+        </div>
+
+        <button type="submit">Update Information</button>
+      </form>
+    </div>
+  </section>
+</template>
+
+<script>
+import axios from 'axios';
+import { useUserStore } from '../store/user';
+
+export default {
+  data() {
+    return {
+      user: {
+        username: '',
+        email: '',
+        address: '',
+        phone: '',
       },
+    };
+  },
+  computed: {
+    currentUser() {
+      return this.UserStore.user;
     },
-    mounted() {
-      this.getUser();
-    },
-    methods: {
-    async  getUser() {
-        if (this.currentUser) {
-            try {
-          const userId = this.currentUser._id;
-          const response = await axios.get(`http://localhost:5000/api/auth/${userId}`,  {
-            headers: {
-              Authorization: `Bearer ${this.UserStore.token}`,
-            },
-          });
-          if (response.status === 200) {
-           this.user = response.data.user
-          }
-        } catch (error) {
-          console.error('Error updating account information:', error);
-  
-        }
-        }
-      },
-      async updateAccount() {
+  },
+  mounted() {
+    this.getUser();
+  },
+  methods: {
+    async getUser() {
+      if (this.currentUser) {
         try {
           const userId = this.currentUser._id;
-          const response = await axios.put(`http://localhost:5000/api/auth/update/${userId}`, this.user, {
+          const response = await axios.get(`http://localhost:5000/api/authAdmin/${userId}`, {
             headers: {
               Authorization: `Bearer ${this.UserStore.token}`,
             },
           });
           if (response.status === 200) {
-            alert('Account information updated successfully!');
-            this.getUser();
-            window.location.reload();
-            // this.UserStore.setUser(this.user);
-            // Cập nhật thông tin trong UserStore
-            // this.UserStore.setUser({ ...this.currentUser, ...this.user });
+            this.user = response.data;
           }
         } catch (error) {
-          console.error('Error updating account information:', error);
-          alert('An error occurred while updating your account information.');
+          console.error('Error fetching account information:', error);
         }
-      },
+      }
     },
-    setup() {
-      const UserStore = useUserStore();
-      return {
-        UserStore,
-      };
+    async updateUseradmin() {
+      try {
+        const userId = this.currentUser._id;
+        const response = await axios.put(`http://localhost:5000/api/authAdmin/update/${userId}`, this.user, {
+          headers: {
+            Authorization: `Bearer ${this.UserStore.token}`,
+          },
+        });
+        if (response.status === 200) {
+          alert('Account information updated successfully!');
+          this.getUser();
+        }
+      } catch (error) {
+        console.error('Error updating account information:', error);
+        alert('An error occurred while updating your account information.');
+      }
     },
-  };
-  </script>
+  },
+  setup() {
+    const UserStore = useUserStore();
+    return {
+      UserStore,
+    };
+  },
+};
+</script>
+
+
   
   <style scoped>
   .body {

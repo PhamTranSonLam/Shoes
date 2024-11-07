@@ -17,6 +17,7 @@ import Accountinformation from '../views/Accountinformation.vue';
 import Color from '../views/Color.vue';
 import Review from '../views/Review.vue';
 import Category from '../views/Category.vue';
+import Contact from '../views/Contact.vue';
 
 
 
@@ -110,6 +111,11 @@ const routes = [
     path: '/category',
     name: 'Category',
     component: Category,
+  },
+  {
+    path: '/contact/',
+    name: 'Contact',
+    component: Contact,
   }
   
 ];

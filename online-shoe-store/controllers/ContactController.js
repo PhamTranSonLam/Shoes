@@ -2,21 +2,21 @@ const Contact = require('../models/Contact');
 
 // Handle contact form submission
 exports.submitContactForm = async (req, res) => {
-    const { name, email, subject, message } = req.body;
+    const { username, phone, content, } = req.body;
 
     try {
+        // Create new contact document
         const contact = new Contact({
-            name,
-            email,
-            subject,
-            message
+            username,
+            phone,
+            content,
         });
 
+        // Save to database
         await contact.save();
-
-        res.status(201).json({ message: 'Contact form submitted successfully' });
+        res.status(201).json({ success: true, message: 'Contact form submitted successfully' });
     } catch (err) {
-        res.status(500).json({ message: 'Error submitting contact form', error: err.message });
+        res.status(500).json({ success: false, message: 'Error submitting contact form', error: err.message });
     }
 };
 
@@ -24,9 +24,9 @@ exports.submitContactForm = async (req, res) => {
 exports.getContactForms = async (req, res) => {
     try {
         const contacts = await Contact.find().sort({ createdAt: -1 });
-        res.json(contacts);
+        res.json({ success: true, contacts });
     } catch (err) {
-        res.status(500).json({ message: 'Error retrieving contact forms', error: err.message });
+        res.status(500).json({ success: false, message: 'Error retrieving contact forms', error: err.message });
     }
 };
 
@@ -35,11 +35,11 @@ exports.getContactFormById = async (req, res) => {
     try {
         const contact = await Contact.findById(req.params.id);
         if (!contact) {
-            return res.status(404).json({ message: 'Contact form not found' });
+            return res.status(404).json({ success: false, message: 'Contact form not found' });
         }
-        res.json(contact);
+        res.json({ success: true, contact });
     } catch (err) {
-        res.status(500).json({ message: 'Error retrieving contact form', error: err.message });
+        res.status(500).json({ success: false, message: 'Error retrieving contact form', error: err.message });
     }
 };
 
@@ -48,10 +48,10 @@ exports.deleteContactForm = async (req, res) => {
     try {
         const contact = await Contact.findByIdAndDelete(req.params.id);
         if (!contact) {
-            return res.status(404).json({ message: 'Contact form not found' });
+            return res.status(404).json({ success: false, message: 'Contact form not found' });
         }
-        res.json({ message: 'Contact form deleted successfully' });
+        res.json({ success: true, message: 'Contact form deleted successfully' });
     } catch (err) {
-        res.status(500).json({ message: 'Error deleting contact form', error: err.message });
+        res.status(500).json({ success: false, message: 'Error deleting contact form', error: err.message });
     }
 };

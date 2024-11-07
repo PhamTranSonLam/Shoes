@@ -43,13 +43,13 @@
               <td>{{ order.shippingInfo.phone }}</td>
               <td>
                 <ul>
-                  <li v-for="item in order.items" :key="item._id">{{ item.product.name }}</li>
+                  <li v-for="item in order.items" :key="item._id">{{ item.product }}</li>
                 </ul>
               </td>
               <td>{{ order.totalAmount }} VND</td>
               <td>
                 <select v-model="order.status" class="form-select" @change="updateOrderStatus(order)">
-                  <option value="Đang xử lý">Đang xử lý</option>
+                  <option value="Pending">Đang xử lý</option>
                   <option value="Đã giao">Đã giao</option>
                   <option value="Đã hủy">Đã hủy</option>
                 </select>

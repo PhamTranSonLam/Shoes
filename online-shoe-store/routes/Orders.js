@@ -14,6 +14,7 @@ router.get('/', OrderController.getAllOrders);
 router.get('/history',auth, OrderController.getOrderHistory);
 // thong ke
 router.get('/weekly-revenue',  OrderController.getWeeklyRevenue);
+router.get('/monthly-revenue',  OrderController.getMonthlyRevenue);
 // router.get('/', OrderController.getOrdersByUser);
 router.delete('/:id', OrderController.deleteOrders);
 // lấy đơn hàng 
