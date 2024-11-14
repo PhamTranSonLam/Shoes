@@ -40,7 +40,24 @@
               <td>{{ product.name }}</td>
               <td>{{ product.category }}</td>
               <td>
-                <img :src="`http://localhost:5000/${product.imageUrl}`" alt="Product Image" class="img-fluid bg-light" style="width: 100px;" />
+                <!-- Main Product Image -->
+                <div>
+                  <img 
+                    :src="`http://localhost:5000/${product.mainImage}`" 
+                    alt="Main Product Image" 
+                    class="img-fluid bg-light" 
+                    style="width: 100px;" />
+                </div>
+                <!-- Small Images -->
+                <div class="small-images mt-2">
+                  <img 
+                    v-for="(smallImage, idx) in product.smallImages" 
+                    :key="idx" 
+                    :src="`http://localhost:5000/${smallImage}`" 
+                    alt="Small Product Image" 
+                    class="img-thumbnail" 
+                    style="width: 50px; height: 50px; margin-right: 5px;" />
+                </div>
               </td>
 
               <!-- Size and Quantity -->
@@ -133,9 +150,8 @@ export default {
         this.loading = false;
       }
     },
-    
+
     calculateTotalQuantity(sizes) {
-      // Sum up the quantity from all sizes
       if (Array.isArray(sizes)) {
         return sizes.reduce((total, size) => total + size.quantity, 0);
       }
@@ -177,6 +193,10 @@ export default {
   }
 };
 </script>
+
+
+
+
 
 <style scoped>
 /* Container styling */

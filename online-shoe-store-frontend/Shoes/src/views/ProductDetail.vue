@@ -3,11 +3,21 @@
     <div class="row mt-5">
       <!-- Hình ảnh sản phẩm lớn -->
       <div class="col-lg-5 col-md-12 col-12">
-        <img :src="mainImage" alt="Product Image" class="img-fluid bg-light large-img" style="width: 100%;" />
+        <!-- Hiển thị ảnh chính -->
+        <img v-if="mainImage" :src="mainImage" alt="Product Image" class="img-fluid bg-light large-img" style="width: 100%;" />
+        
+        <!-- Nút quay lại ảnh chính -->
+        <button v-if="isViewingSmallImage" @click="goBackToMainImage" class="btn btn-secondary mt-3">
+          Go back
+        </button>
+
         <!-- Hình ảnh sản phẩm nhỏ -->
         <div class="small-img-group mt-3">
           <div 
-            class="small-img-col" v-for="(image, index) in images" :key="index" @click="changeMainImage(image)">
+            class="small-img-col" 
+            v-for="(image, index) in smallImages" 
+            :key="index" 
+            @click="changeMainImage(image)">
             <img :src="`http://localhost:5000/${image}`" alt="Product Image" class="img-fluid bg-light small-img" />
           </div>
         </div>
@@ -24,11 +34,6 @@
           <option disabled value=""> Size</option>
           <option v-for="size in product.sizes" :key="size">{{ size.size }}</option>
         </select>
-         <!-- Chọn màu sắc -->
-         <select class="my-3" v-model="selectedColor">
-          <option disabled value=""> Màu sắc</option>
-          <option v-for="color in product.color" :key="color">{{ color.name }}</option>
-        </select>
 
         <!-- Nhập số lượng -->
         <input type="number" v-model="quantity" min="1" class="quantity-input" />
@@ -42,43 +47,8 @@
       </div>
     </div>
   </section>
-
-                        <!-- Gợi ý sản phẩm -->
-
-  <section>
-    <h3 class="text-center mt-5">Related product suggestions</h3>
-    <div class="card-container">
-      <div 
-        class="card" 
-        v-for="relatedProduct in relatedProducts" 
-        :key="relatedProduct._id">
-        <div class="small_card">
-          <i class="fa-solid fa-heart"></i>
-          <i class="fa-solid fa-share"></i>
-        </div>
-        <div class="image">
-          <img :src="`http://localhost:5000/${relatedProduct.imageUrl}`" alt="Related Product Image" class="img-fluid bg-light" />
-        </div>
-        <div class="products_text">
-          <router-link :to="{ name: 'ProductDetail', params: { id: relatedProduct._id } }" class="btn">
-            <h2>{{ relatedProduct.name }}</h2>
-          </router-link>
-          <p>{{ relatedProduct.description }}</p>
-          <p>Quantity:{{ calculateTotalQuantity(product.sizes) }}</p>
-          <div class="price-size-container">
-            <h3> {{ relatedProduct.price | currency }} VNĐ</h3>
-          </div>
-          <div class="products_star">
-            <router-link :to="{name: 'ProductDetail', params: {id: product._id} }" class="btn">
-                <button class="buy-btn">See details</button>
-              </router-link>
-            <i v-for="star in relatedProduct.rating" :key="star" :class="['fa-solid', star === 'full' ? 'fa-star' : 'fa-star-half-stroke']"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 </template>
+
 
 <script>
 import axios from 'axios';
@@ -95,59 +65,68 @@ export default {
         description: '',
         imageUrl: '',
         category: '',
-        color:'',
+        smallImages: []
       },
-      images: [],
-      mainImage: '',
+      mainImage: '',   // Hình ảnh chính
       selectedSize: '',
-      selectedColor: '',
+
       quantity: 1,
       productId: this.$route.params.id,
-      relatedProducts: [] // Mảng chứa sản phẩm liên quan
+      relatedProducts: [], // Sản phẩm liên quan
+      isViewingSmallImage: false // Kiểm tra xem có đang xem ảnh nhỏ hay không
     };
   },
   mounted() {
     this.fetchProductDetails();
-    this.fetchRelatedProducts(); // Cập nhật tên hàm để lấy sản phẩm liên quan
-    this.fetchColors();
+    this.fetchRelatedProducts(); 
+
   },
   methods: {
+    // Lấy chi tiết sản phẩm
     async fetchProductDetails() {
       try {
         const response = await axios.get(`http://localhost:5000/api/product/${this.productId}`);
         this.product = response.data;
-        this.images = [response.data.imageUrl, ...this.images];
-        this.mainImage = `http://localhost:5000/${this.product.imageUrl}`;
+        this.mainImage = `http://localhost:5000/${response.data.mainImage}`; // Gán ảnh chính
+        this.smallImages = response.data.smallImages || []; // Kiểm tra ảnh nhỏ
       } catch (error) {
         console.log('Lỗi khi tải chi tiết sản phẩm:', error);
       }
     },
-    async fetchColors() {
-        try {
-          const response = await axios.get('http://localhost:5000/api/color');
-          this.product.color = response.data;
-        } catch (error) {
-          console.error('Error fetching colors:', error);
-        }
-      },
 
+   
+
+    // Lấy sản phẩm liên quan
     async fetchRelatedProducts() {
       try {
-        const response = await axios.get('http://localhost:5000/api/product'); // Lấy tất cả sản phẩm
-        this.relatedProducts = response.data.filter(product => product.category === this.product.category && product._id !== this.productId); // Lọc sản phẩm cùng loại
+        const response = await axios.get('http://localhost:5000/api/product');
+        this.relatedProducts = response.data.filter(product => product.category === this.product.category && product._id !== this.productId);
       } catch (error) {
         console.error('Error fetching related products:', error);
       }
     },
-    changeMainImage(newImage) {
-      this.mainImage = newImage;
+
+    // Thay đổi ảnh chính khi chọn ảnh nhỏ
+    changeMainImage(image) {
+      this.mainImage = `http://localhost:5000/${image}`; // Cập nhật ảnh chính khi nhấn ảnh nhỏ
+      this.isViewingSmallImage = true; // Đánh dấu là đang xem ảnh nhỏ
     },
 
+    // Quay lại ảnh chính
+    goBackToMainImage() {
+      this.mainImage = `http://localhost:5000/${this.product.mainImage}`; // Quay lại ảnh chính ban đầu
+      this.isViewingSmallImage = false; // Đánh dấu là không còn xem ảnh nhỏ
+    },
+
+    // Thêm sản phẩm vào giỏ hàng
     async addToCart() {
       if (!this.selectedSize) {
         alert('Please select a size');
         return;
       }
+     
+      // Cập nhật ảnh chính khi thêm vào giỏ hàng
+      const productImage = this.mainImage; // Lấy ảnh chính hiện tại
 
       try {
         const userStore = useUserStore();
@@ -157,20 +136,21 @@ export default {
             userId: userStore.user._id,
             productId: this.product._id,
             size: this.selectedSize,
-            color: this.selectedColor,
-            quantity: this.quantity
+            quantity: this.quantity,
+            mainImage: this.mainImage, // Gửi ảnh chính kèm theo
           },
           { headers: { Authorization: `Bearer ${userStore.token}` } }
         );
         alert('Product has been successfully added to cart!');
-        this.$router.push({ name: 'Cart' }); // chuyển sang giỏ hàng
+        this.$router.push({ name: 'Cart' });
       } catch (error) {
         console.error('Lỗi khi thêm sản phẩm vào giỏ hàng:', error.response ? error.response.data : error.message);
         alert('Adding product to cart failed or product is out of stock!');
       }
     },
+
+    // Tính tổng số lượng sản phẩm theo kích thước
     calculateTotalQuantity(sizes) {
-      // Sum up the quantity from all sizes
       if (Array.isArray(sizes)) {
         return sizes.reduce((total, size) => total + size.quantity, 0);
       }
@@ -178,12 +158,14 @@ export default {
     },
   },
   filters: {
+    // Định dạng giá tiền
     currency(value) {
       return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
     }
   }
 };
 </script>
+
 
 <style scoped>
 /* Container cho sản phẩm */

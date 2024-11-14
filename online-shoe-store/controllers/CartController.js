@@ -22,7 +22,7 @@ module.exports = {
         try {
             const userId = req.user; 
             console.log(req.user) // Giả sử bạn đã xác thực và có user ID từ token
-            const { productId, quantity, size,color } = req.body;
+            const { productId, quantity, size,mainImage } = req.body;
             console.log(req.body)
     
             // Kiểm tra xem cart của user đã tồn tại chưa
@@ -30,7 +30,7 @@ module.exports = {
             const product = await Product.findById(productId);
             if (cart) {
                 // Thêm hoặc cập nhật sản phẩm trong cart
-                const itemIndex = cart.items.findIndex(item => item.product.toString() === productId && item.size === size && item.color === color);
+                const itemIndex = cart.items.findIndex(item => item.product.toString() === productId && item.size === size );
                 if (itemIndex > -1) {
                     // Sản phẩm đã có trong cart, cập nhật số lượng
                     cart.items[itemIndex].quantity += quantity;
@@ -46,7 +46,7 @@ module.exports = {
                     await Product.findByIdAndUpdate(productId, product, { new: true });
                 } else {
                     // Thêm sản phẩm mới vào cart
-                    cart.items.push({ product: productId, quantity,size, color });
+                    cart.items.push({ product: productId, quantity,size,mainImage });
                     // Tìm kích thước cần giảm số lượng
                     const sizeIndex = product.sizes.findIndex(sizeMB => sizeMB.size == size);
 
@@ -63,7 +63,7 @@ module.exports = {
                 // Tạo cart mới cho user
                 cart = new Cart({
                     user: userId,
-                    items: [{ product: productId, quantity, size,color }]
+                    items: [{ product: productId, quantity, size,mainImage}]
                 });
             }
             await cart.save();

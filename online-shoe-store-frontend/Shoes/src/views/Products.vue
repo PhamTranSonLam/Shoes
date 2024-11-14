@@ -33,7 +33,7 @@
             <i class="fa-solid fa-share"></i>
           </div>
           <div class="image">
-            <img :src="`http://localhost:5000/${product.imageUrl}`" alt="Product Image" class="img-fluid bg-light" />
+            <img :src="`http://localhost:5000/${product.mainImage}`" alt="Product Image" class="img-fluid bg-light" />
           </div>
           <div class="products_text">
             <router-link :to="{name: 'ProductDetail', params: {id: product._id} }" class="btn">

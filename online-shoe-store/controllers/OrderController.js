@@ -5,7 +5,7 @@ const Product = require('../models/Product')
 
 exports.placeOrder =  async (req, res) => {
     console.log('Order Data:', req.body); // Ghi log dữ liệu nhận được
-    const { user, items, shippingInfo, paymentMethod, totalAmount } = req.body;
+    const { user, items, shippingInfo, paymentMethod, totalAmount,mainImage } = req.body;
     // Kiểm tra nếu dữ liệu cần thiết có trong yêu cầu
     if (!user || !items || !shippingInfo || !paymentMethod || totalAmount === undefined) {
         return res.status(400).json({ message: 'Missing required fields' });
@@ -18,6 +18,7 @@ exports.placeOrder =  async (req, res) => {
             shippingInfo,
             paymentMethod,
             totalAmount,
+            mainImage
         });
         console.log("id", order._id);
         const orderId = order._id;
@@ -215,6 +216,8 @@ exports.getWeeklyRevenue = async (req, res) => {
     }
 };
 
+
+
 // Thống kê doanh thu hàng tháng
 exports.getMonthlyRevenue = async (req, res) => {
     try {
@@ -246,24 +249,3 @@ exports.getMonthlyRevenue = async (req, res) => {
     }
 };
 
-// Thống kê doanh thu hàng năm
-exports.getYearlyRevenue = async (req, res) => {
-    try {
-        const yearlyRevenue = await Order.aggregate([
-            {
-                $group: {
-                    _id: { $year: "$createdAt" },  // Nhóm theo năm
-                    total: { $sum: "$totalAmount" }  // Tính tổng doanh thu của mỗi năm
-                }
-            },
-            {
-                $sort: { _id: 1 }  // Sắp xếp theo năm (tăng dần)
-            }
-        ]);
-
-        res.status(200).json(yearlyRevenue);  // Trả về kết quả
-    } catch (error) {
-        console.error('Error fetching yearly revenue:', error);
-        res.status(500).json({ message: 'Error fetching yearly revenue', error });
-    }
-};

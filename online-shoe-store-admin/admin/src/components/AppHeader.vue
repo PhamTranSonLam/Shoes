@@ -1,62 +1,50 @@
 <template>
     <div class="main--content">
-        <div class="header--wrapper">
-            <div class="header--title">
-                <span>Primary</span>
-                <h2>Dashboard</h2>
-            </div>
-            <div v-if="!isLoggedIn">
-                <router-link to="users/add" class="btn btn-primary mr-3">Đăng ký</router-link>
-                <router-link to="users/login" class="btn btn-primary">Đăng Nhập</router-link>
-            </div>
-            <div v-else class="dropdown">
-                <a class="btn btn-info dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                    {{ username }}
-                </a>
-
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <li><a class="dropdown-item" href="#">Thông tin cá nhân</a></li>
-                    <li><a class="dropdown-item" @click='logout' href="#">Đăng xuất</a></li>
-                    
-                </ul>
-            </div>
-            <!-- <div class="user--info">
-                <div class="searh--box">
-                    <i class="fa-solid fa-search"></i>
-                    <input type="text" placeholder="Search">
-                </div>
-                <img src="" alt="">
-           </div> -->
+      <div class="header--wrapper">
+        <div class="header--title">
+          <span>Primary</span>
+          <h2>Dashboard</h2>
         </div>
-     </div>
-</template>
-<script>
-import { computed } from 'vue';
-import { useUserStore } from '../store/user';
-
-export default {
-  setup() {
-    const userStore = useUserStore();
-
-    // Sử dụng computed để lấy giá trị isLoggedIn từ store
-    const isLoggedIn = computed(() => userStore.isLoggedIn);
-    const userInfo = computed(() => userStore.userInfo);
-    const username = computed(() => userInfo.value ? userInfo.value.ten : null);
-
-    // Define the method to logout the user
-    const logout = () => {
-      userStore.clearUser(); // Call the logout method from the user store
-    };
-
-    return {
-      isLoggedIn,
-      username,
-      logout,
-    };
-  }
-};
-
-</script>
+        <div v-if="!isLoggedIn">
+          <router-link to="users/add" class="btn btn-primary mr-3">Đăng ký</router-link>
+          <router-link to="users/login" class="btn btn-primary">Đăng Nhập</router-link>
+        </div>
+        <div v-else class="dropdown">
+          <a class="btn btn-info dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+            {{ username }}
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <li><a class="dropdown-item" href="#">Thông tin cá nhân</a></li>
+            <li><a class="dropdown-item" @click="logout" href="#">Đăng xuất</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </template>
+  
+  <script>
+  import { computed } from 'vue';
+  import { useUserStore } from '../store/user';
+  
+  export default {
+    setup() {
+      const userStore = useUserStore();
+      const isLoggedIn = computed(() => userStore.isLoggedIn);
+      const username = computed(() => userStore.userInfo?.ten || 'User');
+  
+      const logout = () => {
+        userStore.clearUser();
+      };
+  
+      return {
+        isLoggedIn,
+        username,
+        logout,
+      };
+    },
+  };
+  </script>
+  
 
 <style>
 

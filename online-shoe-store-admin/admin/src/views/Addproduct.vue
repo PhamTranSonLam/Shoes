@@ -27,25 +27,30 @@
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Kích thước và Màu sắc</label>
+            <label class="form-label">Kích thước </label>
             <div v-for="(item, index) in sizes" :key="index" class="d-flex align-items-center mb-2">
               <select class="form-select" v-model="item.size" required>
                 <option value="" disabled>Chọn kích thước</option>
                 <option v-for="sizeOption in sizeOptions" :key="sizeOption" :value="sizeOption">{{ sizeOption }}</option>
               </select>
-              <select class="form-select ms-2" v-model="item.color" required>
-                <option value="" disabled>Chọn màu sắc</option>
-                <option v-for="colorOption in colorOptions" :key="colorOption.name" :value="colorOption.name">{{ colorOption.name }}</option>
-              </select>
               <input type="number" class="form-control ms-2" v-model="item.quantity" min="0" placeholder="Số lượng" required />
               <button type="button" class="btn btn-danger ms-2" @click="removeSize(index)">Xóa</button>
             </div>
-            <button type="button" class="btn btn-secondary" @click="addSize">Thêm kích thước và màu sắc</button>
+            <button type="button" class="btn btn-secondary" @click="addSize">Thêm kích thước</button>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Tải ảnh sản phẩm</label>
-            <input type="file" class="form-control" @change="onImageSelected" required />
+            <label class="form-label">Tải ảnh chính</label>
+            <input type="file" class="form-control" @change="onMainImageSelected" required />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Tải lên 4 ảnh nhỏ</label>
+            <input type="file" class="form-control" @change="onAdditionalImagesSelected" multiple required />
+            <input type="file" class="form-control" @change="onAdditionalImagesSelected" multiple required />
+            <input type="file" class="form-control" @change="onAdditionalImagesSelected" multiple required />
+            <input type="file" class="form-control" @change="onAdditionalImagesSelected" multiple required />
+            <small class="form-text text-muted">Chọn tối đa 4 ảnh nhỏ.</small>
           </div>
 
           <div class="d-flex justify-content-between mt-4">
@@ -68,55 +73,69 @@ export default {
         name: "",
         category: "",
         description: "",
-        color: "",
         price: 0,
       },
-      sizes: [{ size: "", color: "", quantity: 0 }],
+      sizes: [{ size: "", quantity: 0 }],
       sizeOptions: [38, 39, 40, 41, 42, 43],
-      colorOptions: [],
       categories: [],
-      image: null,
+      mainImage: null,
+      additionalImages: [],
     };
   },
   mounted() {
-    this.fetchColors();
-    this.fetchCategories(); // Lấy danh mục khi component được mount
+   
+    this.fetchCategories();
   },
   methods: {
-    onImageSelected(event) {
-      this.image = event.target.files[0];
+    onMainImageSelected(event) {
+      this.mainImage = event.target.files[0];
+    },
+    onAdditionalImagesSelected(event) {
+      const files = event.target.files;
+      if (this.additionalImages.length + files.length > 4) {
+        alert("Chỉ được chọn tối đa 4 ảnh nhỏ.");
+        return;
+      }
+      this.additionalImages = [...this.additionalImages, ...Array.from(files)];
     },
     addSize() {
-      this.sizes.push({ size: "", color: "", quantity: 0 });
+      this.sizes.push({ size: "",  quantity: 0 });
     },
     removeSize(index) {
       this.sizes.splice(index, 1);
     },
-    async fetchColors() {
-      try {
-        const response = await axios.get('http://localhost:5000/api/color');
-        this.colorOptions = response.data;
-      } catch (error) {
-        console.error('Error fetching colors:', error);
-      }
-    },
+    
     async fetchCategories() {
       try {
-        const response = await axios.get('http://localhost:5000/api/categories'); // Lấy danh mục từ API
+        const response = await axios.get('http://localhost:5000/api/categories');
         this.categories = response.data;
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
     },
+    validateForm() {
+      if (!this.newProduct.name || !this.newProduct.category || !this.newProduct.description || !this.newProduct.price || this.sizes.some(item => !item.size || item.quantity <= 0)) {
+        alert("Vui lòng điền đầy đủ thông tin sản phẩm.");
+        return false;
+      }
+      return true;
+    },
     async addProduct() {
+      if (!this.validateForm()) return;
+
       try {
         const formData = new FormData();
         formData.append("name", this.newProduct.name);
         formData.append("category", this.newProduct.category);
         formData.append("description", this.newProduct.description);
         formData.append("price", this.newProduct.price.toString());
-        formData.append("sizes", JSON.stringify(this.sizes)); 
-        formData.append("image", this.image);
+        formData.append("sizes", JSON.stringify(this.sizes));
+        formData.append("image", this.mainImage);
+
+        // Append each additional image
+        this.additionalImages.forEach((image) => {
+          formData.append("additionalImages", image);
+        });
 
         const response = await axios.post("http://localhost:5000/api/product", formData, {
           headers: {
@@ -138,6 +157,8 @@ export default {
   },
 };
 </script>
+
+
 
 <style scoped>
 .bg-light {

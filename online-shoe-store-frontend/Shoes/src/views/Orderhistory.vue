@@ -20,10 +20,11 @@
 
         <h4>Ordered Items:</h4>
         <div v-for="item in order.items" :key="item.product._id" class="order-item-details">
-          <img :src="`http://localhost:5000/${item.product.imageUrl}`" alt="Product Image" class="img-fluid bg-light" />
+          <img :src="`${item.mainImage}`" alt="Product Image" class="img-fluid bg-light" />
           <div class="item-info">
             <span class="product-name">{{ item.product.name }}</span>
             <span><strong>Quantity:</strong> {{ item.quantity }}</span>
+            <span><strong>Size:</strong> {{ item.sizes }}</span>
             <span><strong>Price:</strong> {{ formatPrice(item.product.price) }}</span>
             <span><strong>Status:</strong> {{ order.status }}</span>
           </div>

@@ -8,16 +8,24 @@
         </div>
     </section>
 
-    <section id="brand" class="container">
-        <div class="row m-0 pu-5">
-            <img class="img-fluid col-lg-2 col-md-4 col-6" src="../assets/img/1.png" alt="">
-            <img class="img-fluid col-lg-2 col-md-4 col-6" src="../assets/img/2.png" alt="">
-            <img class="img-fluid col-lg-2 col-md-4 col-6" src="../assets/img/3.png" alt="">
-            <img class="img-fluid col-lg-2 col-md-4 col-6" src="../assets/img/4.png" alt="">
-            <img class="img-fluid col-lg-2 col-md-4 col-6" src="../assets/img/5.png" alt="">
-            <img class="img-fluid col-lg-2 col-md-4 col-6" src="../assets/img/6.png" alt="">
+    <!-- Voucher Flash Sale Section -->
+    <section id="voucher" class="container">
+        <div class="voucher-content">
+            <h1>Flash Sale</h1>
+            <p>Chương trình khuyến mãi siêu hot</p>
+            <div class="voucher-list">
+                <div class="voucher-item" v-for="voucher in vouchers" :key="voucher._id">
+                    <h2>{{ voucher.name }}</h2>
+                    <p>{{ voucher.description }}</p>
+                    <p>Giảm {{ voucher.discount }} đơn hàng trên {{ voucher.minAmount }}K</p>
+                    <p>Mã ưu đãi số lượng có hạng</p>
+                    <p class="voucher-code">{{ voucher.code }}</p>
+                </div>
+            </div>
         </div>
     </section>
+
+
 
     <section id="new" class="w-100">
         <div class="row p-0">
@@ -53,7 +61,7 @@
     </div>
     <div class="row mx-auto container-fluid">
         <div v-for="product in adidasProducts" :key="product._id" class="product text-center col-lg-3 col-md-4 col-12">
-            <img :src="`http://localhost:5000/${product.imageUrl}`" alt="Product Image" class="img-fluid bg-light" />
+            <img :src="`http://localhost:5000/${product.mainImage}`" alt="Product Image" class="img-fluid bg-light" />
             <div class="star">
             <i class="fas fa-star" v-for="n in 5" :key="n"></i>
             </div>
@@ -87,7 +95,7 @@
     </div>
     <div class="row mx-auto container-fluid">
         <div v-for="product in nikeProducts" :key="product._id" class="product text-center col-lg-3 col-md-4 col-12">
-            <img :src="`http://localhost:5000/${product.imageUrl}`" alt="Product Image" class="img-fluid bg-light" />
+            <img :src="`http://localhost:5000/${product.mainImage}`" alt="Product Image" class="img-fluid bg-light" />
             <div class="star">
             <i class="fas fa-star" v-for="n in 5" :key="n"></i>
             </div>
@@ -111,7 +119,7 @@
     </div>
     <div class="row mx-auto container-fluid">
         <div v-for="product in sneakersProducts" :key="product._id" class="product text-center col-lg-3 col-md-4 col-12">
-            <img :src="`http://localhost:5000/${product.imageUrl}`" alt="Product Image" class="img-fluid bg-light" />
+            <img :src="`http://localhost:5000/${product.mainImage}`" alt="Product Image" class="img-fluid bg-light" />
             <div class="star">
             <i class="fas fa-star" v-for="n in 5" :key="n"></i>
             </div>
@@ -134,10 +142,14 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      adidasProducts: [], // This will store the filtered Adidas products
-      nikeProducts: [], // All products will be fetched here
-      sneakersProducts:[],
+      vouchers: [], // Store voucher information
+      adidasProducts: [], // Store Adidas products
+      nikeProducts: [], // Store Nike products
+      sneakersProducts: [], // Store Sneaker products
     };
+  },
+  mounted() {
+    this.getAllVoucher(); // Gọi hàm getVouchers khi component được mount
   },
   methods: {
     async fetchProducts() {
@@ -147,29 +159,21 @@ export default {
         this.adidasProducts = this.featuredProducts.filter(product => product.category == 'Adidas');
         this.nikeProducts = this.featuredProducts.filter(product => product.category == 'Nike');
         this.sneakersProducts = this.featuredProducts.filter(product => product.category == 'Sneaker');
-
-
-        // this.filterAdidasProducts(); // Call filter function
       } catch (error) {
         console.error('Error fetching products:', error);
       }
     },
 
-    filterAdidasProducts() {
-      this.adidasProducts = this.featuredProducts.filter(product => product.category == 'Adidas');
+    async getAllVoucher() {
+      try {
+        const response = await axios.get('http://localhost:5000/api/voucher'); // Thay bằng API thực tế của bạn
+        this.vouchers = response.data; // Lưu danh sách voucher vào biến vouchers
+      } catch (error) {
+        console.error('Lỗi khi tải danh sách voucher:', error);
+      }
     },
-    
-    filternikeProducts() {
-      this.nikeProducts = this.featureProducts.filter(product => product.category == 'Nike');
-      console.log(this.nikeProducts)
-    },
-    filtersneakersProducts() {
-      this.sneakerPsroducts = this.featureProducts.filter(product => product.category == 'Sneaker');
-    },
-   
-
     async formatPrice(price) {
-      return `${price.toFixed(2)}`;
+      return `${price.toFixed(2)} VNĐ`;
     },
 
     async addToCart(product) {
@@ -177,10 +181,10 @@ export default {
     },
   },
   created() {
-    this.fetchProducts();
+    this.fetchProducts();  // Fetch products when component is created
+    this.getAllVoucher();  // Fetch vouchers when component is created
   },
 };
-
 </script>
 
 
@@ -211,18 +215,6 @@ body {
     color: coral;
 }
 
-/* Brand Section */
-#brand {
-    margin: 5rem 0;
-}
-
-#brand .row {
-    padding: 0 20px;
-}
-
-#brand img {
-    max-width: 100%; /* Ensure responsiveness */
-}
 
 /* New Arrivals Section */
 #new {
@@ -288,6 +280,103 @@ body {
 
 #new .one .details button:hover {
     background-color: #6c14d0;
+}
+/* Voucher */
+#voucher {
+    background-image: url('../assets/img/backgradmin1.jpg'); /* Thêm đường dẫn đến hình nền */
+    background-size: cover; /* Đảm bảo hình nền sẽ phủ kín toàn bộ phần tử */
+    background-position: center center; /* Căn giữa hình nền */
+    padding: 50px 0;
+    color: white; /* Đảm bảo văn bản nổi bật trên nền tối */
+}
+
+#voucher .voucher-content {
+    text-align: center;
+    max-width: 1000px;
+    margin: 0 auto;
+    z-index: 1; /* Đảm bảo nội dung sẽ hiển thị lên trên hình nền */
+}
+
+#voucher h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #fff; /* Màu chữ sáng để nổi bật trên nền */
+    margin-bottom: 20px;
+}
+
+#voucher p {
+    font-size: 18px;
+    color: #f0f0f0; /* Màu chữ sáng hơn một chút */
+    margin-bottom: 40px;
+}
+
+#voucher .voucher-list {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+#voucher .voucher-item {
+    background-color: rgba(255, 255, 255, 0.8); /* Nền trắng mờ cho các voucher để dễ nhìn */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 250px;
+    transition: all 0.3s ease;
+}
+
+#voucher .voucher-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+#voucher .voucher-item h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+#voucher .voucher-item p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+#voucher .voucher-code {
+    font-size: 16px;
+    font-weight: 700;
+    color: #f56c6c;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+#voucher .voucher-item button {
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#voucher .voucher-item button:hover {
+    background-color: #ff4b4b;
+}
+
+@media (max-width: 768px) {
+    #voucher .voucher-list {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #voucher .voucher-item {
+        width: 80%;
+        margin-bottom: 20px;
+    }
 }
 
 /* Product Section */

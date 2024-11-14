@@ -1,3 +1,4 @@
+
 <template>
   <div class="main--content">
     <div class="header--wrapper">
@@ -14,10 +15,9 @@
       </div>
       <!-- Hiển thị menu dropdown nếu người dùng đã đăng nhập -->
       <div v-else class="dropdown">
-        
         <a class="btn btn-info dropdown-toggle" href="#" role="button" id="dropdownMenuLink" 
           data-bs-toggle="dropdown" aria-expanded="false"> Welcome {{ username }}
-          <img src="../assets/img/gir_dp2.jpg" alt="User image" class="user-img">
+          <img :src="userImage" alt="User image" class="user-img">
         </a>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
           <li>
@@ -35,8 +35,9 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { useUserStore } from '../store/user'; // Import store Pinia cho user
+import axios from 'axios';
 import router from '../router';
 
 export default {
@@ -45,14 +46,36 @@ export default {
 
     // Sử dụng computed để lấy trạng thái đăng nhập và thông tin người dùng
     const isLoggedIn = computed(() => !!userStore.user);
-    const username = computed(() => userStore.user?.username || 'Người dùng');
+    const username = ref('Người dùng'); // Khởi tạo username với ref
     const userImage = computed(() => userStore.user?.profileImage || '../assets/img/default_user.jpg');
 
     // Hàm đăng xuất
     const logout = () => {
       userStore.logout();
       router.push('/login');
-    }
+    };
+
+    // Hàm lấy thông tin người dùng
+    const getUser = async () => {
+      try {
+        const userId = userStore.user?._id;
+        if (userId) {
+          const response = await axios.get(`http://localhost:5000/api/authadmin/${userId}`, {
+            headers: {
+              Authorization: `Bearer ${userStore.token}`, // Sửa lại this.userStore thành userStore
+            },
+          });
+          if (response.status === 200) {
+            username.value = response.data.username; // Cập nhật username
+          }
+        }
+      } catch (error) {
+        console.error('Error updating account information:', error);
+      }
+    };
+
+    // Gọi hàm getUser khi component được khởi tạo
+    onMounted(getUser);
 
     return {
       isLoggedIn,
@@ -60,7 +83,7 @@ export default {
       userImage,
       logout,
     };
-  }
+  },
 };
 </script>
 

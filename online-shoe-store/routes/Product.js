@@ -15,9 +15,9 @@ router.post('/', ProductController.createProduct); // Requires authentication
 // router.put('/:id', auth, ProductController.updateProduct); // Requires authentication
 router.put('/:id', ProductController.updateProduct);
 
-
+router.get('/top-sold', ProductController.getTopProducts)
 // Xóa sản phẩm giày theo ID
-router.delete('/:id', ProductController.deleteProduct); // Requires authentication
+router.delete('/:id', ProductController.deleteProduct); // Requires authenticationzyy
 
 // Lấy chi tiết sản phẩm giày theo ID (Product details)
 router.get('/:id', ProductController.getProductById); // No auth for public access

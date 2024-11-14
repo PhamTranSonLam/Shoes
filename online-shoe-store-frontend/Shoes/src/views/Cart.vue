@@ -1,8 +1,8 @@
 <template>
   <!-- Page Header -->
   <section id="page-header">
-    <h2>Your Cart</h2>
-    <p>All products are marked down from their original prices</p>
+    <h2>Giỏ hàng của bạn</h2>
+    <p>Tất cả sản phẩm đều được giảm giá so với giá gốc</p>
   </section>
 
   <!-- Cart Section -->
@@ -10,14 +10,13 @@
     <table width="100%">
       <thead>
         <tr>
-          <td>REMOVE</td>
-          <td>IMAGE</td>
-          <td>PRODUCT</td>
-          <td>SIZE</td> 
-          <td>COLOR</td>
-          <td>PRICE</td>
-          <td>QUANTITY</td>
-          <td>SUBTOTAL</td>
+          <td>XÓA</td>
+          <td>HÌNH ẢNH</td>
+          <td>SẢN PHẨM</td>
+          <td>SIZE</td>
+          <td>GIÁ</td>
+          <td>SỐ LƯỢNG</td>
+          <td>TỔNG CỘNG</td>
         </tr>
       </thead>
       <tbody>
@@ -27,7 +26,7 @@
               <i class="far fa-times-circle"></i>
             </a>
           </td>
-          <td><img v-if="item.product" :src="`http://localhost:5000/${item.product.imageUrl}`" alt="Product Image" class="img-fluid bg-light" /></td>
+          <td><img v-if="item.product" :src="item.mainImage" :alt="item.product.name" class="img-fluid bg-light" /></td>
           <td>{{ item.product.name }}</td>
           <td>{{ item.size }}</td>
           <td>{{ item.color }}</td>
@@ -43,31 +42,25 @@
 
   <!-- Coupon and Cart Totals Section -->
   <section id="cart-add" class="section-p1">
-    <div id="coupon">
-      <h3>Apply Coupon</h3>
-      <input type="text" placeholder="Enter Your Coupon" />
-      <button class="normal">Apply</button>
-    </div>
-
     <div id="subtotal">
-      <h3>Cart Totals</h3>
+      <h3>Tổng giỏ hàng</h3>
       <table>
         <tr>
-          <td>Cart Subtotal</td>
+          <td>Tổng giỏ hàng</td>
           <td>{{ formatPrice(cartTotal) }}</td>
         </tr>
         <tr>
-          <td>Shipping</td>
-          <td>Free</td>
+          <td>Phí vận chuyển</td>
+          <td>Miễn phí</td>
         </tr>
         <tr>
-          <td><strong>Totals</strong></td>
+          <td><strong>Tổng cộng</strong></td>
           <td><strong>{{ formatPrice(cartTotal) }}</strong></td>
         </tr>
       </table>
 
       <RouterLink to="/checkout">
-        <button class="normal" @click="checkout">Proceed to checkout</button>
+        <button class="normal" @click="checkout" :disabled="cartItems.length === 0">Tiến hành thanh toán</button>
       </RouterLink>
     </div>
   </section>
@@ -82,16 +75,21 @@ export default {
     return {
       cartItems: [],
       UserStore: useUserStore(),
+      discount: 50000, // Example discount, adjust as needed
     };
   },
   computed: {
     cartTotal() {
-      return this.cartItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+      // Tổng giá trị giỏ hàng (trước khi giảm giá)
+      return this.cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0);
+    },
+    finalTotal() {
+      // Tổng giá trị giỏ hàng sau khi giảm giá
+      return Math.max(this.cartTotal - this.discount, 0); // Đảm bảo tổng không âm
     },
   },
   mounted() {
     this.fetchCartItems();
-    this.fetchColors();
   },
   methods: {
     async fetchCartItems() {
@@ -102,23 +100,15 @@ export default {
             Authorization: `Bearer ${this.UserStore.token}`,
           },
         });
-        this.cartItems = response.data.items || []; // Ensure cartItems is always an array
-        // console.log(this.cartItems);
-        // let newCart = [];
-        // for(let item in this.cartItems) {
-        //   const response = await axios.get(`http://localhost:5000/api/product/${item.product}`, {
-        //     headers: {
-        //     Authorization: `Bearer ${this.UserStore.token}`,
-        //     },
-        //   });
-        //   newCart.push(response.data);
-        // }
-        // console.log(newCart)
+        this.cartItems = response.data.items || [];
       } catch (error) {
-        console.error('Error fetching cart items:', error);
+        console.error('Lỗi khi tải giỏ hàng:', error);
       }
     },
     async removeFromCart(productId) {
+      const confirmation = confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?');
+      if (!confirmation) return;
+
       try {
         await axios.delete(`http://localhost:5000/api/cart/remove/${productId}`, {
           headers: {
@@ -127,19 +117,12 @@ export default {
         });
         this.fetchCartItems();
       } catch (error) {
-        console.error('Error removing item from cart:', error);
+        console.error('Lỗi khi xóa sản phẩm khỏi giỏ hàng:', error);
       }
     },
-    async fetchColors() {
-        try {
-          const response = await axios.get('http://localhost:5000/api/color');
-          this.product.color = response.data;
-        } catch (error) {
-          console.error('Error fetching colors:', error);
-        }
-      },
     async updateQuantity(productId, quantity) {
-      if (quantity < 1) return; // Prevent invalid quantities
+      if (quantity < 1) return;
+
       try {
         await axios.put(`http://localhost:5000/api/cart/update/${productId}`, { quantity }, {
           headers: {
@@ -148,11 +131,11 @@ export default {
         });
         this.fetchCartItems();
       } catch (error) {
-        console.error('Error updating quantity:', error);
+        console.error('Lỗi khi cập nhật số lượng:', error);
       }
     },
     formatPrice(value) {
-      return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }); // Corrected locale
+      return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
     },
     checkout() {
       this.$router.push({ name: 'Checkout' });
@@ -160,7 +143,6 @@ export default {
   },
 };
 </script>
-
 
 <style>
 /* Page header styling */
@@ -313,47 +295,24 @@ export default {
 #coupon button, #subtotal button {
   background: linear-gradient(45deg, #c72092, #6c14d0);
   color: white;
-  padding: 12px 30px;
+  padding: 12px 20px;
+  font-size: 18px;
   border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background 0.3s ease;
   border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 #coupon button:hover, #subtotal button:hover {
-  background: linear-gradient(45deg, #6c14d0, #c72092);
+  background-color: #5e11b2;
 }
 
-#subtotal table {
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-#subtotal table td {
-  padding: 12px;
-  font-size: 16px;
-  border-bottom: 1px solid #ddd;
-}
-
-#subtotal table td:last-child {
-  font-weight: bold;
-  text-align: right;
-}
-
-/* Responsive adjustments */
-@media screen and (max-width: 768px) {
-  #cart table {
-    width: 100%;
-  }
-
+@media (max-width: 768px) {
   #cart-add {
     flex-direction: column;
   }
-
   #coupon, #subtotal {
     width: 100%;
   }
 }
-
 </style>

@@ -86,17 +86,6 @@ export default {
           data: datasets,
         }] };
         
-      //   const rawData = response.data; // Giả sử API trả về dữ liệu hàng tuần bắt đầu từ Chủ Nhật
-
-      //   // Tìm ngày hiện tại và điều chỉnh dữ liệu bắt đầu từ ngày hiện tại
-      //   const today = new Date().getDay(); // 0 (Chủ Nhật) - 6 (Thứ Bảy)
-      //   const sortedData = [...rawData.slice(today), ...rawData.slice(0, today)];
-
-      //   // Cập nhật dữ liệu vào biểu đồ
-      //   this.barChartData.datasets[0].data = sortedData;
-      //   const newData = this.chartData.datasets // `data.revenue` là mảng chứa doanh thu cho các ngày trong tuần
-      // console.log(newData);
-      // this.chartData = {...this.chartData, datasets: [...this.chartData.datasets, newData] }; 
       } catch (error) {
         console.error('Error fetching weekly revenue:', error);
       }
@@ -123,5 +112,54 @@ export default {
 </script>
 
 <style scoped>
-/* CSS tùy chỉnh nếu cần */
+.chart-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Roboto', sans-serif;
+}
+
+.time-period-selector {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.time-period-selector button {
+  padding: 12px 28px;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #42a5f5, #5c6bc0);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.time-period-selector button:hover {
+  background: linear-gradient(135deg, #5c6bc0, #42a5f5);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.time-period-selector button:focus {
+  outline: none;
+  background: #3949ab;
+}
+
+.time-period-selector button:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
 </style>
+

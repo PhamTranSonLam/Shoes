@@ -1,6 +1,6 @@
 <template>
   <div class="review-container">
-    <h2>Đánh Giá Sản Phẩm</h2>
+    <h2>Product Reviews</h2>
 
     <!-- Danh sách đánh giá của người dùng -->
     <div v-for="review in reviews" :key="review.id" class="review">
@@ -23,13 +23,13 @@
         <!-- Phản hồi từ nhân viên -->
         <div v-if="review.feedback" class="staff-feedback">
           <div class="staff-avatar">
-            <img src="../assets/img/gir_dp3.jpg" alt="Staff Avatar" />
+            <img src="../assets/img/girl_dp1.jpg" alt="Staff Avatar" />
           </div>
           <div class="feedback-content">
             <span class="staff-name">{{ review.feedback.staff.username }}</span>
             <p class="feedback-text">{{ review.feedback.comment }}</p>
           </div>
-        </div>
+        </div>  
       </div>
     </div>
   </div>
@@ -122,7 +122,8 @@ export default {
 </script>
 <style scoped>
 .review-container {
-  margin-top: 70px;
+  margin-top: 80px;
+
   width: 100%;
   padding: 20px;
   background-color: #fff;

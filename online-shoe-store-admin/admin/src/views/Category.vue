@@ -1,203 +1,210 @@
 <template>
-  <div class="category-manager">
-    <h1>Quản Lý Danh Mục</h1>
-    <form @submit.prevent="submitCategory" class="category-form">
-      <input type="text" v-model="categoryName" placeholder="Nhập tên danh mục" required />
+  <div class="voucher-manager">
+    <h1>Quản Lý Voucher Flash Sale</h1>
+    
+    <!-- Button to toggle form visibility -->
+    <button @click="toggleForm" class="add-voucher-button">
+      {{ isFormVisible ? 'Hủy' : 'Thêm Voucher' }}
+    </button>
+    
+    <!-- Add/Edit Voucher Form -->
+    <form v-if="isFormVisible" @submit.prevent="submitVoucher" class="voucher-form">
+      <input type="text" v-model="voucher.name" placeholder="Tên Voucher" required />
+      <input type="number" v-model="voucher.discount" placeholder="Giảm (%)" required />
+      <input type="number" v-model="voucher.minOrder" placeholder="Giá trị tối thiểu (VNĐ)" required />
+      <input type="text" v-model="voucher.code" placeholder="Mã Voucher" required />
       <button type="submit">{{ isEditing ? 'Cập nhật' : 'Thêm' }}</button>
     </form>
 
-    <table class="category-table">
+    <!-- Voucher Table -->
+    <table class="voucher-table">
       <thead>
         <tr>
-          <th>Tên Danh Mục</th>
+          <th>Tên Voucher</th>
+          <th>Giảm (%)</th>
+          <th>Giá trị tối thiểu (VNĐ)</th>
+          <th>Mã Voucher</th>
           <th>Hành Động</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="category in categories" :key="category._id">
-          <td>{{ category.name }}</td>
+        <tr v-for="voucher in vouchers" :key="voucher.id">
+          <td>{{ voucher.name }}</td>
+          <td>{{ voucher.discount }}%</td>
+          <td>{{ voucher.minOrder }} VNĐ</td>
+          <td>{{ voucher.code }}</td>
           <td>
-            <button @click="editCategory(category)" class="edit-button">Sửa</button>
-            <button @click="deleteCategory(category._id)" class="delete-button">Xóa</button>
+            <button @click="editVoucher(voucher)" class="edit-button">Sửa</button>
+            <button @click="deleteVoucher(voucher.id)" class="delete-button">Xóa</button>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
 </template>
-
 <script>
-import axios from 'axios';
-
 export default {
   data() {
     return {
-      categories: [],
-      categoryName: '',
       isEditing: false,
-      editingId: null,
+      isFormVisible: false,  // Điều khiển việc ẩn/hiện form
+      voucher: {
+        name: '',
+        discount: 0,
+        minOrder: 0,
+        code: ''
+      },
+      vouchers: [
+        { id: 1, name: 'Voucher 1', discount: 10, minOrder: 200000, code: 'NJF909' },
+        { id: 2, name: 'Voucher 2', discount: 20, minOrder: 250000, code: 'NJF910' },
+        { id: 3, name: 'Voucher 3', discount: 30, minOrder: 300000, code: 'NJF911' }
+      ]
     };
   },
   methods: {
-    async fetchCategories() {
-      try {
-        const response = await axios.get('http://localhost:5000/api/categories');
-        this.categories = response.data;
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      }
-    },
-    async submitCategory() {
+    // Thêm mới hoặc cập nhật voucher
+    submitVoucher() {
       if (this.isEditing) {
-        await this.updateCategory();
+        // Cập nhật voucher
+        const index = this.vouchers.findIndex(v => v.id === this.voucher.id);
+        if (index !== -1) {
+          this.vouchers[index] = { ...this.voucher };
+        }
       } else {
-        await this.createCategory();
+        // Thêm mới voucher
+        const newId = this.vouchers.length + 1;
+        this.vouchers.push({ id: newId, ...this.voucher });
       }
       this.resetForm();
-      this.fetchCategories();
     },
-    async createCategory() {
-      try {
-        await axios.post('http://localhost:5000/api/categories', { name: this.categoryName });
-      } catch (error) {
-        console.error('Error creating category:', error);
-      }
-    },
-    async updateCategory() {
-      try {
-        await axios.put(`http://localhost:5000/api/categories/${this.editingId}`, { name: this.categoryName });
-      } catch (error) {
-        console.error('Error updating category:', error);
-      }
-    },
-    async deleteCategory(id) {
-      try {
-        await axios.delete(`http://localhost:5000/api/categories/${id}`);
-        this.fetchCategories();
-      } catch (error) {
-        console.error('Error deleting category:', error);
-      }
-    },
-    editCategory(category) {
-      this.categoryName = category.name;
-      this.editingId = category._id;
-      this.isEditing = true;
-    },
+    
+    // Reset form khi thêm hoặc cập nhật
     resetForm() {
-      this.categoryName = '';
+      this.voucher = { name: '', discount: 0, minOrder: 0, code: '' };
       this.isEditing = false;
-      this.editingId = null;
+      this.isFormVisible = false;  // Ẩn form sau khi thêm/xóa
     },
-  },
-  mounted() {
-    this.fetchCategories();
-  },
+
+    // Sửa voucher
+    editVoucher(voucher) {
+      this.voucher = { ...voucher };
+      this.isEditing = true;
+      this.isFormVisible = true;  // Hiện form khi đang sửa
+    },
+
+    // Xóa voucher
+    deleteVoucher(id) {
+      if (confirm('Bạn có chắc chắn muốn xóa voucher này?')) {
+        this.vouchers = this.vouchers.filter(v => v.id !== id);
+      }
+    },
+
+    // Toggle form visibility
+    toggleForm() {
+      this.isFormVisible = !this.isFormVisible;  // Chuyển đổi trạng thái hiển thị form
+      if (!this.isFormVisible) {
+        this.resetForm();  // Reset form nếu ẩn đi
+      }
+    }
+  }
 };
 </script>
-
 <style scoped>
-.category-manager {
-  max-width: 600px;
-  margin: auto;
+.voucher-manager {
   padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  background-color: #f9f9f9;
 }
 
 h1 {
+  font-size: 24px;
+  font-weight: bold;
   text-align: center;
-  color: #333;
-  font-size: 1.5rem; /* Sử dụng rem cho kích thước chữ */
-}
-
-.category-form {
-  display: flex;
-  flex-direction: column; /* Thay đổi hướng để phù hợp với màn hình nhỏ */
-  gap: 10px; /* Tạo khoảng cách giữa các phần tử */
   margin-bottom: 20px;
 }
 
-input {
+.add-voucher-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.add-voucher-button:hover {
+  background-color: #45a049;
+}
+
+.voucher-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.voucher-form input {
   padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  width: 100%; /* Chiều rộng 100% để ô nhập đầy đủ */
-  box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước */
+  border-radius: 5px;
+  width: 100%;
 }
 
-button {
-  padding: 10px 15px;
-  background-color: #28a745;
+.voucher-form button {
+  background-color: #4CAF50;
   color: white;
+  padding: 10px 20px;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s;
-  width: 100%; /* Chiều rộng 100% cho nút */
+  border-radius: 5px;
+  width: 100%;
 }
 
-button:hover {
-  background-color: #218838;
+.voucher-form button:hover {
+  background-color: #45a049;
 }
 
-.category-table {
+.voucher-table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 20px;
 }
 
-th, td {
-  padding: 10px;
-  text-align: left;
+.voucher-table th, .voucher-table td {
+  padding: 12px;
   border: 1px solid #ddd;
+  text-align: center;
 }
 
-.edit-button {
-  background-color: #007bff;
-  padding: 5px 10px; /* Thay đổi padding để nút nhỏ hơn */
+.voucher-table th {
+  background-color: #f4f4f4;
 }
 
-.delete-button {
-  background-color: #dc3545;
-  padding: 5px 10px; /* Thay đổi padding để nút nhỏ hơn */
+.edit-button, .delete-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-right: 10px;
 }
 
 .edit-button:hover {
-  background-color: #0056b3;
+  background-color: #45a049;
+}
+
+.delete-button {
+  background-color: #ff5733;
 }
 
 .delete-button:hover {
-  background-color: #c82333;
-}
-
-/* Media Queries */
-@media (min-width: 768px) {
-  .category-form {
-    flex-direction: row; /* Chuyển lại thành hàng trên màn hình lớn hơn */
-  }
-
-  input {
-    flex: 1; /* Chiếm không gian còn lại */
-    margin-right: 10px; /* Khoảng cách giữa ô nhập và nút */
-  }
-
-  button {
-    width: auto; /* Đặt chiều rộng tự động cho nút trên màn hình lớn */
-  }
-}
-
-@media (max-width: 600px) {
-  h1 {
-    font-size: 1.25rem; /* Giảm kích thước chữ trên màn hình nhỏ */
-  }
-
-  button {
-    padding: 10px; /* Đảm bảo nút không quá lớn trên màn hình nhỏ */
-  }
-
-  th, td {
-    font-size: 0.9rem; /* Giảm kích thước chữ trong bảng */
-  }
+  background-color: #e74c3c;
 }
 </style>

@@ -14,11 +14,12 @@ import Editstaff from '../views/Editstaff.vue';
 import Order from '../views/Order.vue';
 import Orderdetail from '../views/Orderdetail.vue';
 import Accountinformation from '../views/Accountinformation.vue';
-import Color from '../views/Color.vue';
+
 import Review from '../views/Review.vue';
 import Category from '../views/Category.vue';
 import Contact from '../views/Contact.vue';
-
+import Voucher from '../views/Voucher.vue';
+import Addvoucher from '../views/Addvoucher.vue';
 
 
 const routes = [
@@ -98,11 +99,6 @@ const routes = [
     component: Accountinformation,
   },
   {
-    path: '/color',
-    name: 'Color',
-    component: Color,
-  },
-  {
     path: '/review',
     name: 'Review',
     component: Review,
@@ -116,6 +112,16 @@ const routes = [
     path: '/contact/',
     name: 'Contact',
     component: Contact,
+  },
+  {
+    path: '/voucher/',
+    name: 'Voucher',
+    component: Voucher,
+  },
+  {
+    path: '/addvoucher/',
+    name: 'AddVoucher',
+    component: Addvoucher,
   }
   
 ];

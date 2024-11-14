@@ -20,7 +20,6 @@
             <input type="text" v-model="userInfo.phone" placeholder="Phone Number" required />
           </form>
           <p>You can edit the information here</p>
-          
         </div>
 
         <!-- Payment Section -->
@@ -39,25 +38,43 @@
           <h3>Order Summary</h3>
           <div v-for="item in cartItems" :key="item.product._id" class="cart-item">
             <div class="cart-item-image">
-              <img :src="`http://localhost:5000/${item.product.imageUrl}`" alt="Product Image" class="img-fluid bg-light" />
+              <img :src="`${item.mainImage}`" alt="Product Image" class="img-fluid bg-light" />
             </div>
             <div class="cart-item-details">
               <span class="product-name">{{ item.product.name }}</span>
               <div class="color-display">
-                <span>Color: {{ item.color }}</span> <!-- Hiển thị màu sắc -->
+                <span>Color: {{ item.color }}</span>
               </div>
               <div class="quantity-control">
                 <input type="number" v-model.number="item.quantity" @change="updateQuantity(item.product._id, item.quantity)" min="1" />
               </div>
-              <span class="product-price">{{ formatPrice(item.product.price) }}</span>
+              <span class="product-price">{{ formatPrice(item.product.priceAfterDiscount || item.product.price) }}</span>
             </div>
           </div>
-          <h4>Total: {{ formatPrice(cartTotal) }}</h4>
+
+          <!-- Voucher Section -->
+          <div id="coupon">
+            <div class="voucher-container">
+              <h3>Nhập mã voucher</h3>
+              <input
+                v-model="voucherCode"
+                type="text"
+                placeholder="Nhập mã voucher"
+                class="voucher-input"
+              />
+              <button @click="applyVoucher" class="apply-button">Áp dụng</button>
+              <p v-if="discount" class="discount-message">
+                Giảm giá: {{ discount | currencyFormat }}
+              </p>
+              <p v-if="error" class="error-message">{{ error }}</p>
+            </div>
+          </div>
+
+          <h4>Total: {{ formatPrice(cartTotal - discount) }}</h4>
         </div>
 
         <!-- Order Button -->
-         
-        <button @click="submitOrder">Place Order</button>
+        <button @click="submitOrder" :disabled="!isFormValid">Place Order</button>
       </div>
     </div>
   </section>
@@ -74,16 +91,21 @@ export default {
       user: this.UserStore.user,
       cartItems: [],
       paymentMethod: 'vnpay', // Default payment method
+      discount: 0, // Discount from voucher
+      voucherCode: "", // Voucher code entered by the user
+      error: null, // Error message for voucher
+      orderValue: 600000, // Default order value for discount calculation
     };
   },
   computed: {
-    // user() {
-    //   return this.UserStore.user;
-    // },
     cartTotal() {
       return this.cartItems.reduce((total, item) => {
-        return total + (item.product.price * item.quantity);
+        const priceAfterDiscount = item.product.priceAfterDiscount || item.product.price;
+        return total + (priceAfterDiscount * item.quantity);
       }, 0);
+    },
+    isFormValid() {
+      return this.userInfo.username && this.userInfo.address && this.userInfo.email && this.userInfo.phone;
     },
   },
   mounted() {
@@ -117,6 +139,20 @@ export default {
         console.error('Error updating quantity:', error);
       }
     },
+    async applyVoucher() {
+      try {
+        const response = await axios.post("http://localhost:5000/api/voucher/apply", {
+          code: this.voucherCode,
+          orderValue: this.orderValue
+        });
+
+        this.discount = response.data.discount;
+        this.error = null; // Clear error message on success
+      } catch (error) {
+        this.discount = 0; // Reset discount value
+        this.error = error.response.data.message || "Có lỗi xảy ra"; // Show error message
+      }
+    },
     formatPrice(value) {
       return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
     },
@@ -131,24 +167,23 @@ export default {
           phone: this.userInfo.phone,
         },
         paymentMethod: this.paymentMethod,
-        totalAmount: this.cartTotal,
-        status: "Đang xử lý", // Đặt trạng thái mặc định là "Đang xử lý"
+        totalAmount: this.cartTotal - this.discount,  // Apply discount to the total
+        status: "Đang xử lý", // Default status
       };
 
       console.log("Order Details:", orderDetails);
 
       try {
-        // Tạo đơn hàng trong hệ thống
+        // Create order in the system
         const response = await axios.post('http://localhost:5000/api/orders/place', orderDetails);
         console.log("Order Response:", response);
 
-        // Tạo liên kết thanh toán với chi tiết đơn hàng
+        // Handle payment if VNPay is selected
         if (this.paymentMethod === "vnpay") {
           const paymentResponse = await axios.post('http://localhost:5000/api/payment/vnpay/create_payment_url', response);
           console.log("Payment Response:", paymentResponse);
 
           if (paymentResponse.status === 200) {
-            // Chuyển hướng đến URL thanh toán
             window.location.href = paymentResponse.data.data?.url;
           }
         } else {
@@ -170,7 +205,7 @@ export default {
         });
         this.userInfo = response.data;
       } catch (error) {
-        console.error('Error fetching cart items:', error);
+        console.error('Error fetching user info:', error);
       }
     },
   },
@@ -182,6 +217,10 @@ export default {
   },
 };
 </script>
+
+
+
+
 
 
 
@@ -203,62 +242,73 @@ export default {
 
 #page-headers h2 {
   color: white;
-  font-size: 2.5rem;
-  font-weight: bold;
+  font-size: 3rem;
+  font-weight: 600;
   margin-bottom: 10px;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 #page-headers p {
   color: white;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-style: italic;
   margin: 0;
+  letter-spacing: 1px;
 }
 
 /* Checkout Section */
 #checkout {
   padding: 40px 20px;
-  max-width: 1200px;
+  max-width: 1500px;
   margin: 40px auto;
   display: flex;
   background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
+/* Checkout Container */
 .checkout-container {
   display: flex;
   width: 100%;
+  justify-content: space-between;
+  gap: 30px;
 }
 
 /* Left Section Styling */
 .checkout-left {
   flex: 1;
   padding-right: 30px;
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  padding: 20px;
 }
 
 h2, h3 {
   color: #333;
   margin-bottom: 25px;
-  font-weight: bold;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 .shipping-info input,
 .payment-method select {
   width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
+  padding: 14px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
   border-radius: 8px;
   box-sizing: border-box;
   font-size: 16px;
-  background-color: #f9f9f9;
-  transition: border-color 0.3s ease;
+  background-color: #f4f4f4;
+  transition: all 0.3s ease;
 }
 
 .shipping-info input:focus,
 .payment-method select:focus {
-  border-color: #c72092;
+  border-color: #9b59b6;
+  background-color: #fff;
   outline: none;
 }
 
@@ -267,8 +317,8 @@ h2, h3 {
   flex: 1;
   padding-left: 30px;
   background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 25px;
 }
 
@@ -280,20 +330,25 @@ h2, h3 {
   margin-top: 25px;
   font-size: 1.8rem;
   text-align: right;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .cart-item {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e5e5e5;
   padding-bottom: 10px;
+  transition: all 0.3s ease;
+}
+
+.cart-item:hover {
+  background-color: #f9f9f9;
 }
 
 .cart-item-image img {
-  width: 80px;
-  height: 80px;
+  width: 90px;
+  height: 90px;
   border-radius: 8px;
   object-fit: cover;
 }
@@ -306,13 +361,13 @@ h2, h3 {
 .product-name {
   font-size: 1.2rem;
   color: #333;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .product-price {
   margin-top: 8px;
   font-size: 1rem;
-  color: #666;
+  color: #555;
 }
 
 .quantity-control {
@@ -322,50 +377,101 @@ h2, h3 {
 .quantity-control input {
   width: 60px;
   text-align: center;
-  border: 1px solid #ccc;
+  border: 1px solid #ddd;
   border-radius: 8px;
   font-size: 16px;
-  padding: 5px;
+  padding: 8px;
   transition: border-color 0.3s ease;
 }
 
 .quantity-control input:focus {
-  border-color: #6c14d0;
+  border-color: #9b59b6;
   outline: none;
 }
 
 /* Button Styling */
 button {
-  background: linear-gradient(to right, #c72092, #6c14d0);
+  background: linear-gradient(to right, #9b59b6, #8e44ad);
   color: white;
-  padding: 12px 20px;
+  padding: 14px 24px;
   border: none;
   border-radius: 8px;
-  width: 100%;
+  width: 50%;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 button:hover {
-  background: #6c14d0;
+  background: #8e44ad;
 }
 
 button:focus {
   outline: none;
 }
 
-/* Media Queries */
-@media screen and (max-width: 768px) {
-  #checkout {
+/* Voucher Section */
+#coupon .voucher-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.voucher-input {
+  padding: 12px;
+  width: 800%;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background-color: #f4f4f4;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.voucher-input:focus {
+  outline: none;
+  border-color: #9b59b6;
+  background-color: #fff;
+}
+
+.apply-button {
+  padding: 12px 20px;
+  background-color: #9b59b6;
+  color: white;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.apply-button:hover {
+  background-color: #8e44ad;
+}
+
+.discount-message {
+  font-size: 1rem;
+  color: #4CAF50;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.error-message {
+  font-size: 1rem;
+  color: #f44336;
+  margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+  /* Mobile adjustments */
+  .checkout-container {
     flex-direction: column;
-    padding: 20px;
+    align-items: center;
   }
 
-  .checkout-left,
-  .checkout-right {
+  .checkout-left, .checkout-right {
+    width: 100%;
     padding: 20px;
+    box-shadow: none;
   }
 
   .cart-item {
@@ -373,15 +479,16 @@ button:focus {
     align-items: flex-start;
   }
 
-  .cart-item-details {
-    margin-left: 0;
-    margin-top: 10px;
+  .voucher-container {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-  button {
+  .voucher-input {
     width: 100%;
-    margin-top: 20px;
+    margin-bottom: 10px;
   }
 }
+
 
 </style>

@@ -1,16 +1,16 @@
 <template>
   <div class="container text-center">
-    <h1>Kết quả thanh toán</h1>
-    <div v-if="loading">Đang xử lý...</div>
+    <h1>Payment results</h1>
+    <div v-if="loading">Processing...</div>
     <div v-else-if="success">
-      <p class="text-success fw-bold fs-4">Thanh toán thành công!</p>
-      <p>Mã đơn đặt phòng: {{ orderId }}</p>
+      <p class="text-success fw-bold fs-4">Congratulations on your successful payment!!</p>
+      <p>Order code : {{ orderId }}</p>
     </div>
     <div v-else>
-      <p class="text-danger fw-bold fs-4">Thanh toán thất bại. Vui lòng thử lại.</p>
+      <p class="text-danger fw-bold fs-4">Payment failed, please try again!</p>
       <p v-if="errorMessage" class="text-muted">{{ errorMessage }}</p>
     </div>
-    <router-link to="/" class="btn btn-primary mt-4">Quay lại trang chủ</router-link>
+    <router-link to="/" class="btn btn-primary mt-4">Back to home page</router-link>
   </div>
 </template>
 

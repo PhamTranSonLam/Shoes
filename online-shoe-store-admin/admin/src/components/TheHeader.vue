@@ -47,15 +47,15 @@
         </router-link>
       </li>
       <li>
-        <router-link to="/color">
-          <i class="fas fa-paint-brush"></i>
-          <span>Quản lý màu sắc</span>
-        </router-link>
-      </li>
-      <li>
         <router-link to="/contact">
           <i class="fas fa-paint-brush"></i>
           <span>Quản lý liên lạc</span>
+        </router-link>
+      </li>
+      <li>
+        <router-link to="/voucher">
+          <i class="fas fa-paint-brush"></i>
+          <span>Quản lý khuyến mãi</span>
         </router-link>
       </li>
       <li class="logout">
