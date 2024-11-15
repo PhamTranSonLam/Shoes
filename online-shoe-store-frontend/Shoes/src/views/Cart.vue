@@ -29,7 +29,6 @@
           <td><img v-if="item.product" :src="item.mainImage" :alt="item.product.name" class="img-fluid bg-light" /></td>
           <td>{{ item.product.name }}</td>
           <td>{{ item.size }}</td>
-          <td>{{ item.color }}</td>
           <td>{{ formatPrice(item.product.price) }}</td>
           <td>
             <input type="number" v-model.number="item.quantity" @change="updateQuantity(item._id, item.quantity)" min="1" />
@@ -295,24 +294,31 @@ export default {
 #coupon button, #subtotal button {
   background: linear-gradient(45deg, #c72092, #6c14d0);
   color: white;
-  padding: 12px 20px;
-  font-size: 18px;
-  border-radius: 6px;
+  padding: 15px 30px;
   border: none;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background-color 0.3s;
 }
 
 #coupon button:hover, #subtotal button:hover {
-  background-color: #5e11b2;
+  background-color: #9c22d4;
 }
 
-@media (max-width: 768px) {
-  #cart-add {
-    flex-direction: column;
-  }
-  #coupon, #subtotal {
-    width: 100%;
-  }
+#subtotal table {
+  width: 100%;
+}
+
+#subtotal table td {
+  padding: 12px 0;
+  text-align: left;
+}
+
+#subtotal table td:nth-child(2) {
+  text-align: right;
+}
+
+#subtotal table td strong {
+  font-size: 18px;
 }
 </style>

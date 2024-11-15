@@ -57,24 +57,23 @@
             <div class="voucher-container">
               <h3>Nhập mã voucher</h3>
               <input
-                v-model="voucherCode"
-                type="text"
-                placeholder="Nhập mã voucher"
-                class="voucher-input"
-              />
+                v-model="voucherCode"type="text" placeholder="Nhập mã voucher" class="voucher-input"/>
               <button @click="applyVoucher" class="apply-button">Áp dụng</button>
               <p v-if="discount" class="discount-message">
-                Giảm giá: {{ discount | currencyFormat }}
+                Giảm giá: {{ formatPrice(discount) }}
               </p>
               <p v-if="error" class="error-message">{{ error }}</p>
             </div>
           </div>
 
-          <h4>Total: {{ formatPrice(cartTotal - discount) }}</h4>
+          <p v-if="cartTotal === 0" class="error-message">
+            Giỏ hàng của bạn hiện trống. Vui lòng thêm sản phẩm trước khi thanh toán.
+          </p>
+          <h4 v-else>Total: {{ formatPrice(cartTotal - discount) }}</h4>
         </div>
 
         <!-- Order Button -->
-        <button @click="submitOrder" :disabled="!isFormValid">Place Order</button>
+        <button @click="submitOrder" :disabled="cartTotal === 0 || !isFormValid">Place Order</button>
       </div>
     </div>
   </section>
@@ -94,7 +93,7 @@ export default {
       discount: 0, // Discount from voucher
       voucherCode: "", // Voucher code entered by the user
       error: null, // Error message for voucher
-      orderValue: 600000, // Default order value for discount calculation
+      orderValue: 0, // Default order value for discount calculation
     };
   },
   computed: {
@@ -141,22 +140,35 @@ export default {
     },
     async applyVoucher() {
       try {
+        this.orderValue = this.cartTotal;
+
+        if (this.orderValue === 0) {
+          this.error = "Giỏ hàng của bạn trống. Vui lòng thêm sản phẩm trước khi áp dụng mã giảm giá.";
+          this.discount = 0;
+          return;
+        }
+
         const response = await axios.post("http://localhost:5000/api/voucher/apply", {
           code: this.voucherCode,
           orderValue: this.orderValue
         });
 
-        this.discount = response.data.discount;
+        this.discount = response.data.discount || 0;
         this.error = null; // Clear error message on success
       } catch (error) {
         this.discount = 0; // Reset discount value
-        this.error = error.response.data.message || "Có lỗi xảy ra"; // Show error message
+        this.error = error.response?.data?.message || "Có lỗi xảy ra. Vui lòng thử lại.";
       }
     },
     formatPrice(value) {
       return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
     },
     async submitOrder() {
+      if (this.cartTotal === 0) {
+        alert("Giỏ hàng của bạn hiện trống. Không thể đặt hàng.");
+        return;
+      }
+
       const orderDetails = {
         user: this.user._id,
         items: this.cartItems,
@@ -167,32 +179,25 @@ export default {
           phone: this.userInfo.phone,
         },
         paymentMethod: this.paymentMethod,
-        totalAmount: this.cartTotal - this.discount,  // Apply discount to the total
+        totalAmount: this.cartTotal - this.discount, // Apply discount to the total
         status: "Đang xử lý", // Default status
       };
 
-      console.log("Order Details:", orderDetails);
-
       try {
-        // Create order in the system
         const response = await axios.post('http://localhost:5000/api/orders/place', orderDetails);
-        console.log("Order Response:", response);
 
-        // Handle payment if VNPay is selected
         if (this.paymentMethod === "vnpay") {
           const paymentResponse = await axios.post('http://localhost:5000/api/payment/vnpay/create_payment_url', response);
-          console.log("Payment Response:", paymentResponse);
-
           if (paymentResponse.status === 200) {
             window.location.href = paymentResponse.data.data?.url;
           }
         } else {
           this.$router.push('/Products');
-          alert("Order placed successfully. You will pay upon receipt.");
+          alert("Đặt hàng thành công. Bạn sẽ thanh toán khi nhận hàng.");
         }
       } catch (error) {
-        console.log('Error placing order:', error);
-        alert('An error occurred while placing your order.');
+        console.error('Error placing order:', error);
+        alert('Đã xảy ra lỗi khi đặt hàng.');
       }
     },
     async getUser() {
@@ -217,6 +222,7 @@ export default {
   },
 };
 </script>
+
 
 
 
@@ -414,32 +420,47 @@ button:focus {
 /* Voucher Section */
 #coupon .voucher-container {
   display: flex;
-  align-items: center;
-  gap: 15px;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+#coupon h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #333;
 }
 
 .voucher-input {
+  width: 100%;
   padding: 12px;
-  width: 800%;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  background-color: #f4f4f4;
   font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 15px;
   transition: all 0.3s ease;
 }
 
 .voucher-input:focus {
-  outline: none;
   border-color: #9b59b6;
-  background-color: #fff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(155, 89, 182, 0.5);
 }
 
 .apply-button {
-  padding: 12px 20px;
+  width: 100%;
   background-color: #9b59b6;
   color: white;
-  border-radius: 8px;
+  padding: 5px 10px;
   border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -449,17 +470,19 @@ button:focus {
 }
 
 .discount-message {
+  margin-top: 15px;
   font-size: 1rem;
-  color: #4CAF50;
-  font-weight: bold;
-  margin-top: 10px;
+  color: #27ae60;
+  font-weight: 600;
 }
 
 .error-message {
+  margin-top: 15px;
   font-size: 1rem;
-  color: #f44336;
-  margin-top: 10px;
+  color: #e74c3c;
+  font-weight: 600;
 }
+
 
 @media (max-width: 768px) {
   /* Mobile adjustments */

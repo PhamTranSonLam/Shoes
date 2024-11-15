@@ -79,3 +79,46 @@ exports.getAllVoucher = async (req, res) => {
     res.status(500).json({ message: "Lỗi tất cả khi lấy voucher", error: error.message });
   }
 };
+// Chỉnh sửa một voucher
+exports.editVoucher = async (req, res) => {
+  const { code, discountType, discountValue, minOrderValue, startDate, endDate, usageLimit, } = req.body;
+  try {
+    const voucher = await Voucher.findByIdAndUpdate(
+      req.params.id, // Tìm theo ID trong URL
+      {
+        discountType,
+        discountValue,
+        minOrderValue,
+        startDate,
+        endDate,
+        usageLimit
+      },
+      { new: true } // Trả về bản ghi đã cập nhật (thay vì bản ghi cũ)
+    );
+
+    if (!voucher) return res.status(404).json({ message: "Voucher không tồn tại" });
+    res.status(200).json({ message: "Voucher đã được cập nhật thành công", voucher });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi khi cập nhật voucher", error: error.message });
+  }
+};
+//delete
+exports.deleteVoucher = async (req, res) => {
+  try {
+    // Tìm và xóa voucher theo ID
+    const voucher = await Voucher.findByIdAndDelete(req.params.id);
+
+    // Nếu không tìm thấy voucher, trả về lỗi 404
+    if (!voucher) {
+      return res.status(404).json({ message: "Voucher không tồn tại" });
+    }
+    // Trả về thông báo thành công
+    res.status(200).json({
+      message: "Voucher đã được xóa thành công",
+    });
+  } catch (error) {
+    // Xử lý lỗi server
+    console.error("Lỗi khi xóa voucher:", error);
+    res.status(500).json({ message: "Lỗi khi xóa voucher", error: error.message });
+  }
+};

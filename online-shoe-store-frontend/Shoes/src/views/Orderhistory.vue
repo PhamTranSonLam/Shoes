@@ -15,7 +15,7 @@
             <button class="edit-button" @click="updateOrderStatus(order)">Edit</button>
           </div>
         </div>
-        <p><strong>Date:</strong> {{ new Date(order.createdAt).toLocaleDateString() }}</p>
+        <p><strong>Date:</strong> {{ new Date(order.createdAt).toLocaleString() }}</p>
         <p><strong>Total:</strong> {{ formatPrice(order.totalAmount) }}</p>
 
         <h4>Ordered Items:</h4>
@@ -27,6 +27,7 @@
             <span><strong>Size:</strong> {{ item.sizes }}</span>
             <span><strong>Price:</strong> {{ formatPrice(item.product.price) }}</span>
             <span><strong>Status:</strong> {{ order.status }}</span>
+            <p>Estimated delivery 3 to 5 days</p>
           </div>
         </div>
         <div v-if="order.review" class="order-review">

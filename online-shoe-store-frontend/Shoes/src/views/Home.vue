@@ -9,17 +9,16 @@
     </section>
 
     <!-- Voucher Flash Sale Section -->
-    <section id="voucher" class="container">
+    <section id="voucher" >
         <div class="voucher-content">
             <h1>Flash Sale</h1>
             <p>Chương trình khuyến mãi siêu hot</p>
             <div class="voucher-list">
                 <div class="voucher-item" v-for="voucher in vouchers" :key="voucher._id">
-                    <h2>{{ voucher.name }}</h2>
-                    <p>{{ voucher.description }}</p>
-                    <p>Giảm {{ voucher.discount }} đơn hàng trên {{ voucher.minAmount }}K</p>
-                    <p>Mã ưu đãi số lượng có hạng</p>
-                    <p class="voucher-code">{{ voucher.code }}</p>
+                    <p class="" >Giảm {{ voucher.discountValue }}% đơn hàng trên {{ voucher.discountValue }}VND</p>
+                    <p class="">Mã ưu đãi số lượng có hạng: {{ voucher.usageLimit }} lượt</p>
+                    <p class=""> Thời gian bắt đầu từ:{{ voucher.startDate }} đến voucher.endDate </p>
+                    <p class="voucher-code">Mã code:{{ voucher.code }}</p>
                 </div>
             </div>
         </div>
@@ -55,7 +54,7 @@
 
     <section id="adidas" class="my-5">
     <div class="container text-center mt-5 py-5">
-        <h3>Best selling adidas shoes</h3>s
+        <h3>Best selling adidas shoes</h3>
         <hr class="mx-auto">
         <p>This is the best selling and most popular product. </p>
     </div>
@@ -281,92 +280,120 @@ body {
 #new .one .details button:hover {
     background-color: #6c14d0;
 }
-/* Voucher */
+
+/* Voucher Section */
 #voucher {
-    background-image: url('../assets/img/backgradmin1.jpg'); /* Thêm đường dẫn đến hình nền */
-    background-size: cover; /* Đảm bảo hình nền sẽ phủ kín toàn bộ phần tử */
-    background-position: center center; /* Căn giữa hình nền */
-    padding: 50px 0;
-    color: white; /* Đảm bảo văn bản nổi bật trên nền tối */
+    width: 100%;
+    background-image: url('../assets/img/backgradmin1.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed; /* Hiệu ứng parallax nhẹ */
+    padding: 60px 0;
+    color: white;
+    position: relative;
+    overflow: hidden; /* Ẩn các phần tử dư thừa */
+
+}
+
+#voucher::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Lớp overlay tối nhẹ */
+    z-index: 0;
 }
 
 #voucher .voucher-content {
     text-align: center;
     max-width: 1000px;
     margin: 0 auto;
-    z-index: 1; /* Đảm bảo nội dung sẽ hiển thị lên trên hình nền */
+    position: relative;
+    z-index: 1; /* Nội dung hiển thị trên lớp overlay */
 }
 
 #voucher h1 {
-    font-size: 36px;
-    font-weight: 700;
-    color: #fff; /* Màu chữ sáng để nổi bật trên nền */
-    margin-bottom: 20px;
+    font-size: 42px;
+    font-weight: 800;
+    color: #ffdf85; /* Màu vàng nổi bật */
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7); /* Tạo bóng chữ */
 }
 
 #voucher p {
-    font-size: 18px;
-    color: #f0f0f0; /* Màu chữ sáng hơn một chút */
+    font-size: 20px;
+    color: #f0f0f0;
     margin-bottom: 40px;
+    line-height: 1.6;
 }
 
 #voucher .voucher-list {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 30px;
     flex-wrap: wrap;
 }
 
 #voucher .voucher-item {
-    background-color: rgba(255, 255, 255, 0.8); /* Nền trắng mờ cho các voucher để dễ nhìn */
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    width: 250px;
-    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.9); /* Màu nền sáng hơn một chút */
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    padding: 25px;
+    width: 260px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
 }
 
 #voucher .voucher-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05); /* Tăng kích thước nhẹ */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 
 #voucher .voucher-item h2 {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 600;
-    color: #333;
-    margin-bottom: 10px;
+    color: #ff6b6b;
+    margin-bottom: 12px;
 }
 
 #voucher .voucher-item p {
     font-size: 16px;
-    color: #555;
-    margin-bottom: 20px;
+    color: #666;
+    margin-bottom: 15px;
+    line-height: 1.5;
 }
 
 #voucher .voucher-code {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 700;
-    color: #f56c6c;
+    color: #d9534f;
+    background: #ffe3e3;
+    padding: 8px;
+    border-radius: 5px;
+    display: inline-block;
     margin-top: 10px;
-    margin-bottom: 20px;
 }
 
 #voucher .voucher-item button {
     background-color: #ff6b6b;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 10px 25px;
     font-size: 16px;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 #voucher .voucher-item button:hover {
     background-color: #ff4b4b;
+    transform: translateY(-2px);
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
     #voucher .voucher-list {
         flex-direction: column;
@@ -374,7 +401,7 @@ body {
     }
 
     #voucher .voucher-item {
-        width: 80%;
+        width: 90%;
         margin-bottom: 20px;
     }
 }

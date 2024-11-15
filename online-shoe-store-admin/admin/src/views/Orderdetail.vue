@@ -29,7 +29,7 @@
         <div class="card-body">
           <ul class="list-group">
             <li v-for="item in order.items" :key="item._id" class="list-group-item">
-              <strong class="text-dark">{{ item.product.name }}</strong>
+              <strong class="text-dark">Tên sản phẩm: {{ item.product.name }}</strong>
               <p class="mb-0"><strong>Số lượng:</strong> <span class="text-muted">{{ item.quantity }}</span></p>
               <p class="mb-0"><strong>Giá:</strong> <span class="text-muted">{{ item.product.price }} VND</span></p>
             </li>
@@ -45,6 +45,7 @@
         <div class="card-body">
           <p><strong>Tổng cộng:</strong> <span class="text-dark h5">{{ order.totalAmount }} VND</span></p>
           <p><strong>Trạng thái đơn hàng:</strong> <span class="text-muted">{{ order.status }}</span></p>
+          <p><strong>Ngày đặt:</strong> <span class="text-muted">{{ new Date(order.createdAt).toLocaleString() }}</span></p>
         </div>
       </div>
 

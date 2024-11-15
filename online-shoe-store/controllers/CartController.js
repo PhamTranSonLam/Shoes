@@ -30,7 +30,7 @@ module.exports = {
             const product = await Product.findById(productId);
             if (cart) {
                 // Thêm hoặc cập nhật sản phẩm trong cart
-                const itemIndex = cart.items.findIndex(item => item.product.toString() === productId && item.size === size );
+                const itemIndex = cart.items.findIndex(item => item.product.toString() === productId && item.size === size && item.mainImage === mainImage );
                 if (itemIndex > -1) {
                     // Sản phẩm đã có trong cart, cập nhật số lượng
                     cart.items[itemIndex].quantity += quantity;

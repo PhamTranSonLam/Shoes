@@ -29,7 +29,8 @@
               <th scope="col">Sản phẩm</th>
               <th scope="col">Tổng tiền</th>
               <th scope="col">Trạng thái</th>
-              <th scope="col">Hình thức thanh toán</th>
+              <th scope="col">Thanh toán</th>
+              <th scope="col">Ngày đặt</th>
               <th scope="col">Hành động</th>
             </tr>
           </thead>
@@ -55,6 +56,7 @@
                 </select>
               </td>
               <td>{{ order.paymentMethod }}</td>
+              <td>{{ new Date(order.createdAt).toLocaleString() }}</td> <!-- Hiển thị ngày đặt -->
               <td>
                 <router-link :to="'/orderdetail/' + order._id" class="btn btn-success btn-sm">
                   Chi tiết

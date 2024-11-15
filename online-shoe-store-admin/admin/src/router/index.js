@@ -20,6 +20,7 @@ import Category from '../views/Category.vue';
 import Contact from '../views/Contact.vue';
 import Voucher from '../views/Voucher.vue';
 import Addvoucher from '../views/Addvoucher.vue';
+import Editvoucher from '../views/Editvoucher.vue';
 
 
 const routes = [
@@ -122,6 +123,11 @@ const routes = [
     path: '/addvoucher/',
     name: 'AddVoucher',
     component: Addvoucher,
+  },
+  {
+    path: '/editvoucher/:id',
+    name: 'EditVoucher',
+    component: Editvoucher,
   }
   
 ];

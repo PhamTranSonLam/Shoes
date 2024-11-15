@@ -2,7 +2,7 @@
     <section>
       <nav>
         <div class="logo">
-          <h1>Shoe<span>s</span></h1>
+          <h1>S.Lam Shoe<span>s</span></h1>
         </div>
         <ul>
           <li><router-link to='/Home'>Home</router-link></li>
