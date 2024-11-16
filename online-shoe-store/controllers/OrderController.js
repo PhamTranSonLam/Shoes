@@ -5,9 +5,9 @@ const Product = require('../models/Product')
 
 exports.placeOrder =  async (req, res) => {
     console.log('Order Data:', req.body); // Ghi log dữ liệu nhận được
-    const { user, items, shippingInfo, paymentMethod, totalAmount,mainImage } = req.body;
+    const { user, items, shippingInfo, paymentMethod, totalAmount,mainImage, voucher, discount, totaldiscount} = req.body;
     // Kiểm tra nếu dữ liệu cần thiết có trong yêu cầu
-    if (!user || !items || !shippingInfo || !paymentMethod || totalAmount === undefined) {
+    if (!user || !items || !shippingInfo || !paymentMethod || totalAmount  === undefined) {
         return res.status(400).json({ message: 'Missing required fields' });
     }
     // Phần còn lại của logic xử lý đơn hàng
@@ -18,7 +18,10 @@ exports.placeOrder =  async (req, res) => {
             shippingInfo,
             paymentMethod,
             totalAmount,
-            mainImage
+            mainImage,
+            voucher,
+            discount,
+            totaldiscount,
         });
         console.log("id", order._id);
         const orderId = order._id;

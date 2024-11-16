@@ -1,4 +1,3 @@
-
 <template>
   <div class="main--content">
     <div class="header--wrapper">
@@ -7,7 +6,7 @@
         <h2>Dashboard</h2>
       </div>
       <!-- Kiểm tra nếu người dùng chưa đăng nhập -->
-      <div v-if="!isLoggedIn">
+      <div v-if="!username">
         <!-- Nút điều hướng đến trang Đăng ký -->
         <router-link to="/register" class="btn btn-primary">Register</router-link>
         <!-- Nút điều hướng đến trang Đăng nhập -->
@@ -16,8 +15,9 @@
       <!-- Hiển thị menu dropdown nếu người dùng đã đăng nhập -->
       <div v-else class="dropdown">
         <a class="btn btn-info dropdown-toggle" href="#" role="button" id="dropdownMenuLink" 
-          data-bs-toggle="dropdown" aria-expanded="false"> Welcome {{ username }}
-          <img :src="userImage" alt="User image" class="user-img">
+          data-bs-toggle="dropdown" aria-expanded="false"> 
+          Welcome {{ username.username }}
+          <img src="../assets/img/girl_dp1.jpg" alt="User image" class="user-img">
         </a>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
           <li>
@@ -25,6 +25,7 @@
               <a class="dropdown-item" href="#">Thông tin cá nhân</a>
             </router-link>
           </li>
+          <a class="dropdown-item" @click="showChangePasswordModal">Đổi mật khẩu</a>
           <li>
             <a class="dropdown-item" @click="logout" href="#">Đăng xuất</a>
           </li>
@@ -32,64 +33,118 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal for Changing Password -->
+  <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="changePasswordLabel">Change Password</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form @submit.prevent="changePassword">
+            <div class="mb-3">
+              <label for="oldPassword" class="col-form-label">Old Password:</label>
+              <input type="password" class="form-control" id="oldPassword" v-model="oldPassword">
+            </div>
+            <div class="mb-3">
+              <label for="newPassword" class="col-form-label">New Password:</label>
+              <input type="password" class="form-control" id="newPassword" v-model="newPassword">
+            </div>
+            <div class="mb-3">
+              <label for="confirmPassword" class="col-form-label">Confirm New Password:</label>
+              <input type="password" class="form-control" id="confirmPassword" v-model="confirmPassword">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Change Password</button>
+            </div>
+          </form>
+          <div v-if="notification.message" :class="`alert alert-${notification.type}`">
+            {{ notification.message }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import { computed, ref, onMounted } from 'vue';
 import { useUserStore } from '../store/user'; // Import store Pinia cho user
 import axios from 'axios';
 import router from '../router';
 
 export default {
-  setup() {
-    const userStore = useUserStore(); // Lấy userStore từ Pinia
-
-    // Sử dụng computed để lấy trạng thái đăng nhập và thông tin người dùng
-    const isLoggedIn = computed(() => !!userStore.user);
-    const username = ref('Người dùng'); // Khởi tạo username với ref
-    const userImage = computed(() => userStore.user?.profileImage || '../assets/img/default_user.jpg');
-
-    // Hàm đăng xuất
-    const logout = () => {
-      userStore.logout();
-      router.push('/login');
-    };
-
-    // Hàm lấy thông tin người dùng
-    const getUser = async () => {
-      try {
-        const userId = userStore.user?._id;
-        if (userId) {
-          const response = await axios.get(`http://localhost:5000/api/authadmin/${userId}`, {
-            headers: {
-              Authorization: `Bearer ${userStore.token}`, // Sửa lại this.userStore thành userStore
-            },
-          });
-          if (response.status === 200) {
-            username.value = response.data.username; // Cập nhật username
-          }
-        }
-      } catch (error) {
-        console.error('Error updating account information:', error);
-      }
-    };
-
-    // Gọi hàm getUser khi component được khởi tạo
-    onMounted(getUser);
-
+  data() {
     return {
-      isLoggedIn,
-      username,
-      userImage,
-      logout,
+      userStore: useUserStore(),
+      oldPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+      notification: {
+        message: '',
+        type: ''
+      },
+      username: '', // Declare username here
+      userImage: '', // Declare userImage here (replace with actual logic)
     };
   },
+  computed: {
+    username() {
+      return this.userStore.user;
+    },
+  },
+  methods: {
+    async loadUser() {
+      if (this.userStore.user) {
+        return;
+      }
+      await this.userStore.getUser();
+    },
+    async logout() {
+      await this.userStore.logout();
+      this.$router.push('/auth/login');
+    },
+    showChangePasswordModal() {
+      const modal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+      modal.show();
+    },
+    async changePassword() {
+      try {
+        if (this.newPassword !== this.confirmPassword) {
+          this.notification.message = 'Mật khẩu không khớp!';
+          this.notification.type = 'danger';
+          return;
+        }
+        const token = localStorage.getItem('token');
+        const response = await axios.post('http://localhost:5000/api/authadmin/change-password',
+          {
+            userId: this.userStore.user._id,
+            oldPassword: this.oldPassword,
+            newPassword: this.newPassword
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` }
+          }
+        );
+
+        this.notification.message = response.data.message || 'Đổi mật khẩu thành công!';
+        this.notification.type = 'success';
+        this.oldPassword = '';
+        this.newPassword = '';
+        this.confirmPassword = '';
+      } catch (error) {
+        this.notification.message = error.response?.data?.message || 'Đổi mật khẩu thất bại!';
+        this.notification.type = 'danger';
+      }
+    }
+  }
 };
 </script>
 
+
 <style>
-
-
 .btn {
   display: inline-block;
   padding: 12px 25px;

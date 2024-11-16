@@ -1,141 +1,198 @@
 <template>
-    <section>
-      <nav>
-        <div class="logo">
-          <h1>S.Lam Shoe<span>s</span></h1>
-        </div>
-        <ul>
-          <li><router-link to='/Home'>Home</router-link></li>
-          <li><router-link to='/Products'>Products</router-link></li>
-          <li><router-link to='/About'>About</router-link></li>
-          <li><router-link to='/review'>Review</router-link></li>
-          <li><router-link to='/Services'>Services</router-link></li>
-        </ul>
-        <div class="icons">
-          <i class="fa-solid fa-heart"></i>
-          <router-link to="/Cart">
-            <i class="fa-solid fa-cart-shopping"></i>
-          </router-link>
-          <div v-if="username" class="user-link" @click="toggleDropdown">
-            <img class="user-img" src="../src/assets/img/gir_dp3.jpg" alt="User Image">
-            <span>{{ username.username  }}</span>
-            <div v-if="isDropdownVisible" class="logout bg-light p-2 border shadow">
-              <p><router-link to="/accountinformation" class="info">Account information</router-link></p>
-              <p><router-link to="/Orderhistory" class="text-dark">Order history</router-link></p>
-              <p @click="logout">Logout</p>
-            </div>
-          </div>
-          <div v-if="!username">
-            <router-link to="/auth/login" class="auth-button">Đăng Nhập</router-link>
-            <router-link to="/auth/register" class="auth-button register">Đăng Ký</router-link>
+  <section>
+    <nav>
+      <!-- Navigation Bar -->
+      <div class="logo">
+        <h1>L.Shoe<span>s</span></h1>
+      </div>
+      <ul>
+        <li><router-link to='/Home'>Home</router-link></li>
+        <li><router-link to='/Products'>Products</router-link></li>
+        <li><router-link to='/About'>About</router-link></li>
+        <li><router-link to='/review'>Review</router-link></li>
+        <li><router-link to='/Services'>Services</router-link></li>
+      </ul>
+      <div class="icons">
+        <i class="fa-solid fa-heart"></i>
+        <router-link to="/Cart">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </router-link>
+        <div v-if="username" class="user-link" @click="toggleDropdown">
+          <img class="user-img" src="../src/assets/img/gir_dp3.jpg" alt="User Image">
+          <span>{{ username.username }}</span>
+          <div v-if="isDropdownVisible" class="logout bg-light p-2 border shadow">
+            <p><router-link to="/accountinformation" class="info">Account information</router-link></p>
+            <p><router-link to="/Orderhistory" class="text-dark">Order history</router-link></p>
+            <p class="text-dark" @click="showChangePasswordModal">Đổi mật khẩu</p>
+            <p @click="logout">Logout</p>
           </div>
         </div>
-      </nav>
-      <main>
-        <router-view @user-logged-in="loadUser"></router-view>
-      </main>
-      <footer>
-        <div class="footer_main">
-          <div class="tag">
-            <h1>Contact</h1>
-            <a href="#"><i class="fa-solid fa-house"></i>123/Colombo/Sri Lanka</a>
-            <a href="#"><i class="fa-solid fa-phone"></i>+94 12 345 6789</a>
-            <a href="#"><i class="fa-solid fa-envelope"></i>contact@gmail.com</a>
+
+        <div v-if="!username">
+          <router-link to="/auth/login" class="auth-button">Đăng Nhập</router-link>
+          <router-link to="/auth/register" class="auth-button register">Đăng Ký</router-link>
+        </div>
+      </div>
+    </nav>
+    <main>
+      <router-view @user-logged-in="loadUser"></router-view>
+    </main>
+    <footer>
+      <!-- Footer Section -->
+      <div class="footer_main">
+        <!-- Footer Links and Content -->
+        <div class="tag">
+          <h1>Contact</h1>
+          <a href="#"><i class="fa-solid fa-house"></i>123/Colombo/Sri Lanka</a>
+          <a href="#"><i class="fa-solid fa-phone"></i>+94 12 345 6789</a>
+          <a href="#"><i class="fa-solid fa-envelope"></i>contact@gmail.com</a>
+        </div>
+        <div class="tag">
+          <h1>Get Help</h1>
+          <a href="#" class="center">FAQ</a>
+          <a href="#" class="center">Shipping</a>
+          <a href="#" class="center">Returns</a>
+          <a href="#" class="center">Payment Options</a>
+        </div>
+        <div class="tag">
+          <h1>Our Stores</h1>
+          <a href="#" class="center">Sri Lanka</a>
+          <a href="#" class="center">USA</a>
+          <a href="#" class="center">India</a>
+          <a href="#" class="center">Japan</a>
+        </div>
+        <div class="tag">
+          <h1>Follow Us</h1>
+          <div class="social_link">
+            <a href="#"><i class="fa-brands fa-facebook"></i>FAQ</a>
+            <a href="#"><i class="fa-brands fa-twitter"></i>FAQ</a>
+            <a href="#"><i class="fa-brands fa-instagram"></i>FAQ</a>
+            <a href="#"><i class="fa-brands fa-linkedin"></i>FAQ</a>
           </div>
-          <div class="tag">
-            <h1>Get Help</h1>
-            <a href="#" class="center">FAQ</a>
-            <a href="#" class="center">Shipping</a>
-            <a href="#" class="center">Returns</a>
-            <a href="#" class="center">Payment Options</a>
+        </div>
+        <div class="tag">
+          <h1>Newsletter</h1>
+          <div class="search_bar">
+            <input type="text" placeholder="Your email id here">
+            <button type="submit">Subscribe</button>
           </div>
-          <div class="tag">
-            <h1>Our Stores</h1>
-            <a href="#" class="center">Sri Lanka</a>
-            <a href="#" class="center">USA</a>
-            <a href="#" class="center">India</a>
-            <a href="#" class="center">Japan</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Modal for Changing Password -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="changePasswordLabel">Change Password</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="tag">
-            <h1>Follow Us</h1>
-            <div class="social_link">
-              <a href="#"><i class="fa-brands fa-facebook"></i>FAQ</a>
-              <a href="#"><i class="fa-brands fa-twitter"></i>FAQ</a>
-              <a href="#"><i class="fa-brands fa-instagram"></i>FAQ</a>
-              <a href="#"><i class="fa-brands fa-linkedin"></i>FAQ</a>
-            </div>
-          </div>
-          <div class="tag">
-            <h1>Newsletter</h1>
-            <div class="search_bar">
-              <input type="text" placeholder="Your email id here">
-              <button type="submit">Subscribe</button>
+          <div class="modal-body">
+            <form @submit.prevent="changePassword">
+              <div class="mb-3">
+                <label for="oldPassword" class="col-form-label">Old Password:</label>
+                <input type="password" class="form-control" id="oldPassword" v-model="oldPassword">
+              </div>
+              <div class="mb-3">
+                <label for="newPassword" class="col-form-label">New Password:</label>
+                <input type="password" class="form-control" id="newPassword" v-model="newPassword">
+              </div>
+              <div class="mb-3">
+                <label for="confirmPassword" class="col-form-label">Confirm New Password:</label>
+                <input type="password" class="form-control" id="confirmPassword" v-model="confirmPassword">
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Change Password</button>
+              </div>
+            </form>
+            <div v-if="notification.message" :class="`alert alert-${notification.type}`">
+              {{ notification.message }}
             </div>
           </div>
         </div>
-      </footer>
-    </section>
-  </template>
-  
-  <script>
-  import axios from 'axios';
-  import { useUserStore } from './store/user';
-  
-  export default {
-    name: 'App',
-    data() {
-      return {
-        userStore: useUserStore(),
-        user: null,
-        isDropdownVisible: false,
-      };
-    },
-    computed: {
-        username() {
-            return this.userStore.user; // Access username directly from the userStore
-        }
+      </div>
+    </div>
+  </section>
+</template>
+
+<script>
+import axios from 'axios';
+import { useUserStore } from './store/user';
+
+export default {
+  name: 'App',
+  data() {
+    return {
+      userStore: useUserStore(),
+      isDropdownVisible: false,
+      oldPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+      notification: {
+        message: '',
+        type: ''
+      }
+    };
   },
-    mounted() {
-      this.loadUser();
+  computed: {
+    username() {
+      return this.userStore.user;
+    }
+  },
+  methods: {
+    toggleDropdown() {
+      this.isDropdownVisible = !this.isDropdownVisible;
     },
-    methods: {
-      async loadUser() {
-        if (this.userStore.user) {
-          this.user = this.userStore.user;
-        } else {
-          await this.getUser();
+    async loadUser() {
+      if (this.userStore.user) {
+        return;
+      }
+      await this.userStore.getUser();
+    },
+    async logout() {
+      await this.userStore.logout();
+      this.$router.push('/auth/login');
+    },
+    showChangePasswordModal() {
+      const modal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+      modal.show();
+    },
+    async changePassword() {
+      try {
+        if (this.newPassword !== this.confirmPassword) {
+          this.notification.message = 'Mật khẩu không khớp!';
+          this.notification.type = 'danger';
+          return;
         }
-      },
-      async logout() {
-        await this.userStore.logout();
-        this.user = null;
-        this.isDropdownVisible = false;
-        this.$router.push('/auth/login');
-      },
-      toggleDropdown() {
-        this.isDropdownVisible = !this.isDropdownVisible;
-      },
-      async getUser() {
-        try {
-          const userId = this.userStore.user?._id;
-          if (userId) {
-            const response = await axios.get(`http://localhost:5000/api/authadmin/${userId}`, {
-              headers: {
-                Authorization: `Bearer ${this.userStore.token}`,
-              },
-            });
-            if (response.status === 200) {
-              this.user = response.data;
-              this.userStore.user = response.data;
-            }
+        const token = localStorage.getItem('token');
+        const response = await axios.post('http://localhost:5000/api/auth/change-password',
+          {
+            userId: this.userStore.user._id,
+            oldPassword: this.oldPassword,
+            newPassword: this.newPassword
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` }
           }
-        } catch (error) {
-          console.error('Error updating account information:', error);
-        }
-      },
-    },
-  };
-  </script>
+        );
+
+        this.notification.message = response.data.message || 'Đổi mật khẩu thành công!';
+        this.notification.type = 'success';
+        this.oldPassword = '';
+        this.newPassword = '';
+        this.confirmPassword = '';
+        this.$router.push('/home')
+      } catch (error) {
+        this.notification.message = error.response?.data?.message || 'Đổi mật khẩu thất bại!';
+        this.notification.type = 'danger';
+      }
+    }
+  }
+};
+</script>
+
   
   
   <style>

@@ -2,6 +2,7 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const sendMail = require ('../controllers/EmailController');
+const bcrypt = require('bcrypt')
 // Đăng ký người dùng mới
 exports.register = async (req, res) => {
     try {
@@ -116,5 +117,33 @@ exports.deleteUser = async (req, res) => {
     }
 }
 
+// Đổi mật khẩu
+exports.changePassword = async (req, res) => {
+    try {
+        const { oldPassword, newPassword,userId } = req.body;
+        
 
+        // Tìm user trong database
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Kiểm tra mật khẩu cũ
+        const isMatch = await user.comparePassword(oldPassword);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Old password is incorrect' });
+        }
+
+        // Mã hóa mật khẩu mới
+        // const salt = await bcrypt.genSalt(10);
+        // user.password = await bcrypt.hash(newPassword, salt);
+        user.password = newPassword;
+        await user.save();
+
+        res.status(200).json({ message: 'Password changed successfully' });
+    } catch (err) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};
 

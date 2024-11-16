@@ -20,6 +20,9 @@ const orderSchema = new mongoose.Schema({
   totalAmount: { type: Number, required: true },
   status: { type: String, default: 'Pending' },
   createdAt: { type: Date, default: Date.now },
+  voucher:{type: String},
+  discount:{type: String},
+  totaldiscount:{type: String},
 });
 
 const Order = mongoose.model('Order', orderSchema);

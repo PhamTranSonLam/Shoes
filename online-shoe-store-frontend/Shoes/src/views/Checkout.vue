@@ -179,7 +179,10 @@ export default {
           phone: this.userInfo.phone,
         },
         paymentMethod: this.paymentMethod,
-        totalAmount: this.cartTotal - this.discount, // Apply discount to the total
+        totalAmount: this.cartTotal, // Apply discount to the total
+        voucher: this.voucherCode,
+        discount:this.discount,
+        totaldiscount:this.cartTotal - this.discount,
         status: "Đang xử lý", // Default status
       };
 

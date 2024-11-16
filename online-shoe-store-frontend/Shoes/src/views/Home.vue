@@ -1,190 +1,189 @@
 <template>
     <section id="Home">
-        <div class="container">
-            <h5>NEW ARRIVALS</h5>
-            <h1><span>Best Price</span> This Year</h1>
-            <p>Shoomatic offers your very comfortable time<br>on walking and exercising.</p>
-            <button>Shop Now</button>
-        </div>
+      <div class="container">
+        <h5>NEW ARRIVALS</h5>
+        <h1><span>Best Price</span> This Year</h1>
+        <p>Shoomatic offers your very comfortable time<br>on walking and exercising.</p>
+        <button>Shop Now</button>
+      </div>
     </section>
-
+  
     <!-- Voucher Flash Sale Section -->
-    <section id="voucher" >
-        <div class="voucher-content">
-            <h1>Flash Sale</h1>
-            <p>Chương trình khuyến mãi siêu hot</p>
-            <div class="voucher-list">
-                <div class="voucher-item" v-for="voucher in vouchers" :key="voucher._id">
-                    <p class="" >Giảm {{ voucher.discountValue }}% đơn hàng trên {{ voucher.discountValue }}VND</p>
-                    <p class="">Mã ưu đãi số lượng có hạng: {{ voucher.usageLimit }} lượt</p>
-                    <p class=""> Thời gian bắt đầu từ:{{ voucher.startDate }} đến voucher.endDate </p>
-                    <p class="voucher-code">Mã code:{{ voucher.code }}</p>
-                </div>
-            </div>
+    <section id="voucher">
+      <div class="voucher-content">
+        <h1>Flash Sale</h1>
+        <p>Chương trình khuyến mãi siêu hot</p>
+        <div class="voucher-list">
+          <div class="voucher-item" v-for="voucher in vouchers" :key="voucher._id">
+            <p>Giảm {{ voucher.discountValue }}% đơn hàng trên {{ voucher.discountValue }}VND</p>
+            <p>Mã ưu đãi số lượng có hạng: {{ voucher.usageLimit }} lượt</p>
+            <p>Thời gian bắt đầu từ: {{ formatDate(voucher.startDate) }} đến {{ formatDate(voucher.endDate) }}</p>
+            <p class="voucher-code">Mã code: {{ voucher.code }}</p>
+          </div>
         </div>
+      </div>
     </section>
-
-
-
+  
     <section id="new" class="w-100">
-        <div class="row p-0">
-            <div class="one col-lg-4 col-md-12 col-12 p-0">
-                <img class="img-fluid" src="../assets/img/nike1.png" alt="">
-                <div class="details">
-                    <h2>Extremes Rare Nikes</h2>
-                    <button class="text-uppercase">Shop now</button>
-                </div>
-            </div>
-            <div class="one col-lg-4 col-md-12 col-12 p-0">
-                <img class="img-fluid" src="../assets/img/adidas1.webp" alt="">
-                <div class="details">
-                    <h2>Extremes Rare Adidass</h2>
-                    <button class="text-uppercase">Shop now</button>
-                </div>
-            </div>
-            <div class="one col-lg-4 col-md-12 col-12 p-0">
-                <img class="img-fluid" src="../assets/img/sneaker1.jpg" alt="">
-                <div class="details">
-                    <h2>Extremes Rare Sneakers</h2>
-                    <button class="text-uppercase">Shop now</button>
-                </div>
-            </div>
+      <div class="row p-0">
+        <div class="one col-lg-4 col-md-12 col-12 p-0">
+          <img class="img-fluid" src="../assets/img/nike1.png" alt="">
+          <div class="details">
+            <h2>Extremes Rare Nikes</h2>
+            <button class="text-uppercase">Shop now</button>
+          </div>
         </div>
+        <div class="one col-lg-4 col-md-12 col-12 p-0">
+          <img class="img-fluid" src="../assets/img/adidas1.webp" alt="">
+          <div class="details">
+            <h2>Extremes Rare Adidass</h2>
+            <button class="text-uppercase">Shop now</button>
+          </div>
+        </div>
+        <div class="one col-lg-4 col-md-12 col-12 p-0">
+          <img class="img-fluid" src="../assets/img/sneaker1.jpg" alt="">
+          <div class="details">
+            <h2>Extremes Rare Sneakers</h2>
+            <button class="text-uppercase">Shop now</button>
+          </div>
+        </div>
+      </div>
     </section>
-
+  
+    <!-- Adidas Products -->
     <section id="adidas" class="my-5">
-    <div class="container text-center mt-5 py-5">
+      <div class="container text-center mt-5 py-5">
         <h3>Best selling adidas shoes</h3>
         <hr class="mx-auto">
-        <p>This is the best selling and most popular product. </p>
-    </div>
-    <div class="row mx-auto container-fluid">
+        <p>This is the best selling and most popular product.</p>
+      </div>
+      <div class="row mx-auto container-fluid">
         <div v-for="product in adidasProducts" :key="product._id" class="product text-center col-lg-3 col-md-4 col-12">
-            <img :src="`http://localhost:5000/${product.mainImage}`" alt="Product Image" class="img-fluid bg-light" />
-            <div class="star">
+          <img :src="`http://localhost:5000/${product.mainImage}`" alt="Product Image" class="img-fluid bg-light" />
+          <div class="star">
             <i class="fas fa-star" v-for="n in 5" :key="n"></i>
-            </div>
-            <router-link :to="{name: 'ProductDetail', params: {id: product._id} }" class="btn">
-                <h2 class="p-name">{{ product.name }}</h2>
-                </router-link>
-                <p class="p-des">{{ product.description }}</p>
-            <h4 class="p-price">{{ product.price }} VNĐ</h4>
-            <router-link :to="{name: 'ProductDetail', params: {id: product._id} }" class="btn">
-                <button class="buy-btn">See details</button>
-            </router-link>
+          </div>
+          <router-link :to="{ name: 'ProductDetail', params: { id: product._id } }" class="btn">
+            <h2 class="p-name">{{ product.name }}</h2>
+          </router-link>
+          <p class="p-des">{{ product.description }}</p>
+          <h4 class="p-price">{{ formatPrice(product.price) }}</h4>
+          <router-link :to="{ name: 'ProductDetail', params: { id: product._id } }" class="btn">
+            <button class="buy-btn">See details</button>
+          </router-link>
         </div>
-    </div>
-</section>
-
-
+      </div>
+    </section>
+  
+    <!-- Banner Section -->
     <section id="banner" class="my-5 pb-5">
-        <div class="container">
-            <h4>MID SEA</h4>
-            <h1>Autumn Collection<br> UP TO 20% OFF </h1>
-            <button class="text-uppercase">Shop Now</button>
-        </div>
-
+      <div class="container">
+        <h4>MID SEA</h4>
+        <h1>Autumn Collection<br> UP TO 20% OFF</h1>
+        <button class="text-uppercase">Shop Now</button>
+      </div>
     </section>
-
-    <section id="adidas" class="my-5">
-        <div class="container text-center mt-5 py-5">
-            <h3>Best selling Nike shoes</h3>
-            <hr class="mx-auto">
-            <p>This is the best selling and most popular product. </p>
-    </div>
-    <div class="row mx-auto container-fluid">
+  
+    <!-- Nike Products -->
+    <section id="nike" class="my-5">
+      <div class="container text-center mt-5 py-5">
+        <h3>Best selling Nike shoes</h3>
+        <hr class="mx-auto">
+        <p>This is the best selling and most popular product.</p>
+      </div>
+      <div class="row mx-auto container-fluid">
         <div v-for="product in nikeProducts" :key="product._id" class="product text-center col-lg-3 col-md-4 col-12">
-            <img :src="`http://localhost:5000/${product.mainImage}`" alt="Product Image" class="img-fluid bg-light" />
-            <div class="star">
+          <img :src="`http://localhost:5000/${product.mainImage}`" alt="Product Image" class="img-fluid bg-light" />
+          <div class="star">
             <i class="fas fa-star" v-for="n in 5" :key="n"></i>
-            </div>
-            <router-link :to="{name: 'ProductDetail', params: {id: product._id} }" class="btn">
-                <h2 class="p-name">{{ product.name }}</h2>
-            </router-link>
-                <p class="p-des">{{ product.description }}</p>
-            <h4 class="p-price">{{ product.price }} VNĐ</h4>
-            <router-link :to="{name: 'ProductDetail', params: {id: product._id} }" class="btn">
-                <button class="buy-btn">See details</button>
-            </router-link>
+          </div>
+          <router-link :to="{ name: 'ProductDetail', params: { id: product._id } }" class="btn">
+            <h2 class="p-name">{{ product.name }}</h2>
+          </router-link>
+          <p class="p-des">{{ product.description }}</p>
+          <h4 class="p-price">{{ formatPrice(product.price) }}</h4>
+          <router-link :to="{ name: 'ProductDetail', params: { id: product._id } }" class="btn">
+            <button class="buy-btn">See details</button>
+          </router-link>
         </div>
-    </div>
+      </div>
     </section>
-
-    <section id="seakers" class="my-5">
-        <div class="container text-center mt-5 py-5">
-            <h3>Best selling Sneakers shoes</h3>
-            <hr class="mx-auto">
-            <p>This is the best selling and most popular product. </p>
-    </div>
-    <div class="row mx-auto container-fluid">
+  
+    <!-- Sneakers Products -->
+    <section id="sneakers" class="my-5">
+      <div class="container text-center mt-5 py-5">
+        <h3>Best selling Sneakers shoes</h3>
+        <hr class="mx-auto">
+        <p>This is the best selling and most popular product.</p>
+      </div>
+      <div class="row mx-auto container-fluid">
         <div v-for="product in sneakersProducts" :key="product._id" class="product text-center col-lg-3 col-md-4 col-12">
-            <img :src="`http://localhost:5000/${product.mainImage}`" alt="Product Image" class="img-fluid bg-light" />
-            <div class="star">
+          <img :src="`http://localhost:5000/${product.mainImage}`" alt="Product Image" class="img-fluid bg-light" />
+          <div class="star">
             <i class="fas fa-star" v-for="n in 5" :key="n"></i>
-            </div>
-            <router-link :to="{name: 'ProductDetail', params: {id: product._id} }" class="btn">
-                <h2 class="p-name">{{ product.name }}</h2>
-                </router-link>
-                <p class="p-des">{{ product.description }}</p>
-            <h4 class="p-price">{{ product.price }} VNĐ</h4>
-            <router-link :to="{name: 'ProductDetail', params: {id: product._id} }" class="btn">
-                <button class="buy-btn">See details</button>
-            </router-link>
-            
+          </div>
+          <router-link :to="{ name: 'ProductDetail', params: { id: product._id } }" class="btn">
+            <h2 class="p-name">{{ product.name }}</h2>
+          </router-link>
+          <p class="p-des">{{ product.description }}</p>
+          <h4 class="p-price">{{ formatPrice(product.price) }}</h4>
+          <router-link :to="{ name: 'ProductDetail', params: { id: product._id } }" class="btn">
+            <button class="buy-btn">See details</button>
+          </router-link>
         </div>
-    </div>
+      </div>
     </section>
-</template>
-<script>
-import axios from 'axios';
-
-export default {
-  data() {
-    return {
-      vouchers: [], // Store voucher information
-      adidasProducts: [], // Store Adidas products
-      nikeProducts: [], // Store Nike products
-      sneakersProducts: [], // Store Sneaker products
-    };
-  },
-  mounted() {
-    this.getAllVoucher(); // Gọi hàm getVouchers khi component được mount
-  },
-  methods: {
-    async fetchProducts() {
-      try {
-        const response = await axios.get('http://localhost:5000/api/product');
-        this.featuredProducts = response.data;
-        this.adidasProducts = this.featuredProducts.filter(product => product.category == 'Adidas');
-        this.nikeProducts = this.featuredProducts.filter(product => product.category == 'Nike');
-        this.sneakersProducts = this.featuredProducts.filter(product => product.category == 'Sneaker');
-      } catch (error) {
-        console.error('Error fetching products:', error);
+  </template>
+  
+  <script>
+  import axios from 'axios';
+  
+  export default {
+    data() {
+      return {
+        vouchers: [], // Store voucher information
+        adidasProducts: [], // Store Adidas products
+        nikeProducts: [], // Store Nike products
+        sneakersProducts: [], // Store Sneaker products
+      };
+    },
+    mounted() {
+      this.fetchProducts();  // Fetch products when component is mounted
+      this.getAllVoucher();  // Fetch vouchers when component is mounted
+    },
+    methods: {
+      async fetchProducts() {
+        try {
+          const response = await axios.get('http://localhost:5000/api/product');
+          this.featuredProducts = response.data;
+          this.adidasProducts = this.featuredProducts.filter(product => product.category === 'Adidas');
+          this.nikeProducts = this.featuredProducts.filter(product => product.category === 'Nike');
+          this.sneakersProducts = this.featuredProducts.filter(product => product.category === 'Sneaker');
+        } catch (error) {
+          console.error('Error fetching products:', error);
+        }
+      },
+  
+      async getAllVoucher() {
+        try {
+          const response = await axios.get('http://localhost:5000/api/voucher');
+          this.vouchers = response.data;
+        } catch (error) {
+          console.error('Error fetching vouchers:', error);
+        }
+      },
+  
+      formatPrice(price) {
+        return `${price.toFixed(0)} VND`;
+      },
+  
+      formatDate(date) {
+        return new Date(date).toLocaleDateString('vi-VN');
       }
-    },
-
-    async getAllVoucher() {
-      try {
-        const response = await axios.get('http://localhost:5000/api/voucher'); // Thay bằng API thực tế của bạn
-        this.vouchers = response.data; // Lưu danh sách voucher vào biến vouchers
-      } catch (error) {
-        console.error('Lỗi khi tải danh sách voucher:', error);
-      }
-    },
-    async formatPrice(price) {
-      return `${price.toFixed(2)} VNĐ`;
-    },
-
-    async addToCart(product) {
-      // Logic to add the product to the cart
-    },
-  },
-  created() {
-    this.fetchProducts();  // Fetch products when component is created
-    this.getAllVoucher();  // Fetch vouchers when component is created
-  },
-};
-</script>
+    }
+  };
+  </script>
+  
 
 
 <style scoped>

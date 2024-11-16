@@ -1,85 +1,98 @@
 <template>
-    <div class="contact-management">
-      <h1>Quản Lý Liên Lạc</h1>
-      <table class="contact-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Tên Người Dùng</th>
-            <th>Số Điện Thoại</th>
-            <th>Nội Dung</th>
-            <th>Ngày Gửi</th>
-            <th>Hành Động</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(contact, index) in contacts" :key="contact.id">
-            <td>{{ index + 1 }}</td>
-            <td>{{ contact.username }}</td>
-            <td>{{ contact.phone }}</td>
-            <td>{{ contact.content }}</td>
-            <td>{{ new Date(contact.date).toLocaleDateString() }}</td>
-            <td>
-              <button @click="viewDetail(contact.id)">Xem Chi Tiết</button>
-              <button @click="deleteContactForm(contact._id)">Xóa</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-  
-      <!-- Modal xem chi tiết -->
-      <div v-if="selectedContact" class="modal">
-        <div class="modal-content">
-          <span class="close" @click="selectedContact = null">&times;</span>
-          <h2>Chi Tiết Liên Lạc</h2>
-          <p><strong>Tên Người Dùng:</strong> {{ selectedContact.username }}</p>
-          <p><strong>Số Điện Thoại:</strong> {{ selectedContact.phone }}</p>
-          <p><strong>Nội Dung:</strong> {{ selectedContact.content }}</p>
-          <p><strong>Ngày Gửi:</strong> {{ new Date(selectedContact.date).toLocaleString() }}</p>
-        </div>
+  <div class="contact-management">
+    <h1>Quản Lý Liên Lạc</h1>
+    <table class="contact-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Tên Người Dùng</th>
+          <th>Số Điện Thoại</th>
+          <th>Nội Dung</th>
+          <th>Ngày Gửi</th>
+          <th>Hành Động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(contact, index) in contacts" :key="contact.id">
+          <td>{{ index + 1 }}</td>
+          <td>{{ contact.username }}</td>
+          <td>{{ contact.phone }}</td>
+          <td>{{ contact.content }}</td>
+          <td>{{ formatDate(contact.date) }}</td>
+          <td>
+            <button @click="viewDetail(contact.id)">Xem Chi Tiết</button>
+            <button @click="deleteContactForm(contact.id)">Xóa</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Modal xem chi tiết -->
+    <div v-if="selectedContact" class="modal">
+      <div class="modal-content">
+        <span class="close" @click="selectedContact = null">&times;</span>
+        <h2>Chi Tiết Liên Lạc</h2>
+        <p><strong>Tên Người Dùng:</strong> {{ selectedContact.username }}</p>
+        <p><strong>Số Điện Thoại:</strong> {{ selectedContact.phone }}</p>
+        <p><strong>Nội Dung:</strong> {{ selectedContact.content }}</p>
+        <p><strong>Ngày Gửi:</strong> {{ formatDate(selectedContact.date) }}</p>
       </div>
     </div>
-  </template>
-  
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        contacts: [],
-        selectedContact: null,
-      };
+  </div>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      contacts: [],
+      selectedContact: null,
+    };
+  },
+  methods: {
+    async fetchContacts() {
+      try {
+        const response = await axios.get('http://localhost:5000/api/contact/');
+        this.contacts = response.data.contacts.map(contact => ({
+          ...contact,
+          date: contact.date ? new Date(contact.date) : null,
+        }));
+      } catch (error) {
+        alert('Lỗi khi tải dữ liệu liên lạc');
+      }
     },
-    methods: {
-      async fetchContacts() {
+    viewDetail(contactId) {
+      this.selectedContact = this.contacts.find(contact => contact.id === contactId);
+    },
+    async deleteContactForm(contactId) {
+      if (confirm('Bạn có chắc muốn xóa liên lạc này?')) {
         try {
-          const response = await axios.get('http://localhost:5000/api/contact/');
-          this.contacts = response.data.contacts;
+          await axios.delete(`http://localhost:5000/api/contact/${contactId}`);
+          this.contacts = this.contacts.filter(contact => contact.id !== contactId);
+          alert('Đã xóa liên lạc thành công');
         } catch (error) {
-          alert('Lỗi khi tải dữ liệu liên lạc');
+          alert('Lỗi khi xóa liên lạc');
         }
-      },
-      viewDetail(contactId) {
-        this.selectedContact = this.contacts.find(contact => contact.id === contactId);
-      },
-      async deleteContactForm(contactId) {
-        if (confirm('Bạn có chắc muốn xóa liên lạc này?')) {
-          try {
-            await axios.delete(`http://localhost:5000/api/contact/${contactId}`);
-            this.contacts = this.contacts.filter(contact => contact.id !== contactId);
-            alert('Đã xóa liên lạc thành công');
-          } catch (error) {
-            alert('Lỗi khi xóa liên lạc');
-          }
-        }
-      },
+      }
     },
-    mounted() {
-      this.fetchContacts();
+    formatDate(date) {
+      if (!date) return 'Không xác định';
+      return new Date(date).toLocaleDateString('vi-VN', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
     },
-  };
-  </script>
+  },
+  mounted() {
+    this.fetchContacts();
+  },
+};
+</script>
+
+
   
   <style scoped>
   .contact-management {

@@ -83,12 +83,13 @@ export default {
           this.notification.type = 'success';
           // Handle successful login, e.g., store token, redirect, etc.
           setTimeout(() => {
-            this.$router.push('/home'); // Change to your dashboard route
+           
           }, 2000);
         }
       } catch (err) {
         this.notification.message = err.response?.data?.message || 'Login failed';
         this.notification.type = 'danger';
+        this.$router.push('/login'); // Change to your dashboard route
         console.log(err)
       }
     }

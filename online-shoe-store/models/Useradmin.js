@@ -28,8 +28,12 @@ adminSchema.pre('save', async function(next) {
 
 // So sánh mật khẩu nhập vào với mật khẩu đã mã hóa
 adminSchema.methods.comparePassword = function(candidatePassword) {
+    if (!this.password) {
+        return false;  // Nếu không có mật khẩu, không thể so sánh
+    }
     return bcrypt.compare(candidatePassword, this.password);
 };
+
 
 const Admin = mongoose.model('Admin', adminSchema);
 

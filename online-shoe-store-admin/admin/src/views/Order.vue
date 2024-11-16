@@ -15,6 +15,11 @@
     <div class="card shadow-sm">
       <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="mb-0">Danh sách Đơn hàng</h4>
+        <div>
+          <button class="btn btn-info btn-sm"><router-link to="/bill" class="text-decoration-none text-white">Hóa đơn</router-link></button> 
+        <button class="btn btn-info btn-sm" @click="exportToCSV">Xuất File</button>
+        </div>
+        
       </div>
       <div class="card-body p-0">
         <div v-if="loading" class="text-center p-3">
@@ -100,8 +105,8 @@ import axios from "axios";
 export default {
   data() {
     return {
-      orders: [],
-      filteredOrders: [],
+      orders: [], // Lưu trữ tất cả các đơn hàng
+      filteredOrders: [], // Dữ liệu đơn hàng đã lọc
       searchTerm: "",
       currentPage: 1,
       pageSize: 5,
@@ -111,7 +116,7 @@ export default {
   },
   computed: {
     totalPages() {
-      return Math.ceil(this.orders.length / this.pageSize);
+      return Math.ceil(this.filteredOrders.length / this.pageSize);
     },
   },
   methods: {
@@ -127,7 +132,8 @@ export default {
           }
           return order;
         });
-        this.filteredOrders = this.paginate(this.orders, this.pageSize, this.currentPage);
+        this.filteredOrders = this.orders; // Lưu tất cả đơn hàng vào filteredOrders
+        this.filterOrders(); // Lọc lại nếu có từ khóa tìm kiếm
       } catch (error) {
         console.error("Lỗi khi lấy danh sách đơn hàng:", error);
         this.errorMessage = "Không thể tải danh sách đơn hàng";
@@ -136,6 +142,7 @@ export default {
       }
     },
     filterOrders() {
+      // Lọc đơn hàng dựa trên từ khóa tìm kiếm
       const filtered = this.orders.filter((order) =>
         order.shippingInfo.username.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
@@ -182,12 +189,51 @@ export default {
         this.errorMessage = "Không thể cập nhật trạng thái đơn hàng";
       }
     },
+
+    // Chức năng xuất CSV
+    exportToCSV() {
+      const headers = [
+        "STT", "Tên khách hàng", "Số điện thoại", "Sản phẩm", 
+        "Tổng tiền", "Trạng thái", "Thanh toán", "Ngày đặt"
+      ];
+
+      const rows = this.orders.map((order, index) => {
+        // Nối các sản phẩm thành một chuỗi với ký tự xuống dòng "\n" giữa các sản phẩm trong cùng một ô
+        const products = order.items.map(item => `${item.product.name} - Số lượng: ${item.quantity}`).join("\n");
+
+        return [
+          index + 1, // Thêm STT vào cột đầu tiên
+          order.shippingInfo.username,
+          order.shippingInfo.phone,
+          `"${products}"`, // Đưa danh sách sản phẩm vào trong một ô với các sản phẩm xuống dòng (dấu " " để xử lý trong CSV)
+          order.totalAmount,
+          order.status,
+          order.paymentMethod,
+          new Date(order.createdAt).toLocaleString()
+        ];
+      });
+
+      let csvContent = "data:text/csv;charset=utf-8," + headers.join(",") + "\n";
+      rows.forEach(row => {
+        csvContent += row.join(",") + "\n";
+      });
+
+      // Tạo liên kết để tải file CSV
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "orders.csv");
+      document.body.appendChild(link);
+      link.click();
+    },
   },
   created() {
     this.fetchOrders();
   },
 };
 </script>
+
+
 
 
 <style scoped>

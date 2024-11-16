@@ -44,13 +44,13 @@
               <td>{{ voucher.code }}</td>
               <td>{{ voucher.discountType === 'percent' ? 'Phần trăm' : 'Số tiền cố định' }}</td>
               <td>{{ voucher.discountValue }}{{ voucher.discountType === 'percent' ? '%' : ' VNĐ' }}</td>
-              <td>{{ voucher.discountValue }} VNĐ</td>
-              <td>{{ voucher.startDate }}</td>
-              <td>{{ voucher.endDate }}</td>
+              <td>{{ voucher.minimumOrderValue }} VNĐ</td>
+              <td>{{ formatDate(voucher.startDate) }}</td>
+              <td>{{ formatDate(voucher.endDate) }}</td>
               <td>{{ voucher.usageLimit }}</td>
               <td>
-                <router-link  :to="`/editvoucher/${voucher.code}`"  class="btn btn-edit btn-sm"  >Chỉnh sửa</router-link>
-                <button  @click="deleteVoucher(voucher._id, index)"  class="btn btn-delete btn-sm"  >Xóa</button>
+                <router-link :to="`/editvoucher/${voucher.code}`" class="btn btn-edit btn-sm">Chỉnh sửa</router-link>
+                <button @click="deleteVoucher(voucher._id, index)" class="btn btn-delete btn-sm">Xóa</button>
               </td>
             </tr>
             <tr v-else>
@@ -125,12 +125,8 @@ export default {
     async deleteVoucher(id, index) {
       if (confirm('Bạn có chắc chắn muốn xóa voucher này?')) {
         try {
-          // Sử dụng id truyền vào từ đối tượng voucher thay vì `this.$route.params.id`
           await axios.delete(`http://localhost:5000/api/voucher/delete/${id}`);
-          
-          // Sau khi xóa thành công, loại bỏ voucher khỏi danh sách hiển thị
           this.vouchers.splice(index, 1);
-
           alert('Voucher đã bị xóa thành công');
         } catch (error) {
           console.error('Error deleting voucher:', error);
@@ -138,9 +134,13 @@ export default {
         }
       }
     },
-
+    formatDate(dateString) {
+      if (!dateString) return 'N/A';
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString('vi-VN', options);
+    },
     filterUsers() {
-      this.currentPage = 1; // Reset page to 1 after filtering
+      this.currentPage = 1;
     },
     prevPage() {
       if (this.currentPage > 1) this.currentPage--;

@@ -21,6 +21,7 @@ import Contact from '../views/Contact.vue';
 import Voucher from '../views/Voucher.vue';
 import Addvoucher from '../views/Addvoucher.vue';
 import Editvoucher from '../views/Editvoucher.vue';
+import Bill from '../views/bill.vue';
 
 
 const routes = [
@@ -29,6 +30,7 @@ const routes = [
     name: "home",
     component: Home,  // Đã thêm component Home vào route "/"
   },
+
   {
     path: '/register',
     name: "register",
@@ -128,6 +130,11 @@ const routes = [
     path: '/editvoucher/:id',
     name: 'EditVoucher',
     component: Editvoucher,
+  },
+  {
+    path: '/bill',
+    name: 'Bill',
+    component: Bill,
   }
   
 ];
