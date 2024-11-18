@@ -58,6 +58,12 @@
           <span>Quản lý khuyến mãi</span>
         </router-link>
       </li>
+      <li>
+        <router-link to="/warehouse">
+          <i class="fas fa-paint-brush"></i>
+          <span>Quản lý kho hàng</span>
+        </router-link>
+      </li>
       <li class="logout">
         <a href="#">
           <i class="fas fa-sign-out-alt"></i>
@@ -82,19 +88,22 @@ export default {
   },
 };
 </script>
+
 <style scoped>
+/* General Reset */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* Sidebar Container */
 .sidebar {
   position: sticky;
   top: 0;
   left: 0;
   height: 100vh;
-  width: 80px; /* Độ rộng khi thu gọn */
+  width: 80px; /* Default width */
   background: linear-gradient(145deg, #0077b6, #00b4d8);
   padding: 1rem;
   overflow: hidden;
@@ -104,36 +113,40 @@ export default {
   justify-content: space-between;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
   border-right: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 999; /* Always above other content */
 }
 
+/* Expanded Sidebar */
 .sidebar.expanded {
-  width: 260px; /* Độ rộng khi mở rộng */
-  padding: 1rem;
+  width: 260px; /* Expanded width */
 }
 
+/* Logo Section */
 .logo {
   display: flex;
-  justify-content: center; /* Canh giữa logo */
-  margin-bottom: 0.5rem; /* Giảm khoảng cách dưới logo */
-  padding: 5px; /* Giảm khoảng đệm để giảm kích thước không gian quanh logo */
-  border-radius: 10px; /* Bo góc cho khung chứa logo */
-  background: rgba(255, 255, 255, 0.1); /* Thêm nền mờ cho logo */
+  justify-content: center;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 5px;
+  transition: all 0.3s ease;
 }
 
 .logo img {
-  width: 50px; /* Giảm kích thước logo */
-  height: 50px; /* Đảm bảo tỷ lệ là hình vuông */
-  border-radius: 50%; /* Để tạo hiệu ứng hình tròn cho logo */
-  border: 2px solid #ffffff; /* Viền trắng cho logo */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Thêm bóng cho logo */
-  transition: transform 0.3s ease; /* Thêm hiệu ứng mượt mà khi hover */
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .logo img:hover {
-  transform: scale(1.05); /* Tăng kích thước logo một chút khi hover */
+  transform: scale(1.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-
+/* Menu Styling */
 .menu {
   list-style: none;
   padding: 0;
@@ -145,45 +158,39 @@ export default {
 }
 
 .menu li:hover {
-  transform: translateX(5px); /* Nâng lên khi hover */
+  transform: translateX(10px);
 }
 
 .menu a {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1rem;
+  padding: 0.8rem 1rem;
   color: #ffffff;
   text-decoration: none;
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.1);
-  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .menu a i {
-  font-size: 1.2rem;
-  transition: font-size 0.4s ease; /* Giúp biểu tượng thay đổi kích thước mượt mà */
+  font-size: 1.5rem;
+  transition: font-size 0.4s ease;
 }
 
 .menu a span {
-  display: none; /* Ẩn văn bản khi sidebar thu gọn */
-  transition: opacity 0.3s ease;
+  display: none; /* Hide text initially */
 }
 
 .sidebar.expanded .menu a span {
-  display: inline; /* Hiện văn bản khi mở rộng */
-}
-
-.menu li.active a {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateX(5px);
+  display: inline; /* Show text when expanded */
 }
 
 .menu a:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateX(10px);
+  background: rgba(255, 255, 255, 0.2);
 }
 
+/* Logout Styling */
 .logout {
   margin-top: auto;
 }
@@ -203,8 +210,13 @@ export default {
   background: #ff4d4d;
 }
 
-.menu a,
-.logout a {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+/* Responsive Design */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 60px; /* Smaller sidebar for mobile */
+  }
+  .sidebar.expanded {
+    width: 200px;
+  }
 }
 </style>

@@ -21,7 +21,8 @@ import Contact from '../views/Contact.vue';
 import Voucher from '../views/Voucher.vue';
 import Addvoucher from '../views/Addvoucher.vue';
 import Editvoucher from '../views/Editvoucher.vue';
-import Bill from '../views/bill.vue';
+import Bill from '../views/Bill.vue';
+import Warehouse from '../views/Warehouse.vue';
 
 
 const routes = [
@@ -135,6 +136,11 @@ const routes = [
     path: '/bill',
     name: 'Bill',
     component: Bill,
+  },
+  {
+    path: '/warehouse',
+    name: 'Warehouse',
+    component: Warehouse,
   }
   
 ];

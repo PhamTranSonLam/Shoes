@@ -16,10 +16,11 @@
       <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="mb-0">Danh sách Đơn hàng</h4>
         <div>
-          <button class="btn btn-info btn-sm"><router-link to="/bill" class="text-decoration-none text-white">Hóa đơn</router-link></button> 
-        <button class="btn btn-info btn-sm" @click="exportToCSV">Xuất File</button>
+          <button class="btn btn-info btn-sm">
+            <router-link to="/bill" class="text-decoration-none text-white">Hóa đơn</router-link>
+          </button>
+          <button class="btn btn-info btn-sm" @click="exportToCSV">Xuất File</button>
         </div>
-        
       </div>
       <div class="card-body p-0">
         <div v-if="loading" class="text-center p-3">
@@ -41,27 +42,33 @@
           </thead>
           <tbody>
             <tr v-if="filteredOrders.length === 0">
-              <td colspan="8" class="text-center">Không có đơn hàng nào!</td>
+              <td colspan="9" class="text-center">Không có đơn hàng nào!</td>
             </tr>
-            <tr v-for="(order, index) in filteredOrders" :key="order._id">
+            <tr v-for="(order, index) in paginatedOrders" :key="order._id">
               <td>{{ index + 1 + (currentPage - 1) * pageSize }}</td>
               <td>{{ order.shippingInfo.username }}</td>
               <td>{{ order.shippingInfo.phone }}</td>
               <td>
                 <ul>
-                  <li v-for="item in order.items" :key="item._id">{{ item.product.name }} - Số lượng: {{ item.quantity }}</li>
+                  <li v-for="item in order.items" :key="item._id">
+                    {{ item.product.name }} - Số lượng: {{ item.quantity }}
+                  </li>
                 </ul>
               </td>
-              <td>{{ order.totalAmount }} VND</td>
+              <td>{{ order.totaldiscount }} VND</td>
               <td>
-                <select v-model="order.status" class="form-select" @change="updateOrderStatus(order)">
+                <select
+                  v-model="order.status"
+                  class="form-select"
+                  @change="updateOrderStatus(order)"
+                >
                   <option value="Pending">Đang xử lý</option>
                   <option value="Đã giao">Đã giao</option>
                   <option value="Đã hủy">Đã hủy</option>
                 </select>
               </td>
               <td>{{ order.paymentMethod }}</td>
-              <td>{{ new Date(order.createdAt).toLocaleString() }}</td> <!-- Hiển thị ngày đặt -->
+              <td>{{ new Date(order.createdAt).toLocaleString() }}</td>
               <td>
                 <router-link :to="'/orderdetail/' + order._id" class="btn btn-success btn-sm">
                   Chi tiết
@@ -76,7 +83,7 @@
         <div v-if="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
       </div>
     </div>
-    
+
     <!-- Điều hướng Phân trang -->
     <nav aria-label="Page navigation" class="mt-4">
       <ul class="pagination justify-content-center">
@@ -99,6 +106,7 @@
   </div>
 </template>
 
+
 <script>
 import axios from "axios";
 
@@ -106,7 +114,6 @@ export default {
   data() {
     return {
       orders: [], // Lưu trữ tất cả các đơn hàng
-      filteredOrders: [], // Dữ liệu đơn hàng đã lọc
       searchTerm: "",
       currentPage: 1,
       pageSize: 5,
@@ -115,6 +122,15 @@ export default {
     };
   },
   computed: {
+    filteredOrders() {
+      return this.orders.filter((order) =>
+        order.shippingInfo.username.toLowerCase().includes(this.searchTerm.toLowerCase())
+      );
+    },
+    paginatedOrders() {
+      const startIndex = (this.currentPage - 1) * this.pageSize;
+      return this.filteredOrders.slice(startIndex, startIndex + this.pageSize);
+    },
     totalPages() {
       return Math.ceil(this.filteredOrders.length / this.pageSize);
     },
@@ -122,38 +138,18 @@ export default {
   methods: {
     async fetchOrders() {
       this.loading = true;
-      this.errorMessage = "";
       try {
         const response = await axios.get("http://localhost:5000/api/orders");
-        this.orders = response.data.map(order => {
-          // Gán trạng thái mặc định là "Đang xử lý" nếu không có trạng thái
-          if (!order.status) {
-            order.status = "Đang xử lý";
-          }
-          return order;
-        });
-        this.filteredOrders = this.orders; // Lưu tất cả đơn hàng vào filteredOrders
-        this.filterOrders(); // Lọc lại nếu có từ khóa tìm kiếm
+        this.orders = response.data.map((order) => ({
+          ...order,
+          status: order.status || "Đang xử lý",
+        }));
       } catch (error) {
         console.error("Lỗi khi lấy danh sách đơn hàng:", error);
         this.errorMessage = "Không thể tải danh sách đơn hàng";
       } finally {
         this.loading = false;
       }
-    },
-    filterOrders() {
-      // Lọc đơn hàng dựa trên từ khóa tìm kiếm
-      const filtered = this.orders.filter((order) =>
-        order.shippingInfo.username.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
-      this.filteredOrders = this.paginate(filtered, this.pageSize, this.currentPage);
-    },
-    paginate(array, pageSize, pageNumber) {
-      return array.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
-    },
-    goToPage(page) {
-      this.currentPage = page;
-      this.filterOrders();
     },
     async deleteOrder(orderId) {
       if (confirm("Bạn có chắc chắn muốn xóa đơn hàng này?")) {
@@ -164,18 +160,6 @@ export default {
           console.error("Lỗi khi xóa đơn hàng:", error);
           this.errorMessage = "Không thể xóa đơn hàng";
         }
-      }
-    },
-    prevPage() {
-      if (this.currentPage > 1) {
-        this.currentPage--;
-        this.filterOrders();
-      }
-    },
-    nextPage() {
-      if (this.currentPage < this.totalPages) {
-        this.currentPage++;
-        this.filterOrders();
       }
     },
     async updateOrderStatus(order) {
@@ -189,36 +173,40 @@ export default {
         this.errorMessage = "Không thể cập nhật trạng thái đơn hàng";
       }
     },
-
-    // Chức năng xuất CSV
     exportToCSV() {
       const headers = [
-        "STT", "Tên khách hàng", "Số điện thoại", "Sản phẩm", 
-        "Tổng tiền", "Trạng thái", "Thanh toán", "Ngày đặt"
+        "STT",
+        "Tên khách hàng",
+        "Số điện thoại",
+        "Sản phẩm",
+        "Tổng tiền",
+        "Trạng thái",
+        "Thanh toán",
+        "Ngày đặt",
       ];
 
       const rows = this.orders.map((order, index) => {
-        // Nối các sản phẩm thành một chuỗi với ký tự xuống dòng "\n" giữa các sản phẩm trong cùng một ô
-        const products = order.items.map(item => `${item.product.name} - Số lượng: ${item.quantity}`).join("\n");
+        const products = order.items
+          .map((item) => `${item.product.name} - Số lượng: ${item.quantity}`)
+          .join("\n");
 
         return [
-          index + 1, // Thêm STT vào cột đầu tiên
+          index + 1,
           order.shippingInfo.username,
           order.shippingInfo.phone,
-          `"${products}"`, // Đưa danh sách sản phẩm vào trong một ô với các sản phẩm xuống dòng (dấu " " để xử lý trong CSV)
+          `"${products}"`,
           order.totalAmount,
           order.status,
           order.paymentMethod,
-          new Date(order.createdAt).toLocaleString()
+          new Date(order.createdAt).toLocaleString(),
         ];
       });
 
       let csvContent = "data:text/csv;charset=utf-8," + headers.join(",") + "\n";
-      rows.forEach(row => {
+      rows.forEach((row) => {
         csvContent += row.join(",") + "\n";
       });
 
-      // Tạo liên kết để tải file CSV
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement("a");
       link.setAttribute("href", encodedUri);
@@ -226,13 +214,25 @@ export default {
       document.body.appendChild(link);
       link.click();
     },
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
+    },
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+      }
+    },
+    goToPage(page) {
+      this.currentPage = page;
+    },
   },
   created() {
     this.fetchOrders();
   },
 };
 </script>
-
 
 
 

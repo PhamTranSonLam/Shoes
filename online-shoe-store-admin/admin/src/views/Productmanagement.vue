@@ -27,7 +27,7 @@
               <th scope="col">Tên sản phẩm</th>
               <th scope="col">Danh mục</th>
               <th scope="col">Hình ảnh</th>
-              <th scope="col">Kích thước - Màu sắc</th>
+              <th scope="col">Kích thước</th>
               <th scope="col">Đơn giá</th>
               <th scope="col">Tổng Số lượng</th>
               <th scope="col">Hành động</th>
@@ -65,7 +65,6 @@
                 <span v-if="Array.isArray(product.sizes)">
                   <span v-for="(size, idx) in product.sizes" :key="idx" class="size-container">
                     <span class="size-value">Kích thước: {{ size.size }}</span>
-                    <span class="color-value">Màu sắc: {{ size.color }}</span>
                     <span class="quantity-badge">Số lượng: {{ size.quantity }}</span>
                     <span v-if="idx !== product.sizes.length - 1">, </span>
                   </span>

@@ -47,6 +47,7 @@ const contactRoutes = require('./routes/Contact');
 const paymentRoutes = require('./routes/Payment'); // Sửa đổi tại đây
 const reviewRouters = require('./routes/Review');
 const voucherRouters = require('./routes/Voucher');
+const warehouseRouters = require('./routes/Warehouse');
 
 
 app.use('/api/auth', authRoutes);
@@ -59,6 +60,7 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/review', reviewRouters);
 app.use('/api/Voucher', voucherRouters);
+app.use('/api/warehouse',  warehouseRouters);
 
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

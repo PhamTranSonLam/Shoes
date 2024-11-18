@@ -3,13 +3,7 @@
     <!-- Search Input -->
     <div class="row mb-4">
       <div class="col-md-10">
-        <input
-          v-model="searchTerm"
-          @input="filterUsers"
-          type="text"
-          class="form-control search-input"
-          placeholder="Tìm kiếm voucher"
-        />
+        <input v-model="searchTerm" @input="filterVouchers" type="text" class="form-control search-input" placeholder="Tìm kiếm voucher" />
       </div>
     </div>
 
@@ -31,30 +25,28 @@
               <th scope="col">Thời gian bắt đầu</th>
               <th scope="col">Thời gian kết thúc</th>
               <th scope="col">Giới hạn lần sử dụng</th>
+              <th scope="col">Số lần đã sử dụng</th> <!-- New column for usage count -->
               <th scope="col">Hành động</th>
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-if="filteredVouchers.length > 0"
-              v-for="(voucher, index) in paginatedVouchers"
-              :key="voucher._id"
-            >
+            <tr v-if="filteredVouchers.length > 0" v-for="(voucher, index) in paginatedVouchers" :key="voucher._id">
               <td>{{ index + 1 + (currentPage - 1) * vouchersPerPage }}</td>
               <td>{{ voucher.code }}</td>
               <td>{{ voucher.discountType === 'percent' ? 'Phần trăm' : 'Số tiền cố định' }}</td>
               <td>{{ voucher.discountValue }}{{ voucher.discountType === 'percent' ? '%' : ' VNĐ' }}</td>
-              <td>{{ voucher.minimumOrderValue }} VNĐ</td>
+              <td>{{ voucher.minOrderValue }} VNĐ</td>
               <td>{{ formatDate(voucher.startDate) }}</td>
               <td>{{ formatDate(voucher.endDate) }}</td>
               <td>{{ voucher.usageLimit }}</td>
+              <td>{{ voucher.timesUsed }}</td> <!-- Display times used -->
               <td>
                 <router-link :to="`/editvoucher/${voucher.code}`" class="btn btn-edit btn-sm">Chỉnh sửa</router-link>
                 <button @click="deleteVoucher(voucher._id, index)" class="btn btn-delete btn-sm">Xóa</button>
               </td>
             </tr>
             <tr v-else>
-              <td colspan="9" class="text-center">Không tìm thấy voucher nào!</td>
+              <td colspan="10" class="text-center">Không tìm thấy voucher nào!</td> <!-- Updated colspan to 10 -->
             </tr>
           </tbody>
         </table>
@@ -67,12 +59,7 @@
         <li class="page-item" :class="{ disabled: currentPage === 1 }">
           <button class="page-link" @click="prevPage">Trước</button>
         </li>
-        <li
-          class="page-item"
-          v-for="page in totalPages"
-          :key="page"
-          :class="{ active: currentPage === page }"
-        >
+        <li class="page-item" v-for="page in totalPages" :key="page" :class="{ active: currentPage === page }">
           <button class="page-link" @click="goToPage(page)">{{ page }}</button>
         </li>
         <li class="page-item" :class="{ disabled: currentPage === totalPages }">
@@ -139,8 +126,8 @@ export default {
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
       return new Date(dateString).toLocaleDateString('vi-VN', options);
     },
-    filterUsers() {
-      this.currentPage = 1;
+    filterVouchers() {
+      this.currentPage = 1; // Reset page to 1 when filtering
     },
     prevPage() {
       if (this.currentPage > 1) this.currentPage--;
@@ -154,7 +141,6 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 /* Container Styling */
 .container {

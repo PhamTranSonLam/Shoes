@@ -5,7 +5,7 @@ const productSchema = new mongoose.Schema({
     brand: { type: String },
     quantity: { type: Number },  
     sizes: { type: [Object] }, // Giả sử sizes là một mảng các đối tượng chứa kích thước, màu sắc, số lượng
-    color: { type: String },
+    // color: { type: String },
     price: { type: Number },
     inStock: { type: Boolean, default: true },
     description: { type: String },
