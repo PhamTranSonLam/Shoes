@@ -1,26 +1,26 @@
 <template>
   <div class="products" id="Products">
-    <h1>Products</h1>
+    <h1>Sản phẩm</h1>
     <div class="search-container">
       <input
-        type="text"v-model="searchQuery"@input="searchProducts"placeholder="Search for products..."class="search-input"/>
+        type="text"v-model="searchQuery"@input="searchProducts"placeholder="Tìm kiếm sản phẩm"class="search-input"/>
       <div class="dropdown">
         <button class="btn btn-secondary dropdown-toggle"type="button"data-bs-toggle="dropdown"aria-expanded="false">
-          Product selection suggestions
+          Gợi ý lựa chọn sản phẩm
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#" @click="suggestProducts('best-selling')">Best seller</a></li>
-          <li><a class="dropdown-item" href="#" @click="suggestProducts('newest')">Newest</a></li>
-          <li><a class="dropdown-item" href="#" @click="suggestProducts('high-to-low')">Price from high to low</a></li>
-          <li><a class="dropdown-item" href="#" @click="suggestProducts('low-to-high')">Price from low to high</a></li>
+          <li><a class="dropdown-item" href="#" @click="suggestProducts('best-selling')">Sản phẩm bán chạy nhất</a></li>
+          <li><a class="dropdown-item" href="#" @click="suggestProducts('newest')">Sản phẩm mới nhất</a></li>
+          <li><a class="dropdown-item" href="#" @click="suggestProducts('high-to-low')">Giá từ cao đến thấp</a></li>
+          <li><a class="dropdown-item" href="#" @click="suggestProducts('low-to-high')">Giá từ thấp đến cao</a></li>
         </ul>
       </div>
     </div>
     <div class="box">
       <div class="sidebar">
-        <h2>Categories</h2>
+        <h2>Danh mục</h2>
         <ul>
-          <li @click="filterByCategory('')"><a href="#">All</a></li>
+          <li @click="filterByCategory('')"><a href="#">Tất cả</a></li>
           <li v-for="(item, index) in category" :key="index" @click="filterByCategory(item.name)">
             <a href="#">{{ item.name }}</a>
           </li>
@@ -40,13 +40,13 @@
               <h2>{{ product.name }}</h2>
             </router-link>
             <p>{{ product.description }}</p>
-            <p>Quantity:{{ calculateTotalQuantity(product.sizes) }}</p>
+            <p> Số lượng :{{ calculateTotalQuantity(product.sizes) }}</p>
             <div class="price-size-container">
               <h3>{{ product.price }} VNĐ</h3>
             </div>
             <div class="products_star">
               <router-link :to="{name: 'ProductDetail', params: {id: product._id} }" class="btn">
-                <button class="buy-btn">See details</button>
+                <button class="buy-btn">Xem chi tiết</button>
               </router-link>
               <i v-for="star in product.rating" :key="star" :class="['fa-solid', star === 'full' ? 'fa-star' : 'fa-star-half-stroke']"></i>
             </div>

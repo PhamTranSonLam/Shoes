@@ -6,11 +6,11 @@
         <h1>L.Shoe<span>s</span></h1>
       </div>
       <ul>
-        <li><router-link to='/Home'>Home</router-link></li>
-        <li><router-link to='/Products'>Products</router-link></li>
-        <li><router-link to='/About'>About</router-link></li>
-        <li><router-link to='/review'>Review</router-link></li>
-        <li><router-link to='/Services'>Services</router-link></li>
+        <li><router-link to='/Home'>Trang chủ</router-link></li>
+        <li><router-link to='/Products'>Sản Phẩm</router-link></li>
+        <li><router-link to='/About'>Giới thiệu</router-link></li>
+        <li><router-link to='/review'>Đánh giá</router-link></li>
+        <li><router-link to='/Services'>Dịch vụ</router-link></li>
       </ul>
       <div class="icons">
         <i class="fa-solid fa-heart"></i>
@@ -21,10 +21,10 @@
           <img class="user-img" src="../src/assets/img/gir_dp3.jpg" alt="User Image">
           <span>{{ username.username }}</span>
           <div v-if="isDropdownVisible" class="logout bg-light p-2 border shadow">
-            <p><router-link to="/accountinformation" class="info">Account information</router-link></p>
-            <p><router-link to="/Orderhistory" class="text-dark">Order history</router-link></p>
+            <p><router-link to="/accountinformation" class="info">Thông tin tài khoản</router-link></p>
+            <p><router-link to="/Orderhistory" class="text-dark">Lịch sử đơn hàng</router-link></p>
             <p class="text-dark" @click="showChangePasswordModal">Đổi mật khẩu</p>
-            <p @click="logout">Logout</p>
+            <p @click="logout">Đăng xuất</p>
           </div>
         </div>
 
@@ -42,27 +42,27 @@
       <div class="footer_main">
         <!-- Footer Links and Content -->
         <div class="tag">
-          <h1>Contact</h1>
+          <h1>Liên hệ</h1>
           <a href="#"><i class="fa-solid fa-house"></i>123/Colombo/Sri Lanka</a>
           <a href="#"><i class="fa-solid fa-phone"></i>+94 12 345 6789</a>
           <a href="#"><i class="fa-solid fa-envelope"></i>contact@gmail.com</a>
         </div>
         <div class="tag">
-          <h1>Get Help</h1>
-          <a href="#" class="center">FAQ</a>
-          <a href="#" class="center">Shipping</a>
-          <a href="#" class="center">Returns</a>
-          <a href="#" class="center">Payment Options</a>
+          <h1>Hỗ trợ</h1>
+          <a href="#" class="center">Câu hỏi thường gặp</a>
+          <a href="#" class="center">Vận chuyên</a>
+          <a href="#" class="center">Trả hàng</a>
+          <a href="#" class="center">Phương thức thanh toán</a>
         </div>
         <div class="tag">
-          <h1>Our Stores</h1>
+          <h1>Cửa hàng của chúng tôi</h1>
           <a href="#" class="center">Sri Lanka</a>
           <a href="#" class="center">USA</a>
           <a href="#" class="center">India</a>
           <a href="#" class="center">Japan</a>
         </div>
         <div class="tag">
-          <h1>Follow Us</h1>
+          <h1>Theo giỏi chúng tôi</h1>
           <div class="social_link">
             <a href="#"><i class="fa-brands fa-facebook"></i>FAQ</a>
             <a href="#"><i class="fa-brands fa-twitter"></i>FAQ</a>
@@ -71,10 +71,10 @@
           </div>
         </div>
         <div class="tag">
-          <h1>Newsletter</h1>
+          <h1>Bản tin</h1>
           <div class="search_bar">
             <input type="text" placeholder="Your email id here">
-            <button type="submit">Subscribe</button>
+            <button type="submit">Đăng ký</button>
           </div>
         </div>
       </div>

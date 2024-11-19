@@ -1,6 +1,6 @@
 <template>
   <div class="review-container">
-    <h2>Product Reviews</h2>
+    <h2>Đánh giá sản phẩm</h2>
 
     <!-- Danh sách đánh giá của người dùng -->
     <div v-for="review in reviews" :key="review.id" class="review">

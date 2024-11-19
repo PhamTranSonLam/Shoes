@@ -1,10 +1,10 @@
 <template>
     <section id="Home">
       <div class="container">
-        <h5>NEW ARRIVALS</h5>
-        <h1><span>Best Price</span> This Year</h1>
-        <p>Shoomatic offers your very comfortable time<br>on walking and exercising.</p>
-        <button>Shop Now</button>
+        <h5>SẢN PHẨM MỚI</h5>
+        <h1><span>Giá Tốt Nhất</span>Năm Nay</h1>
+        <p>Shoomatic mang đến cho bạn sự thoải mái<br>trong việc đi bộ và luyện tập.</p>
+        <button>Mua Ngay</button>
       </div>
     </section>
   
@@ -29,22 +29,22 @@
         <div class="one col-lg-4 col-md-12 col-12 p-0">
           <img class="img-fluid" src="../assets/img/nike1.png" alt="">
           <div class="details">
-            <h2>Extremes Rare Nikes</h2>
-            <button class="text-uppercase">Shop now</button>
+            <h2>Giày Nike Hiếm Có</h2>
+            <button class="text-uppercase">Mua ngay</button>
           </div>
         </div>
         <div class="one col-lg-4 col-md-12 col-12 p-0">
           <img class="img-fluid" src="../assets/img/adidas1.webp" alt="">
           <div class="details">
-            <h2>Extremes Rare Adidass</h2>
-            <button class="text-uppercase">Shop now</button>
+            <h2>Giày Adidas Hiếm Có</h2>
+            <button class="text-uppercase">Mua ngay</button>
           </div>
         </div>
         <div class="one col-lg-4 col-md-12 col-12 p-0">
           <img class="img-fluid" src="../assets/img/sneaker1.jpg" alt="">
           <div class="details">
-            <h2>Extremes Rare Sneakers</h2>
-            <button class="text-uppercase">Shop now</button>
+            <h2>Giày Sneaker Hiếm Có</h2>
+            <button class="text-uppercase">Mua ngay</button>
           </div>
         </div>
       </div>
@@ -53,9 +53,9 @@
     <!-- Adidas Products -->
     <section id="adidas" class="my-5">
       <div class="container text-center mt-5 py-5">
-        <h3>Best selling adidas shoes</h3>
+        <h3>Giày Adidas bán chạy nhất</h3>
         <hr class="mx-auto">
-        <p>This is the best selling and most popular product.</p>
+        <p>Sản phẩm bán chạy và được yêu thích nhất.</p>
       </div>
       <div class="row mx-auto container-fluid">
         <div v-for="product in adidasProducts" :key="product._id" class="product text-center col-lg-3 col-md-4 col-12">
@@ -79,17 +79,17 @@
     <section id="banner" class="my-5 pb-5">
       <div class="container">
         <h4>MID SEA</h4>
-        <h1>Autumn Collection<br> UP TO 20% OFF</h1>
-        <button class="text-uppercase">Shop Now</button>
+        <h1>BỘ SƯU TẬP MÙA THU<br>Giảm đến 20%</h1>
+        <button class="text-uppercase">Mua Ngay</button>
       </div>
     </section>
   
     <!-- Nike Products -->
     <section id="nike" class="my-5">
       <div class="container text-center mt-5 py-5">
-        <h3>Best selling Nike shoes</h3>
+        <h3>Giày Nike bán chạy nhất</h3>
         <hr class="mx-auto">
-        <p>This is the best selling and most popular product.</p>
+        <p>Sản phẩm bán chạy và được yêu thích nhất.</p>
       </div>
       <div class="row mx-auto container-fluid">
         <div v-for="product in nikeProducts" :key="product._id" class="product text-center col-lg-3 col-md-4 col-12">
@@ -103,7 +103,7 @@
           <p class="p-des">{{ product.description }}</p>
           <h4 class="p-price">{{ formatPrice(product.price) }}</h4>
           <router-link :to="{ name: 'ProductDetail', params: { id: product._id } }" class="btn">
-            <button class="buy-btn">See details</button>
+            <button class="buy-btn">Xem chi tiết</button>
           </router-link>
         </div>
       </div>
@@ -112,9 +112,9 @@
     <!-- Sneakers Products -->
     <section id="sneakers" class="my-5">
       <div class="container text-center mt-5 py-5">
-        <h3>Best selling Sneakers shoes</h3>
+        <h3>Giày Sneakers bán chạy nhấts</h3>
         <hr class="mx-auto">
-        <p>This is the best selling and most popular product.</p>
+        <p>Sản phẩm bán chạy và được yêu thích nhất.</p>
       </div>
       <div class="row mx-auto container-fluid">
         <div v-for="product in sneakersProducts" :key="product._id" class="product text-center col-lg-3 col-md-4 col-12">
@@ -128,7 +128,7 @@
           <p class="p-des">{{ product.description }}</p>
           <h4 class="p-price">{{ formatPrice(product.price) }}</h4>
           <router-link :to="{ name: 'ProductDetail', params: { id: product._id } }" class="btn">
-            <button class="buy-btn">See details</button>
+            <button class="buy-btn">Xem chi tiết</button>
           </router-link>
         </div>
       </div>

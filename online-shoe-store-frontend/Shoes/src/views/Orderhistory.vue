@@ -1,38 +1,38 @@
 <template>
   <section id="page-header">
-    <h2>Your Order History</h2>
-    <p>Check out your previous purchases and order details below.</p>
+    <h2>Lịch sử đặt hàng của bạn</h2>
+    <p>Kiểm tra các lần mua hàng trước và chi tiết đơn hàng bên dưới.</p>
   </section>
 
   <section id="order-history">
-    <h2>{{ user.username }}'s Order History</h2>
+    <h2> Lịch sử đặt hàng của {{ user.username }}</h2>
     <div v-if="orders.length > 0" class="order-list">
       <div v-for="order in orders" :key="order._id" class="order-item">
         <div class="order-header">
-          <h3>Order #{{ order._id }}</h3>
+          <h3>Mã đơn hàng #{{ order._id }}</h3>
           <div class="order-actions">
             <button class="review-button" @click="openReviewModal(order)">Review</button>
             <button class="edit-button" @click="updateOrderStatus(order)">Edit</button>
           </div>
         </div>
-        <p><strong>Date:</strong> {{ new Date(order.createdAt).toLocaleString() }}</p>
-        <p><strong>Total:</strong> {{ formatPrice(order.totalAmount) }}</p>
+        <p><strong>Ngày:</strong> {{ new Date(order.createdAt).toLocaleString() }}</p>
+        <p><strong>Tổng cộng:</strong> {{ formatPrice(order.totalAmount) }}</p>
 
-        <h4>Ordered Items:</h4>
+        <h4>Sản phẩm đã đặt:</h4>
         <div v-for="item in order.items" :key="item.product._id" class="order-item-details">
           <img :src="`${item.mainImage}`" alt="Product Image" class="img-fluid bg-light" />
           <div class="item-info">
             <span class="product-name">{{ item.product.name }}</span>
-            <span><strong>Quantity:</strong> {{ item.quantity }}</span>
-            <span><strong>Size:</strong> {{ item.sizes }}</span>
-            <span><strong>Price:</strong> {{ formatPrice(item.product.price) }}</span>
-            <span><strong>Status:</strong> {{ order.status }}</span>
-            <p>Estimated delivery 3 to 5 days</p>
+            <span><strong>Số lượng:</strong> {{ item.quantity }}</span>
+            <span><strong>Kích thước:</strong> {{ item.sizes }}</span>
+            <span><strong>Giá:</strong> {{ formatPrice(item.product.price) }}</span>
+            <span><strong>Trạng thái:</strong> {{ order.status }}</span>
+            <p>Dự kiến giao hàng từ 3 đến 5 ngày</p>
           </div>
         </div>
         <div v-if="order.review" class="order-review">
-          <p><strong>Your Review:</strong> {{ order.review.text }}</p>
-          <p><strong>Rating:</strong> {{ order.review.rating }} ⭐</p>
+          <p><strong>Đánh giá của bạn:</strong> {{ order.review.text }}</p>
+          <p><strong>Đánh giá:</strong> {{ order.review.rating }} ⭐</p>
         </div>
       </div>
     </div>
@@ -44,16 +44,16 @@
     <div v-if="isReviewModalOpen" class="review-modal" @click="closeReviewModal">
       <div class="modal-content" @click.stop>
         <span class="close" @click="closeReviewModal">&times;</span>
-        <h2>Leave your review for Order #{{ selectedOrder?._id }}</h2>
+        <h2>Để lại đánh giá đơn hàng của bạn #{{ selectedOrder?._id }}</h2>
         <textarea v-model="reviewText" placeholder="Enter your review..."></textarea>
         <div class="button-group mb-4" id="rating-buttons">
           <button 
             v-for="n in 5" :key="n" :value="n" class="btn border me-2" :class="{ 'button-active': newRating === n }" @click.prevent="newRating = n">{{ n }}
           </button>
-          <i class="fa-solid fa-star text-warning"></i> Stars
+          <i class="fa-solid fa-star text-warning"></i> Ngôi sao
         </div>
 
-        <button class="submit-button" @click="submitReview">Submit a review</button>
+        <button class="submit-button" @click="submitReview">Gửi đánh giá</button>
         <p v-if="submissionMessage" class="submission-message">{{ submissionMessage }}</p>
       </div>
     </div>

@@ -23,6 +23,13 @@ import Addvoucher from '../views/Addvoucher.vue';
 import Editvoucher from '../views/Editvoucher.vue';
 import Bill from '../views/Bill.vue';
 import Warehouse from '../views/Warehouse.vue';
+import Listproducttype from '../views/Listproducttype.vue';
+import Listproduct from '../views/Listproduct.vue';
+import Warehouselist from '../views/Warehouselist.vue';
+import Import from '../views/import.vue';
+import Importdetail from '../views/importdetail.vue';
+import Export from '../views/Export.vue';
+import Exportdetail from '../views/Exportdetail.vue';
 
 
 const routes = [
@@ -141,6 +148,41 @@ const routes = [
     path: '/warehouse',
     name: 'Warehouse',
     component: Warehouse,
+  },
+  {
+    path: '/listproducttype',
+    name: 'Listproducttype',
+    component: Listproducttype,
+  },
+  {
+    path: '/listproduct',
+    name: 'Listproduct',
+    component: Listproduct,
+  },
+  {
+    path: '/warehouselist',
+    name: 'Warehouselist',
+    component: Warehouselist,
+  },
+  {
+    path: '/import',
+    name: 'Import',
+    component: Import,
+  },
+  {
+    path: '/importdetail',
+    name: 'Importdetail',
+    component: Importdetail,
+  },
+  {
+    path: '/export',
+    name: 'Export',
+    component: Export,
+  },
+  {
+    path: '/exportdetail',
+    name: 'Exportdetail',
+    component: Exportdetail,
   }
   
 ];

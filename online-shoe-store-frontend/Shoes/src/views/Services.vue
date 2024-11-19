@@ -1,24 +1,24 @@
 <template>
   <div class="services" id="Servises">
-    <h1>our<span>services</span></h1>
+    <h1>dịch vụ <span>Của Chúng Tôi</span></h1>
 
     <div class="services_cards">
       <div class="services_box">
         <i class="fa-solid fa-truck-fast"></i>
-        <h3>Fast Delivery</h3>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+        <h3>Giao hàng nhanh</h3>
+        <p> Chúng tôi luôn giao hàng hẹn thời gian quy định</p>
       </div>
 
       <div class="services_box">
         <i class="fa-solid fa-rotate-left"></i>
-        <h3>10 Days Replacement</h3>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+        <h3>Đổi trả trong 10 ngày</h3>
+        <p>Chúng tôi luôn sẵn sàng nhận hàng và đổi hàng trong ngày.</p>
       </div>
 
       <div class="services_box">
         <i class="fa-solid fa-headset"></i>
-        <h3>24 x 7 Support</h3>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+        <h3>Hỗ trợ 24 x 7 </h3>
+        <p> Chúng tôi luôn hỗ trợ mọi khách hàng ở mọi lúc mọi nơi.</p>
       </div>
     </div>
   </div>
@@ -30,10 +30,10 @@
     </div>
 
     <div class="right">
-      <h1>Welcome Back! You can contact us right here.</h1>
+      <h1>Chào mừng trở lại!  Bạn  có thể liện hệ với chúng tôi ngay tại đây.</h1>
 
       <form @submit.prevent="onSubmit">
-        <label for="username">User Name</label>
+        <label for="username">Tên..</label>
         <div class="user">
           <i class="fa-solid fa-user"></i>
           <input
@@ -45,7 +45,7 @@
           />
         </div>
 
-        <label for="phone" class="phone_tag">Phone</label>
+        <label for="phone" class="phone_tag">Số điện thoại</label>
         <div class="phone">
           <i class="fa-solid fa-phone"></i>
           <input
@@ -57,7 +57,7 @@
           />
         </div>
 
-        <label for="content" class="content_tag">Content</label>
+        <label for="content" class="content_tag">Nội dung</label>
         <div class="content">
           <i class="fa-solid fa-envelope"></i>
           <textarea
@@ -68,7 +68,7 @@
           ></textarea>
         </div>
 
-        <button type="submit">Contact</button>
+        <button type="submit">Liện hệ</button>
       </form>
     </div>
   </div>

@@ -1,32 +1,32 @@
 <template>
   <section id="page-headers">
-    <h2>Your Checkout, {{ user.username }}</h2>
-    <p>All products are marked down from their original prices</p>
+    <h2>Thanh toán của bạn, {{ user.username }}</h2>
+    <p>Tất cả sản phẩm đều được giảm giá từ giá gốc</p>
   </section>
 
   <section id="checkout">
     <div class="checkout-container">
       <!-- Left Section: Shipping Info and Payment -->
       <div class="checkout-left">
-        <h2>Checkout</h2>
+        <h2>Thanh toán</h2>
 
         <!-- Shipping Details Form -->
         <div class="shipping-info">
-          <h3>Shipping Information</h3>
+          <h3>Thông tin giao hàng</h3>
           <form @submit.prevent="submitOrder" v-if="userInfo">
             <input type="text" v-model="userInfo.username" placeholder="Full Name" required />
             <input type="text" v-model="userInfo.address" placeholder="Address" required />
             <input type="email" v-model="userInfo.email" placeholder="Email" required />
             <input type="text" v-model="userInfo.phone" placeholder="Phone Number" required />
           </form>
-          <p>You can edit the information here</p>
+          <p>Bạn có thể chỉnh sửa thông tin tại đây</p>
         </div>
 
         <!-- Payment Section -->
         <div class="payment-method">
-          <h3>Payment Method</h3>
+          <h3>Phương thức thanh toán</h3>
           <select v-model="paymentMethod">
-            <option value="offline">Payment upon receipt</option>
+            <option value="offline">Thanh toán khi nhận hàng</option>
             <option value="vnpay">VNPay</option>
           </select>
         </div>
@@ -35,16 +35,13 @@
       <!-- Right Section: Cart Summary -->
       <div class="checkout-right">
         <div class="cart-summary">
-          <h3>Order Summary</h3>
+          <h3>Tóm tắc đơn hàng</h3>
           <div v-for="item in cartItems" :key="item.product._id" class="cart-item">
             <div class="cart-item-image">
               <img :src="`${item.mainImage}`" alt="Product Image" class="img-fluid bg-light" />
             </div>
             <div class="cart-item-details">
               <span class="product-name">{{ item.product.name }}</span>
-              <div class="color-display">
-                <span>Color: {{ item.color }}</span>
-              </div>
               <div class="quantity-control">
                 <input type="number" v-model.number="item.quantity" @change="updateQuantity(item.product._id, item.quantity)" min="1" />
               </div>
@@ -55,7 +52,7 @@
           <!-- Voucher Section -->
           <div id="coupon">
             <div class="voucher-container">
-              <h3>Nhập mã voucher</h3>
+              <h3>Nhập mã giảm giá</h3>
               <input
                 v-model="voucherCode"type="text" placeholder="Nhập mã voucher" class="voucher-input"/>
               <button @click="applyVoucher" class="apply-button">Áp dụng</button>
