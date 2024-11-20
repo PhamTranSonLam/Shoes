@@ -11,7 +11,6 @@
           />
         </div>
       </div>
-  
       <!-- Product Management Table -->
       <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -32,7 +31,6 @@
             <thead class="table-warning">
               <tr>
                 <th>STT</th>
-                <th>Ảnh hóa đơn</th>
                 <th>Mã phiếu nhập</th>
                 <th>Tên phiếu nhập</th>
                 <th>Ngày nhập</th>
@@ -43,14 +41,7 @@
             <tbody>
               <tr v-for="(product, index) in filteredProducts" :key="product.id">
                 <td>{{ index + 1 }}</td>
-                <td>
-                  <img
-                    src="https://via.placeholder.com/100"
-                    alt="Ảnh hóa đơn"
-                    class="img-thumbnail"
-                  />
-                </td>
-                <td>{{ product.code }}</td>
+                <td>{{ product._id }}</td>
                 <td>{{ product.name }}</td>
                 <td>{{ product.date }}</td>
                 <td>{{ product.warehouse }}</td>
@@ -65,7 +56,7 @@
                   <button
                     type="button"
                     class="btn btn-danger btn-sm ms-2"
-                    @click="deleteProduct(product.id)"
+                    @click="deleteProduct(product._id)"
                   >
                     Xóa
                   </button>
@@ -211,78 +202,71 @@
   </template>
   
   <script>
-  export default {
-    data() {
-      return {
-        isLoading: false,
-        searchQuery: "",
-        currentPage: 0,
-        totalPages: 3,
-        products: [
-          { id: 1, code: "PN001", name: "Phiếu nhập 1", date: "2024-11-19", warehouse: "Kho A" },
-          { id: 2, code: "PN002", name: "Phiếu nhập 2", date: "2024-11-18", warehouse: "Kho B" },
-        ],
-        filteredProducts: [],
-        newProduct: { warehouse: "", name: "" },
-        selectedProduct: null,
-        showAddModal: false,
-        showEditModal: false,
-      };
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      isLoading: false,
+      searchQuery: "",
+      currentPage: 0,
+      totalPages: 3,
+      products: [],
+      filteredProducts: [],
+      newProduct: { warehouse: "", name: "" },
+      selectedProduct: null,
+      showAddModal: false,
+      showEditModal: false,
+    };
+  },
+  methods: {
+    fetchWarehouses() {
+      this.isLoading = true;
+      axios
+        .get("http://localhost:5000/api/warehouse")
+        .then((response) => {
+          this.products = response.data;
+          this.filteredProducts = this.products;
+        })
+        .catch((error) => console.error("Lỗi khi tải phiếu nhập:", error))
+        .finally(() => (this.isLoading = false));
     },
-    methods: {
-      openAddModal() {
-        this.showAddModal = true;
-      },
-      closeAddModal() {
-        this.showAddModal = false;
-      },
-      addProduct() {
-        this.products.push({
-          id: Date.now(),
-          ...this.newProduct,
-          date: new Date().toISOString().split("T")[0],
-        });
-        this.newProduct = { warehouse: "", name: "" };
-        this.closeAddModal();
-      },
-      openEditModal(product) {
-        this.selectedProduct = { ...product };
-        this.showEditModal = true;
-      },
-      closeEditModal() {
-        this.showEditModal = false;
-      },
-      updateProduct() {
-        const index = this.products.findIndex(
-          (product) => product.id === this.selectedProduct.id
-        );
-        if (index !== -1) this.products.splice(index, 1, this.selectedProduct);
-        this.closeEditModal();
-      },
-      deleteProduct(id) {
-        this.products = this.products.filter((product) => product.id !== id);
-      },
-      prevPage() {
-        if (this.currentPage > 0) this.currentPage -= 1;
-      },
-      nextPage() {
-        if (this.currentPage < this.totalPages - 1) this.currentPage += 1;
-      },
-      goToPage(page) {
-        this.currentPage = page;
-      },
+    openAddModal() {
+      this.showAddModal = true;
     },
-    computed: {
-      filteredProducts() {
-        return this.products.filter((product) =>
-          product.name.toLowerCase().includes(this.searchQuery.toLowerCase())
-        );
-      },
+    closeAddModal() {
+      this.showAddModal = false;
     },
-  };
-  </script>
-  
-  <style scoped>
-  /* CSS như trước */
-  </style>
-  
+    addProduct() {
+      axios
+        .post("http://localhost:5000/api/warehouse", this.newProduct)
+        .then(() => this.fetchWarehouses())
+        .catch((error) => console.error("Lỗi khi thêm phiếu nhập:", error));
+      this.closeAddModal();
+    },
+    openEditModal(product) {
+      this.selectedProduct = { ...product };
+      this.showEditModal = true;
+    },
+    closeEditModal() {
+      this.showEditModal = false;
+    },
+    updateProduct() {
+      axios
+        .put(`http://localhost:5000/api/warehouse/${this.selectedProduct._id}`, this.selectedProduct)
+        .then(() => this.fetchWarehouses())
+        .catch((error) => console.error("Lỗi khi cập nhật phiếu nhập:", error));
+      this.closeEditModal();
+    },
+    deleteProduct(id) {
+      axios
+        .delete(`http://localhost:5000/api/warehouse/${id}`)
+        .then(() => this.fetchWarehouses())
+        .catch((error) => console.error("Lỗi khi xóa phiếu nhập:", error));
+    },
+  },
+  mounted() {
+    this.fetchWarehouses();
+  },
+};
+</script>

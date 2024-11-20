@@ -112,7 +112,7 @@
     <!-- Sneakers Products -->
     <section id="sneakers" class="my-5">
       <div class="container text-center mt-5 py-5">
-        <h3>Giày Sneakers bán chạy nhấts</h3>
+        <h3>Giày Sneakers bán chạy nhất</h3>
         <hr class="mx-auto">
         <p>Sản phẩm bán chạy và được yêu thích nhất.</p>
       </div>

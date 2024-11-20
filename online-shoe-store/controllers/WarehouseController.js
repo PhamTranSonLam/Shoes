@@ -1,46 +1,91 @@
 const Warehouse = require("../models/Warehouse");
 
-// Lấy danh sách sản phẩm
-exports.getProducts = async (req, res) => {
+// Lấy danh sách các phiếu nhập
+const getAllWarehouses = async (req, res) => {
   try {
-    const products = await Warehouse.find();
-    res.status(200).json(products);
+    const warehouses = await Warehouse.find();
+    res.status(200).json(warehouses);
   } catch (error) {
-    res.status(500).json({ message: "Lỗi server", error });
+    res.status(500).json({ message: "Lỗi khi lấy danh sách phiếu nhập", error });
   }
 };
 
-// Thêm sản phẩm
-exports.addProduct = async (req, res) => {
-  const { name, sku, quantity, price, category, description } = req.body;
+// Lấy thông tin chi tiết một phiếu nhập
+const getWarehouseById = async (req, res) => {
   try {
-    const newProduct = new Warehouse({ name, sku, quantity, price, category, description });
-    await newProduct.save();
-    res.status(201).json({ message: "Thêm sản phẩm thành công", product: newProduct });
+    const { id } = req.params;
+    const warehouse = await Warehouse.findById(id);
+    if (!warehouse) {
+      return res.status(404).json({ message: "Phiếu nhập không tồn tại" });
+    }
+    res.status(200).json(warehouse);
   } catch (error) {
-    res.status(400).json({ message: "Lỗi khi thêm sản phẩm", error });
+    res.status(500).json({ message: "Lỗi khi lấy thông tin phiếu nhập", error });
   }
 };
 
-// Cập nhật sản phẩm
-exports.updateProduct = async (req, res) => {
-  const { id } = req.params;
-  const updates = req.body;
+// Tạo mới một phiếu nhập
+const createWarehouse = async (req, res) => {
   try {
-    const updatedProduct = await Warehouse.findByIdAndUpdate(id, updates, { new: true });
-    res.status(200).json({ message: "Cập nhật thành công", product: updatedProduct });
+    const {  name, warehouse } = req.body;
+
+    // Kiểm tra mã phiếu nhập đã tồn tại
+    const existingWarehouse = await Warehouse.findOne({ name });
+    if (existingWarehouse) {
+      return res.status(400).json({ message: "Mã phiếu nhập đã tồn tại" });
+    }
+    const newWarehouse = new Warehouse({  name, warehouse });
+    await newWarehouse.save();
+    res.status(201).json(newWarehouse);
   } catch (error) {
-    res.status(400).json({ message: "Lỗi khi cập nhật sản phẩm", error });
+    console.log(error.message)
+    res.status(500).json({ message: "Lỗi khi tạo phiếu nhập", error });
   }
 };
 
-// Xóa sản phẩm
-exports.deleteProduct = async (req, res) => {
-  const { id } = req.params;
+// Cập nhật thông tin phiếu nhập
+const updateWarehouse = async (req, res) => {
   try {
-    await Warehouse.findByIdAndDelete(id);
-    res.status(200).json({ message: "Xóa sản phẩm thành công" });
+    const { id } = req.params;
+    const { name, warehouse, products } = req.body;
+    console.log(req.body)
+    const updatedWarehouse = await Warehouse.findByIdAndUpdate(
+      id,
+      { name, warehouse, products},
+      { new: true }
+    );
+
+    if (!updatedWarehouse) {
+      return res.status(404).json({ message: "Phiếu nhập không tồn tại" });
+    }
+
+    res.status(200).json(updatedWarehouse);
   } catch (error) {
-    res.status(400).json({ message: "Lỗi khi xóa sản phẩm", error });
+    res.status(500).json({ message: "Lỗi khi cập nhật phiếu nhập", error });
   }
+};
+
+// Xóa phiếu nhập
+const deleteWarehouse = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletedWarehouse = await Warehouse.findByIdAndDelete(id);
+
+    if (!deletedWarehouse) {
+      return res.status(404).json({ message: "Phiếu nhập không tồn tại" });
+    }
+
+    res.status(200).json({ message: "Xóa phiếu nhập thành công" });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi khi xóa phiếu nhập", error });
+  }
+};
+
+module.exports = {
+  getAllWarehouses,
+  getWarehouseById,
+  createWarehouse,
+  updateWarehouse,
+  deleteWarehouse,
 };

@@ -1,11 +1,20 @@
 const express = require("express");
 const router = express.Router();
-const warehouseController = require("../controllers/WarehouseController");
 
-// Các route
-router.get("/", warehouseController.getProducts); // Lấy danh sách sản phẩm
-router.post("/", warehouseController.addProduct); // Thêm sản phẩm
-router.put("/:id", warehouseController.updateProduct); // Cập nhật sản phẩm
-router.delete("/:id", warehouseController.deleteProduct); // Xóa sản phẩm
+const WarehouseController = require("../controllers/WarehouseController");
+// Lấy danh sách phiếu nhập
+router.get("/",  WarehouseController.getAllWarehouses);
+
+// Lấy thông tin chi tiết một phiếu nhập
+router.get("/:id",  WarehouseController.getWarehouseById);
+
+// Tạo mới một phiếu nhập
+router.post("/", WarehouseController.createWarehouse);
+
+// Cập nhật thông tin phiếu nhập
+router.put("/:id", WarehouseController.updateWarehouse);
+
+// Xóa phiếu nhập
+router.delete("/:id", WarehouseController.deleteWarehouse);
 
 module.exports = router;

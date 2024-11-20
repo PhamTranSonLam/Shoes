@@ -1,16 +1,21 @@
 const mongoose = require("mongoose");
 
-const warehouseSchema = new mongoose.Schema(
+const WarehouseSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
-    // sku: { type: String, unique: true, required: true }, // Mã sản phẩm
-    quantity: { type: Number, required: true, default: 0 }, // Số lượng trong kho
-    price: { type: Number, required: true }, // Giá sản phẩm
-    category: { type: String, required: true }, // Danh mục
-    description: { type: String }, // Mô tả
-    inStock: { type: Boolean, default: true }, // Trạng thái còn hàng
+    name: { type: String, required: true }, // Tên phiếu nhập
+    warehouse: { type: String }, // Kho
+    date: { type: Date, default: Date.now }, // Ngày nhập
+    products: [
+      {
+        productName: { type: String}, // Tên mặt hàng
+        unit: { type: String}, // Đơn vị tính
+        price: { type: Number }, // Đơn giá
+        quantity: { type: Number }, // Số lượng
+        location: { type: String }, // Vị trí
+      },
+    ],
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Warehouse", warehouseSchema);
+module.exports = mongoose.model("Warehouse", WarehouseSchema);
