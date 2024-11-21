@@ -49,25 +49,34 @@ exports.createProduct = async (req, res) => {
 };
 
 
-// Cập nhật sản phẩm
 exports.updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
         let updateData = req.body;
-        const { name, category, description, price, quantity, sizes } = req.body;
 
-        // Nếu sizes là chuỗi, phân tích nó thành mảng
-        const parsedSizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes;
-        updateData.sizes = parsedSizes;
-
-        // Kiểm tra và lưu ảnh nếu có
-        if (req.files) {
-            updateData.mainImage = req.files[0]?.path; // Ảnh chính
-            updateData.smallImages = req.files.slice(1, 5).map(file => file.path); // Các ảnh nhỏ (4 ảnh)
+        // Parse sizes nếu là chuỗi JSON
+        const { sizes } = req.body;
+        if (sizes && typeof sizes === 'string') {
+            updateData.sizes = JSON.parse(sizes);
         }
 
-        const updatedProduct = await Product.findByIdAndUpdate(id, updateData, { new: true });
+        // Cập nhật ảnh
+        if (req.files) {
+            // Ảnh chính
+            if (req.files['image']) {
+                updateData.mainImage = req.files['image'][0]?.path;
+            }
 
+            // Ảnh nhỏ
+            if (req.files['additionalImages']) {
+                updateData.smallImages = req.files['additionalImages']
+                    .slice(0, 4) // Giới hạn tối đa 4 ảnh
+                    .map((file) => file.path);
+            }
+        }
+
+        // Cập nhật dữ liệu sản phẩm
+        const updatedProduct = await Product.findByIdAndUpdate(id, updateData, { new: true });
         if (!updatedProduct) {
             return res.status(404).json({ message: 'Product not found' });
         }

@@ -2,68 +2,92 @@
   <div class="bg-light">
     <div class="row">
       <div class="col-lg-4 mt-3 bg-white m-auto rounded shadow-sm p-4">
-        <h2 class="text-center mb-4">Cập nhật sản phẩm</h2>
+        <h2 class="text-center mb-4">Chỉnh sửa sản phẩm</h2>
         <form @submit.prevent="updateProduct">
+          <!-- Product Name -->
           <div class="mb-3">
             <label class="form-label">Tên sản phẩm</label>
-            <input
-              type="text" class="form-control" v-model="newProduct.name" required />
+            <input type="text" class="form-control" v-model="product.name" required />
           </div>
 
+          <!-- Category -->
           <div class="mb-3">
             <label class="form-label">Danh mục</label>
-            <select class="form-control" v-model="newProduct.category" required>
+            <select class="form-control" v-model="product.category" required>
               <option value="" disabled>Chọn danh mục</option>
-              <option v-for="category in categories" :key="category._id" :value="category.name">{{ category.name }}</option>
+              <option v-for="category in categories" :key="category._id" :value="category.name">
+                {{ category.name }}
+              </option>
             </select>
           </div>
 
+          <!-- Product Description -->
           <div class="mb-3">
             <label class="form-label">Thông tin</label>
-            <textarea
-              class="form-control" v-model="newProduct.description" rows="3" required>
-            </textarea>
+            <textarea class="form-control" v-model="product.description" rows="3" required></textarea>
           </div>
 
+          <!-- Product Price -->
           <div class="mb-3">
             <label class="form-label">Đơn giá</label>
-            <input type="number" class="form-control" v-model.number="newProduct.price" required min="0"/>
+            <input type="number" class="form-control" v-model="product.price" required />
           </div>
 
+          <!-- Product Sizes and Quantities -->
           <div class="mb-3">
-            <label class="form-label">Kích thước và Màu sắc</label>
+            <label class="form-label">Kích thước</label>
             <div v-for="(item, index) in sizes" :key="index" class="d-flex align-items-center mb-2">
               <select class="form-select" v-model="item.size" required>
                 <option value="" disabled>Chọn kích thước</option>
-                <option v-for="sizeOption in sizeOptions" :key="sizeOption" :value="sizeOption">{{ sizeOption }}</option>
-              </select>
-              <select class="form-select ms-2" v-model="item.color" required>
-                <option value="" disabled>Chọn màu sắc</option>
-                <option v-for="colorOption in colorOptions" :key="colorOption.name" :value="colorOption.name">{{ colorOption.name }}</option>
+                <option v-for="sizeOption in sizeOptions" :key="sizeOption" :value="sizeOption">
+                  {{ sizeOption }}
+                </option>
               </select>
               <input type="number" class="form-control ms-2" v-model="item.quantity" min="0" placeholder="Số lượng" required />
               <button type="button" class="btn btn-danger ms-2" @click="removeSize(index)">Xóa</button>
             </div>
-            <button type="button" class="btn btn-secondary" @click="addSize">Thêm kích thước và màu sắc</button>
+            <button type="button" class="btn btn-secondary" @click="addSize">Thêm kích thước</button>
           </div>
 
-          <img 
-            :src="newProduct.imageUrl ? `http://localhost:5000/${newProduct.imageUrl}` : ''" 
-            alt="Product Image" class="img-fluid bg-light mb-2" v-if="newProduct.imageUrl"/>
+          <!-- Current Main Image -->
           <div class="mb-3">
-            <label class="form-label">Tải ảnh sản phẩm</label>
-            <input type="file" class="form-control" @change="onImageSelected"/>
-            <img v-if="image" :src="URL.createObjectURL(image)" alt="Image Preview" class="img-fluid mt-2"/>
+            <label>Ảnh hiện tại</label>
+            <img v-if="product.mainImage" :src="`http://localhost:5000/${product.mainImage}`" alt="Main Product Image" class="img-fluid bg-light" />
           </div>
 
+          <!-- Upload Main Image -->
+          <div class="mb-3">
+            <label class="form-label">Tải ảnh chính</label>
+            <input type="file" class="form-control" @change="onMainImageSelected" />
+          </div>
+
+          <div class="small-images mt-2">
+                  <img 
+                    v-for="(smallImage, idx) in product.smallImages" 
+                    :key="idx" 
+                    :src="`http://localhost:5000/${smallImage}`" 
+                    alt="Small Product Image" 
+                    class="img-thumbnail" 
+                    style="width: 50px; height: 50px; margin-right: 5px;" />
+                </div>
+
+          <!-- Upload Additional Images -->
+          <div class="mb-3">
+            <label class="form-label">Tải lên 4 ảnh nhỏ</label>
+            <input type="file" class="form-control" @change="onAdditionalImagesSelected" multiple required />
+            <input type="file" class="form-control" @change="onAdditionalImagesSelected" multiple required />
+            <input type="file" class="form-control" @change="onAdditionalImagesSelected" multiple required />
+            <input type="file" class="form-control" @change="onAdditionalImagesSelected" multiple required />
+            <small class="form-text text-muted">Chọn tối đa 4 ảnh nhỏ.</small>
+          </div>
+
+          <!-- Buttons -->
           <div class="d-flex justify-content-between mt-4">
-            <router-link to="/productmanagement" class="btn btn-secondary">Exit</router-link>
-            <button type="submit" class="btn btn-primary">Cập nhật</button>
+            <router-link to="/productmanagement" class="btn btn-secondary">
+              Quay lại
+            </router-link>
+            <button type="submit" class="btn btn-primary">Cập nhập sản phẩm</button>
           </div>
-
-          <!-- Thêm thông báo thành công hoặc lỗi ở đây -->
-          <div v-if="updateSuccess" class="alert alert-success mt-3">Cập nhật sản phẩm thành công!</div>
-          <div v-if="updateError" class="alert alert-danger mt-3">Đã xảy ra lỗi. Vui lòng thử lại.</div>
         </form>
       </div>
     </div>
@@ -76,100 +100,98 @@ import axios from "axios";
 export default {
   data() {
     return {
-      newProduct: {
+      product: {
         name: "",
         category: "",
         description: "",
         price: 0,
-        color: "",
-        imageUrl: "",
+        mainImage: "",
       },
-      image: null,
-      sizes: [],
+      sizes: [{ size: "", quantity: 0 }],
       sizeOptions: [38, 39, 40, 41, 42, 43],
-      colorOptions: ["Đen", "Trắng", "Đỏ", "Xanh", "Vàng"],
-      categories: [], // Thêm thuộc tính categories
-      updateSuccess: false, // Trạng thái cập nhật thành công
-      updateError: false, // Trạng thái lỗi cập nhật
+      categories: [],
+      mainImage: null,
+      additionalImages: [],
     };
   },
   mounted() {
-    this.getProduct();
-    this.fetchColors();
+    this.fetchProduct();
     this.fetchCategories();
   },
   methods: {
-    onImageSelected(event) {
-      this.image = event.target.files[0];
+    onMainImageSelected(event) {
+      this.mainImage = event.target.files[0];
+    },
+    onAdditionalImagesSelected(event) {
+      const files = event.target.files;
+      if (this.additionalImages.length + files.length > 4) {
+        alert("Chỉ được chọn tối đa 4 ảnh nhỏ.");
+        return;
+      }
+      this.additionalImages = [...this.additionalImages, ...Array.from(files)];
     },
     addSize() {
-      this.sizes.push({ size: "", color: "", quantity: 0 }); // Đảm bảo rằng kích thước có đúng thuộc tính
+      this.sizes.push({ size: "", quantity: 0 });
     },
     removeSize(index) {
       this.sizes.splice(index, 1);
     },
-    async fetchColors() {
-      try {
-        const response = await axios.get('http://localhost:5000/api/color');
-        this.colorOptions = response.data;
-      } catch (error) {
-        console.error('Error fetching colors:', error);
-      }
-    },
-    async getProduct() {
-      try {
-        const response = await axios.get(`http://localhost:5000/api/product/${this.$route.params.id}`);
-        if (response.data) {
-          this.newProduct = response.data;
-          this.sizes = response.data.sizes || [{ size: "", color: "", quantity: 0 }];
-        } else {
-          console.error('Dữ liệu không hợp lệ:', response.data);
-        }
-      } catch (error) {
-        console.error('Lỗi khi tải thông tin sản phẩm:', error);
-        alert("Lỗi khi tải thông tin sản phẩm.");
-      }
-    },
     async fetchCategories() {
       try {
-        const response = await axios.get('http://localhost:5000/api/categories');
+        const response = await axios.get("http://localhost:5000/api/categories");
         this.categories = response.data;
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
+      }
+    },
+    async fetchProduct() {
+      const productId = this.$route.params.id;
+      try {
+        const response = await axios.get(`http://localhost:5000/api/product/${productId}`);
+        this.product = response.data;
+        this.sizes = response.data.sizes || [];
+      } catch (error) {
+        console.error("Error fetching product details:", error);
       }
     },
     async updateProduct() {
+      const productId = this.$route.params.id;
       try {
         const formData = new FormData();
-        formData.append("name", this.newProduct.name);
-        formData.append("category", this.newProduct.category);
-        formData.append("description", this.newProduct.description);
-        formData.append("price", this.newProduct.price.toString());
+        formData.append("name", this.product.name);
+        formData.append("category", this.product.category);
+        formData.append("description", this.product.description);
+        formData.append("price", this.product.price.toString());
         formData.append("sizes", JSON.stringify(this.sizes));
+        if (this.mainImage) formData.append("image", this.mainImage);
 
-        if (this.image) formData.append("image", this.image);
-
-        const response = await axios.put(`http://localhost:5000/api/product/${this.newProduct._id}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+        this.additionalImages.forEach((image) => {
+          formData.append("additionalImages", image);
         });
 
-        if (response) {
-          this.updateSuccess = true; // Đặt trạng thái thành công
+        const response = await axios.put(
+          `http://localhost:5000/api/product/${productId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          alert("Sản phẩm đã được cập nhật thành công!");
           this.$router.push("/productmanagement");
         } else {
-          this.updateError = true; // Đặt trạng thái lỗi
+          alert("Đã xảy ra lỗi khi cập nhật sản phẩm.");
         }
       } catch (error) {
-        console.log("Lỗi:", error);
-        this.updateError = true; // Đặt trạng thái lỗi
+        console.error("Lỗi khi cập nhập sản phẩm:", error);
       }
     },
   },
 };
 </script>
-
 
 
 <style scoped>

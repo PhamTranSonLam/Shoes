@@ -52,8 +52,8 @@ const getReviewByUser = async (req, res) => {
 
 const getReviewById = async (req, res) => {
     try {
-        const { id } = req.params;
-        const review = await Review.findById(id).populate('user');
+        const { userId } = req.params;
+        const review = await Review.find({ user: userId}).populate('user');
         res.status(200).json(review);
     } catch (error) {
         console.error("Error creating review:", error.message || error);

@@ -32,11 +32,11 @@ exports.login = async (req, res) => {
         const { username, password } = req.body; // Correct destructuring assignment
         const admin = await Admin.findOne({ username });
         if (!admin) {
-            return res.status(400).json({ message: 'Invalid username or password' });
+            return res.status(400).json({ message: 'Sai tên' });
         }
         const isMatch = await admin.comparePassword(password);
         if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid username or password' });
+            return res.status(400).json({ message: 'Sai mật khẩu' });
         }
 
         // Tạo JWT token

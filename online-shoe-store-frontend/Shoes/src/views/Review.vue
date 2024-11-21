@@ -3,7 +3,7 @@
     <h2>Đánh giá sản phẩm</h2>
 
     <!-- Danh sách đánh giá của người dùng -->
-    <div v-for="review in reviews" :key="review.id" class="review">
+    <div v-if="reviews && reviews.length" v-for="review in reviews" :key="review.id" class="review">
       <div class="user-avatar">
         <img src="../assets/img/gir_dp3.jpg" alt="User Avatar" />
       </div>
@@ -32,11 +32,14 @@
         </div>  
       </div>
     </div>
+
+    <div v-else class="text-danger">Không có đánh giá nào</div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import { useUserStore } from '../store/user';
 
 export default {
   data() {
@@ -53,8 +56,11 @@ export default {
   },
   methods: {
     async fetchReviews() {
-      try {
-        const response = await axios.get('http://localhost:5000/api/review');
+
+      try { 
+        const userStore = useUserStore();
+        const userId = userStore.user._id;
+        const response = await axios.get(`http://localhost:5000/api/review/${userId}`);
         this.reviews = response.data;
       } catch (error) {
         console.error('Error fetching reviews:', error);

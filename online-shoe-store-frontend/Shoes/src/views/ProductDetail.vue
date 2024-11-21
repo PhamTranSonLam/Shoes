@@ -47,6 +47,7 @@
       </div>
     </div>
   </section>
+
 </template>
 
 
@@ -65,7 +66,7 @@ export default {
         description: '',
         imageUrl: '',
         category: '',
-        smallImages: []
+        smallImages: [],
       },
       mainImage: '',   // Hình ảnh chính
       selectedSize: '',
@@ -73,7 +74,8 @@ export default {
       quantity: 1,
       productId: this.$route.params.id,
       relatedProducts: [], // Sản phẩm liên quan
-      isViewingSmallImage: false // Kiểm tra xem có đang xem ảnh nhỏ hay không
+      isViewingSmallImage: false ,// Kiểm tra xem có đang xem ảnh nhỏ hay không
+      showMessage: false,
     };
   },
   mounted() {
@@ -85,6 +87,7 @@ export default {
     // Lấy chi tiết sản phẩm
     async fetchProductDetails() {
       try {
+        
         const response = await axios.get(`http://localhost:5000/api/product/${this.productId}`);
         this.product = response.data;
         this.mainImage = `http://localhost:5000/${response.data.mainImage}`; // Gán ảnh chính
@@ -120,34 +123,42 @@ export default {
 
     // Thêm sản phẩm vào giỏ hàng
     async addToCart() {
-      if (!this.selectedSize) {
-        alert('Please select a size');
-        return;
-      }
-     
-      // Cập nhật ảnh chính khi thêm vào giỏ hàng
-      const productImage = this.mainImage; // Lấy ảnh chính hiện tại
+  try {
+    const userStore = useUserStore();
 
-      try {
-        const userStore = useUserStore();
-        await axios.post(
-          'http://localhost:5000/api/cart/add',
-          {
-            userId: userStore.user._id,
-            productId: this.product._id,
-            size: this.selectedSize,
-            quantity: this.quantity,
-            mainImage: this.mainImage, // Gửi ảnh chính kèm theo
-          },
-          { headers: { Authorization: `Bearer ${userStore.token}` } }
-        );
-        alert('Product has been successfully added to cart!');
-        this.$router.push({ name: 'Cart' });
-      } catch (error) {
-        console.error('Lỗi khi thêm sản phẩm vào giỏ hàng:', error.response ? error.response.data : error.message);
-        alert('Adding product to cart failed or product is out of stock!');
-      }
-    },
+    // Kiểm tra xem người dùng đã đăng nhập chưa
+    if (!userStore.isAuthenticated) {
+      alert('Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.');
+      this.$router.push({ name: 'Login'}); // Chuyển hướng tới trang đăng nhập
+      return;
+    }
+
+    // Kiểm tra kích thước sản phẩm
+    if (!this.selectedSize) {
+      alert('Vui lòng chọn kích thước sản phẩm.');
+      return;
+    }
+
+    // Gửi yêu cầu thêm sản phẩm vào giỏ hàng
+    await axios.post(
+      'http://localhost:5000/api/cart/add',
+      {
+        userId: userStore.user._id,
+        productId: this.product._id,
+        size: this.selectedSize,
+        quantity: this.quantity,
+        mainImage: this.mainImage,
+      },
+      { headers: { Authorization: `Bearer ${userStore.token}` } }
+    );
+
+    alert('Sản phẩm đã được thêm vào giỏ hàng thành công!');
+    this.$router.push({ name: 'Cart' });
+  } catch (error) {
+    console.error('Lỗi khi thêm sản phẩm vào giỏ hàng:', error.response ? error.response.data : error.message);
+    alert('Thêm sản phẩm vào giỏ hàng thất bại. Vui lòng thử lại.');
+  }
+},
 
     // Tính tổng số lượng sản phẩm theo kích thước
     calculateTotalQuantity(sizes) {

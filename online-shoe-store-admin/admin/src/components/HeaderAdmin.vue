@@ -104,7 +104,7 @@ export default {
     },
     async logout() {
       await this.userStore.logout();
-      this.$router.push('/auth/login');
+      // this.$router.push('/auth/login');
     },
     showChangePasswordModal() {
       const modal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
