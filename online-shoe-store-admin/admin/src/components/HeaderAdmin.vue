@@ -17,7 +17,7 @@
         <a class="btn btn-info dropdown-toggle" href="#" role="button" id="dropdownMenuLink" 
           data-bs-toggle="dropdown" aria-expanded="false"> 
           Welcome {{ username.username }}
-          <img src="../assets/img/girl_dp1.jpg" alt="User image" class="user-img">
+          <img :src="`http://localhost:5000/uploads/${item.image}`" alt="User image" class="user-img">
         </a>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
           <li>
@@ -86,6 +86,7 @@ export default {
         message: '',
         type: ''
       },
+      item:[],
       username: '', // Declare username here
       userImage: '', // Declare userImage here (replace with actual logic)
     };
@@ -138,7 +139,21 @@ export default {
         this.notification.message = error.response?.data?.message || 'Đổi mật khẩu thất bại!';
         this.notification.type = 'danger';
       }
+    },
+    async getByUser() {
+      try {
+        const userId = this.userStore.user._id;
+        console.log(userId)
+        const response = await axios.get(`http://localhost:5000/api/authadmin/${userId}`);
+        this.item = response.data;
+        console.log(this.item)
+      } catch (error) {
+        
+      }
     }
+  },
+  mounted() {
+    this.getByUser();
   }
 };
 </script>

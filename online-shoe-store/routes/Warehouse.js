@@ -10,9 +10,11 @@ router.get("/:id",  WarehouseController.getWarehouseById);
 
 // Tạo mới một phiếu nhập
 router.post("/", WarehouseController.createWarehouse);
-
+router.put('/update-products', WarehouseController.updateProducts)
 // Cập nhật thông tin phiếu nhập
 router.put("/:id", WarehouseController.updateWarehouse);
+
+
 
 // Xóa phiếu nhập
 router.delete("/:id", WarehouseController.deleteWarehouse);

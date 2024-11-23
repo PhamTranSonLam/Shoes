@@ -3,12 +3,7 @@
     <!-- Search Input -->
     <div class="row mb-4">
       <div class="col-md-10">
-        <input
-          type="text"
-          class="form-control search-input"
-          placeholder="Tìm kiếm phiếu nhập"
-          v-model="searchQuery"
-        />
+        <input  type="text"  class="form-control search-input"  placeholder="Tìm kiếm phiếu nhập"  v-model="searchQuery"  />
       </div>
     </div>
 
@@ -17,7 +12,7 @@
       <div class="card-header d-flex justify-content-between align-items-center">
         <h4>Chi tiết phiếu nhập</h4>
         <select 
-          class="form-select"   aria-label="Default select example" v-model="idSelected" @change="fetchWarehouseDetails">
+          class="form-select"   aria-label="Default select example" v-model="idSelected" @change="getOne">
           <option value="" selected>Chọn phiếu nhập</option>
           <option   v-for="warehouse in warehouses" :key="warehouse._id" :value="warehouse._id">
             {{ warehouse.name }}
@@ -48,7 +43,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(product, index) in paginatedWarehouses" :key="product.id">
+            <tr v-if="newProduct.length > 0" v-for="(product, index) in paginatedWarehouses" :key="product.id">
               <td>{{ index + 1 + currentPage * itemsPerPage }}</td>
               <td>{{ product.productName }}</td>
               <td>{{ product.unit }}</td>
@@ -178,7 +173,7 @@ export default {
       showAddModal: false,
       showEditModal: false,
       newWarehouse: {
-        name: "",
+        productName: "",
         unit: "",
         price: 0,
         quantity: 0,
@@ -189,8 +184,8 @@ export default {
   },
   computed: {
     filteredWarehouses() {
-      return this.newProduct.filter((warehouse) =>
-        warehouse.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+      return this.newProduct?.filter((warehouse) =>
+        warehouse.productName?.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
     },
     paginatedWarehouses() {
@@ -206,16 +201,20 @@ export default {
     // Hàm này sẽ lấy tất cả phiếu nhập từ API
     async getAllWarehouses() {
       try {
-        const response = await axios.get("http://localhost:5000/api/warehouse");
+        const response = await axios.get("http://localhost:5000/api/warehouse/");
         this.warehouses = (response.data);
         this.isLoading = false; // Thay đổi trạng thái khi dữ liệu đã được tải xong
       } catch (error) {
         console.error("Có lỗi khi tải dữ liệu:", error);
       }
     },
+    async getOne() {
+      const response = await axios.get("http://localhost:5000/api/warehouse/"+this.idSelected);
+      this.newProduct = response.data.products;
+    },
     // async createdWarehouses() {
     //   try {
-    //     const response = await axios.get("http://localhost:5000/api/warehouse");
+    //     const response = await axios.post("http://localhost:5000/api/warehouse");
     //     this.warehouses = response.data;
     //     this.isLoading = false; // Thay đổi trạng thái khi dữ liệu đã được tải xong
     //   } catch (error) {
@@ -224,29 +223,36 @@ export default {
     // },
     async addWarehouse(data) {
       try {
-        // const response = await axios.put("http://localhost:5000/api/warehouse/"+this.idSelected, this.newWarehouse);
+        // const response = await axios.put("http://localhost:5000/api/warehouse", this.newWarehouse);
         // this.warehouses.push(response.data);
-        // this.newWarehouse = {
-        //   name: "",
-        //   category: "",
-        //   unit: "",
-        //   price: 0,
-        //   quantity: 0,
-        //   location: "",
-        // };
+        this.newWarehouse = {
+          name: "",
+          category: "",
+          unit: "",
+          price: 0,
+          quantity: 0,
+          location: "",
+        };
         this.newProduct.push(data);
+        await this.updateWarehouse();
         this.showAddModal = false;
       } catch (error) {
         console.error("Có lỗi khi thêm phiếu nhập:", error);
       }
     },
-    async updateWarehouse() {
+    async updateWarehouse(id = '') {
       try {
-        let update = this.warehouses.filter((item) => item._id == this.idSelected);
+        // let update = this.warehouses.filter((item) => item._id == this.idSelected);
+        let update = {};
+        if(this.editWarehouse) {
+          const ind = this.newProduct.findIndex(product => product._id === this.editWarehouse._id);
+          console.log(ind)
+          this.newProduct.splice(ind, 1, this.editWarehouse);
+        }
         update.products = this.newProduct;
-        console.log(update)
+        update.warehouseId = this.idSelected;
         const response = await axios.put(
-          `http://localhost:5000/api/warehouse/${this.idSelected}`,
+          `http://localhost:5000/api/warehouse/update-products`,
           update
         );
         const index = this.warehouses.findIndex((warehouse) => warehouse.id === response.data.id);

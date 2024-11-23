@@ -18,7 +18,7 @@
           <i class="fa-solid fa-cart-shopping"></i>
         </router-link>
         <div v-if="username" class="user-link" @click="toggleDropdown">
-          <img class="user-img" src="../src/assets/img/gir_dp3.jpg" alt="User Image">
+          <img class="user-img me-2" :src="`http://localhost:5000/uploads/${item.image}`" alt="User Image">
           <span>{{ username.username }}</span>
           <div v-if="isDropdownVisible" class="logout bg-light p-2 border shadow">
             <p><router-link to="/accountinformation" class="info">Thông tin tài khoản</router-link></p>
@@ -133,13 +133,15 @@ export default {
       notification: {
         message: '',
         type: ''
-      }
+      },
+      item:[],
     };
   },
   computed: {
     username() {
       return this.userStore.user;
-    }
+    },
+
   },
   methods: {
     toggleDropdown() {
@@ -188,7 +190,21 @@ export default {
         this.notification.message = error.response?.data?.message || 'Đổi mật khẩu thất bại!';
         this.notification.type = 'danger';
       }
+    },
+    async getByUser() {
+      try {
+        const userId = this.userStore.user._id;
+        console.log(userId)
+        const response = await axios.get(`http://localhost:5000/api/auth/${userId}`);
+        this.item = response.data;
+        console.log(this.item)
+      } catch (error) {
+        
+      }
     }
+  },
+  mounted() {
+    this.getByUser();
   }
 };
 </script>

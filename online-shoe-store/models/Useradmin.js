@@ -8,6 +8,7 @@ const adminSchema = new mongoose.Schema({
     password: { type: String, required: true },
     phone: {type: Number, required: true},
     address: {type: String, require: true. unique},
+    image:{type:String,}
 }, {
     timestamps: true
 });

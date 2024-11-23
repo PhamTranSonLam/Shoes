@@ -66,38 +66,55 @@ exports.getByUser = async (req, res) => {
 };
 // Controller để cập nhật thông tin người dùng
 exports.updateUser = async (req, res) => {
-  const userId = req.params.id;
+    const userId = req.params.id;
+  
+    try {
+      // Tìm kiếm người dùng theo ID
+      const user = await User.findById(userId);
+  
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      // Xóa ảnh cũ nếu có file mới được upload
+      if (req.file) {
+        const fs = require('fs');
+        const path = require('path');
+  
+        if (user.image && fs.existsSync(path.join(__dirname, '../uploads', user.image))) {
+          fs.unlinkSync(path.join(__dirname, '../uploads', user.image));
+        }
+  
+        user.image = req.file.filename; // Lưu tên file ảnh mới vào cơ sở dữ liệu
+      }
+  
+      // Cập nhật các thông tin khác từ body của request
+      user.username = req.body.username || user.username;
+      user.email = req.body.email || user.email;
+      user.address = req.body.address || user.address;
+      user.phone = req.body.phone || user.phone;
+  
+      // Lưu thay đổi
+      const updatedUser = await user.save();
+  
+      // Trả về thông tin đã được cập nhật
+      res.status(200).json({
+        _id: updatedUser._id,
+        username: updatedUser.username,
+        email: updatedUser.email,
+        address: updatedUser.address,
+        phone: updatedUser.phone,
+        image: updatedUser.image,
+      });
 
-  try {
-    // Tìm kiếm người dùng theo ID
-    const user = await User.findById(userId);
 
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+    } catch (error) {
+      console.error('Error updating user:', error);
+      res.status(500).json({ message: 'Server error' });
+      
     }
-
-    // Cập nhật thông tin người dùng từ body của yêu cầu
-    user.username = req.body.username || user.username;
-    user.email = req.body.email || user.email;
-    user.address = req.body.address || user.address;
-    user.phone = req.body.phone || user.phone;
-
-    // Lưu thay đổi vào cơ sở dữ liệu
-    const updatedUser = await user.save();
-
-    // Trả về thông tin người dùng đã được cập nhật
-    res.status(200).json({
-      _id: updatedUser._id,
-      username: updatedUser.username,
-      email: updatedUser.email,
-      address: updatedUser.address,
-      phone: updatedUser.phone,
-    });
-  } catch (error) {
-    console.error('Error updating user:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
+  };
+  
 
 exports.getAll = async (req, res) => {
     try {

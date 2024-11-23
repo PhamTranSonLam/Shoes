@@ -24,6 +24,15 @@
           <input type="text" v-model="user.phone" id="phone" required />
         </div>
 
+        <div class="form-group">
+          <label for="image">Ảnh đại diện</label>
+          <input type="file" @change="onFileChange" id="image" />
+        </div>
+
+        <div class="profile-picture-preview">
+          <img :src="`http://localhost:5000/uploads/${user.image}`" alt="Ảnh đại diện" v-if="user.image" />
+        </div>
+
         <button type="submit">Update Information</button>
       </form>
     </div>
@@ -42,7 +51,9 @@ export default {
         email: '',
         address: '',
         phone: '',
+        image: '', // URL ảnh hiện tại
       },
+      image: null, // File ảnh mới tải lên
     };
   },
   computed: {
@@ -71,22 +82,70 @@ export default {
         }
       }
     },
-    async updateUseradmin() {
-      try {
-        const userId = this.currentUser._id;
-        const response = await axios.put(`http://localhost:5000/api/authAdmin/update/${userId}`, this.user, {
-          headers: {
-            Authorization: `Bearer ${this.UserStore.token}`,
-          },
-        });
-        if (response.status === 200) {
-          alert('Account information updated successfully!');
-          this.getUser();
-        }
-      } catch (error) {
-        console.error('Error updating account information:', error);
-        alert('An error occurred while updating your account information.');
+    onFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.image = file;
+
+        // Hiển thị ảnh xem trước
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.user.image = e.target.result;
+        };
+        reader.readAsDataURL(file);
       }
+    },
+    async updateUseradmin() {
+      this.isUpdating = true; // Bắt đầu trạng thái cập nhật
+  try {
+    const userId = this.currentUser._id;
+
+    // Tạo FormData để gửi dữ liệu
+    const formData = new FormData();
+    formData.append('username', this.user.username);
+    formData.append('email', this.user.email);
+    formData.append('address', this.user.address);
+    formData.append('phone', this.user.phone);
+    if (this.image) {
+      formData.append('image', this.image);
+    }
+
+    const response = await axios.put(
+      `http://localhost:5000/api/authAdmin/update/${userId}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${this.UserStore.token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      alert('Cập nhật thông tin thành công!');
+      this.UserStore.update(response.data); // Cập nhật dữ liệu vào Pinia Store
+      this.getUser(); // Refresh lại dữ liệu người dùng
+    }
+  } catch (error) {
+    console.error('Error updating account information:', error);
+  } finally {
+    this.isUpdating = false; // Kết thúc trạng thái cập nhật
+  }
+      // try {
+      //   const userId = this.currentUser._id;
+      //   const response = await axios.put(`http://localhost:5000/api/authAdmin/update/${userId}`, this.user, {
+      //     headers: {
+      //       Authorization: `Bearer ${this.UserStore.token}`,
+      //     },
+      //   });
+      //   if (response.status === 200) {
+      //     alert('Account information updated successfully!');
+      //     this.getUser();
+      //   }
+      // } catch (error) {
+      //   console.error('Error updating account information:', error);
+      //   alert('An error occurred while updating your account information.');
+      // }
     },
   },
   setup() {

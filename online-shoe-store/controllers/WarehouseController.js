@@ -82,10 +82,40 @@ const deleteWarehouse = async (req, res) => {
   }
 };
 
+
+// Function to update products in a warehouse
+const updateProducts = async (req, res) => {
+  try {
+    const { warehouseId, products } = req.body;
+
+
+    // Find and update the warehouse
+    const warehouse = await Warehouse.findByIdAndUpdate(
+      warehouseId,
+      {  $set: { products } }, // Update the products field
+      { new: true } // Return the updated document
+    );
+    console.log(products)
+    if (!warehouse) {
+      return res.status(404).json({ message: 'Warehouse not found.' });
+    }
+
+    res.status(200).json({
+      message: 'Sản phẩm cập nhật thành công',
+      warehouse,
+    });
+  } catch (error) {
+    console.error('Error updating products:', error);
+    res.status(500).json({ message: 'Internal server error.', error: error.message });
+  }
+};
+
+
 module.exports = {
   getAllWarehouses,
   getWarehouseById,
   createWarehouse,
   updateWarehouse,
   deleteWarehouse,
+  updateProducts
 };

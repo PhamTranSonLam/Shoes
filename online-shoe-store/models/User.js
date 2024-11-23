@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
     password: { type: String, default: null },  // Không bắt buộc phải có mật khẩu
     phone: { type: Number, required: true },
     address: { type: String },
+    image: { type: String },
 }, {
     timestamps: true
 });

@@ -81,6 +81,18 @@ exports.updateUseradmin = async (req, res) => {
       if (!admin) {
         return res.status(404).json({ message: 'User not found' });
       }
+
+      // Xóa ảnh cũ nếu có file mới được upload
+      if (req.file) {
+        const fs = require('fs');
+        const path = require('path');
+  
+        if (admin.image && fs.existsSync(path.join(__dirname, '../uploads', admin.image))) {
+          fs.unlinkSync(path.join(__dirname, '../uploads', admin.image));
+        }
+  
+        admin.image = req.file.filename; // Lưu tên file ảnh mới vào cơ sở dữ liệu
+      }
   
       // Cập nhật thông tin người dùng từ body của yêu cầu
       admin.username = req.body.username || admin.username;
@@ -98,6 +110,7 @@ exports.updateUseradmin = async (req, res) => {
         email: updatedUseradmin.email,
         address: updatedUseradmin.address,
         phone: updatedUseradmin.phone,
+        image: updatedUseradmin.image,
       });
     } catch (error) {
       console.error('Error updating user:', error);

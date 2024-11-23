@@ -20,7 +20,13 @@
         <div v-if="loading" class="text-center p-3">
           <p>Đang tải dữ liệu...</p>
         </div>
-        <table v-else class="table table-hover text-center">
+        
+        <!-- Kiểm tra xem người dùng đã đăng nhập chưa -->
+        <div v-if="!user">
+          <p class="text-center">Vui lòng đăng nhập để xem đánh giá.</p>
+        </div>
+
+        <table v-else v-if="!loading" class="table table-hover text-center">
           <thead class="table-header">
             <tr>
               <th scope="col">STT</th>
@@ -50,13 +56,13 @@
               <td>
                 <button type="button" class="btn btn-primary btn-sm" @click="openFeedbackModal(review)">Phản hồi</button>
               </td>
-    
               <td>
                 <button type="button" class="btn btn-danger btn-sm" @click="deleteReview(review._id)">Xóa</button>
               </td>
             </tr>
           </tbody>
         </table>
+        
         <div v-if="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
       </div>
     </div>
@@ -99,8 +105,7 @@
 
 <script>
 import axios from 'axios';
-import { useUserStore } from '../store/user';
-
+import { useUserStore } from '../store/user'; // Importing Pinia store
 
 export default {
   data() {
@@ -125,9 +130,8 @@ export default {
       return this.filteredReviews.slice(start, start + this.pageSize);
     },
     user() {
-      return this.UserStore.user;
+      return this.UserStore.user; // Checking if the user is logged in
     }
-    
   },
   methods: {
     async fetchReviews() {
@@ -166,9 +170,9 @@ export default {
       if (this.selectedReview) {
         try {
           await axios.post(`http://localhost:5000/api/review/${this.selectedReview._id}/comment`, {
-            staff:this.user._id,
+            staff: this.user._id,
             comment: this.feedbackComment,
-            feedbackAt:'12/5/2002'
+            feedbackAt: '12/5/2002',
           });
           alert('Phản hồi đã được gửi thành công.');
           this.fetchReviews(); // Tải lại danh sách đánh giá
@@ -214,7 +218,6 @@ export default {
       UserStore
     };
   }
-
 };
 </script>
 

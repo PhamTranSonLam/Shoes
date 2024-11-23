@@ -18,7 +18,7 @@ const orderSchema = new mongoose.Schema({
   paymentMethod: { type: String, required: true }, // 'creditCard', 'paypal'
   paymentStatus: {type: String},
   totalAmount: { type: Number, required: true },
-  status: { type: String, default: 'Pending' },
+  status: { type: String, default: 'Đang xử lý' },
   createdAt: { type: Date, default: Date.now },
   voucher:{type: String},
   discount:{type: String},

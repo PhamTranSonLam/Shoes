@@ -11,8 +11,8 @@
         <div class="order-header">
           <h3>Mã đơn hàng #{{ order._id }}</h3>
           <div class="order-actions">
-            <button class="review-button" @click="openReviewModal(order)">Review</button>
-            <button class="edit-button" @click="updateOrderStatus(order)">Edit</button>
+            <button v-if="order.status === 'Đã giao'" class="review-button" @click="openReviewModal(order)">Đánh giá</button>
+            
           </div>
         </div>
         <p><strong>Ngày:</strong> {{ new Date(order.createdAt).toLocaleString() }}</p>

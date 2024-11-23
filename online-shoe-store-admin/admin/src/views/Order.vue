@@ -62,7 +62,7 @@
                   class="form-select"
                   @change="updateOrderStatus(order)"
                 >
-                  <option value="Pending">Đang xử lý</option>
+                  <option value="Đang xử lý">Đang xử lý</option>
                   <option value="Đã giao">Đã giao</option>
                   <option value="Đã hủy">Đã hủy</option>
                 </select>
