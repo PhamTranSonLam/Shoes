@@ -8,7 +8,7 @@
         
         <!-- Nút quay lại ảnh chính -->
         <button v-if="isViewingSmallImage" @click="goBackToMainImage" class="btn btn-secondary mt-3">
-          Go back
+          Quay lại
         </button>
 
         <!-- Hình ảnh sản phẩm nhỏ -->
@@ -24,14 +24,14 @@
       </div>
       <!-- Thông tin sản phẩm -->
       <div class="col-lg-6 col-md-12 col-12">
-        <h6>Home / Shoes</h6>
+        <h6>Trang chủ / Shoes</h6>
         <h3 class="py-4">{{ product.name }}</h3>
         <h2>{{ product.price | currency }} VNĐ</h2>
-        <p>Quantity:{{ calculateTotalQuantity(product.sizes) }}</p>
+        <p>Số lượng:{{ calculateTotalQuantity(product.sizes) }}</p>
 
         <!-- Chọn kích thước -->
         <select class="my-3" v-model="selectedSize">
-          <option disabled value=""> Size</option>
+          <option disabled value=""> Kích thước</option>
           <option v-for="size in product.sizes" :key="size">{{ size.size }}</option>
         </select>
 
@@ -39,10 +39,10 @@
         <input type="number" v-model="quantity" min="1" class="quantity-input" />
 
         <!-- Nút thêm vào giỏ hàng -->
-        <button class="buy-btn" @click="addToCart">Add To Cart</button>
+        <button class="buy-btn" @click="addToCart">Thêm giỏ hàng</button>
 
         <!-- Chi tiết sản phẩm -->
-        <h4 class="mt-5 mb-5">Product Detail</h4>
+        <h4 class="mt-5 mb-5">Sản phẩm chi tiết</h4>
         <span>{{ product.description }}</span>
       </div>
     </div>

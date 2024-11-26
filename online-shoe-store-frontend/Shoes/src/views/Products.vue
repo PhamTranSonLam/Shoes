@@ -36,15 +36,15 @@
             <img :src="`http://localhost:5000/${product.mainImage}`" alt="Product Image" class="img-fluid bg-light" />
           </div>
           <div class="products_text">
-            <router-link :to="{name: 'ProductDetail', params: {id: product._id} }" class="btn">
-              <h2>{{ product.name }}</h2>
+            <router-link :to="{name: 'ProductDetail', params: {id: product._id} }" class="text-decoration-none">
+              <h2 class="fs-3">{{ product.name }}</h2>
             </router-link>
             <p>{{ product.description }}</p>
             <p> Số lượng :{{ calculateTotalQuantity(product.sizes) }}</p>
             <div class="price-size-container">
-              <h3>{{ product.price }} VNĐ</h3>
+              <h3 class="fs-3 text-danger">{{ formatWithText(product.price) }}</h3>
             </div>
-            <div class="products_star">
+            <div class="products_star d-flex justify-content-center">
               <router-link :to="{name: 'ProductDetail', params: {id: product._id} }" class="btn">
                 <button class="buy-btn">Xem chi tiết</button>
               </router-link>
@@ -94,6 +94,17 @@ export default {
         console.log('Error fetching products:', error);
       }
     },
+
+    formatVND(amount) {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+        }).format(amount);
+      },
+
+      formatWithText(amount) {
+        return amount.toLocaleString('vi-VN') + ' VND';
+      },
     async fetchCategory() {
       try {
         const response = await axios.get('http://localhost:5000/api/categories');
@@ -390,6 +401,8 @@ body {
   grid-template-columns: repeat(4, 1fr); /* Always 4 columns */
   gap: 20px;
   margin-top: 30px;
+  justify-content: start; /* Các sản phẩm sẽ căn về bên trái */
+
 }
 
 /* Ensure responsiveness for smaller screens */

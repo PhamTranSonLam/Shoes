@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-5">
+  <div class="chitietphieunhap mt-5">
     <!-- Search Input -->
     <div class="row mb-4">
       <div class="col-md-10">
@@ -304,6 +304,9 @@ export default {
 </script>
 
 <style scoped>
+.chitietphieunhap {
+  margin: 2rem;
+}
 .search-input {
   border-radius: 5px;
   padding: 10px;

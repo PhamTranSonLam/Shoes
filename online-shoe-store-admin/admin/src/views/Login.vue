@@ -7,7 +7,7 @@
         </div>
         <div class="col-lg-7 px-5 pt-5">
           <h1 class="font-weight-bold py-3">Shoes</h1>
-          <h4>Sign into your account</h4>
+          <h4>Đăng nhập tài khoản tại đây</h4>
           <form @submit.prevent="loginadmin">
             <div class="form-row">
               <div class="col-lg-7">
@@ -25,15 +25,15 @@
             <div class="form-row">
             <div class="col-lg-7">
               <router-link to= "/home">
-                <button @click="loginadmin" class="btn1 mt-3 mb-4">Login</button>
+                <button @click="loginadmin" class="btn1 mt-3 mb-4">Đăng nhập</button>
               </router-link>
             </div>
           </div>
 
-            <a href="#">Forgot password?</a>
+            <a href="#">Quên mật khẩu?</a>
             <p>
-              Don't have an account?
-              <router-link to="/register">Register here</router-link>
+              Bạn đã có tài khoản chưa?
+              <router-link to="/register">Đăng ký</router-link>
             </p>
           </form>
           <!--Notification Banner-->

@@ -40,7 +40,7 @@
               <td>{{ formatDate(voucher.endDate) }}</td>
               <td>{{ voucher.usageLimit }}</td>
               <td>{{ voucher.timesUsed }}</td> <!-- Display times used -->
-              <td>
+              <td class="d-flex">
                 <router-link :to="`/editvoucher/${voucher.code}`" class="btn btn-edit btn-sm">Chỉnh sửa</router-link>
                 <button @click="deleteVoucher(voucher._id, index)" class="btn btn-delete btn-sm">Xóa</button>
               </td>

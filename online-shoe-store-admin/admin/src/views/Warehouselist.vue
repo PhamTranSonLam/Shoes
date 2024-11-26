@@ -1,5 +1,5 @@
 <template>
-    <div class="container mt-5">
+    <div class="danhsachkho mt-5">
       <!-- Search Input -->
       <div class="row mb-4">
         <div class="col-md-10">
@@ -208,4 +208,9 @@ export default {
   }
 };
 </script>
+<style>
+.danhsachkho {
+  margin: 2rem;
+}
+</style>
   

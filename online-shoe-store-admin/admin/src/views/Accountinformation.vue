@@ -1,11 +1,11 @@
 <template>
   <section class="body" id="account-info">
     <div class="account-container">
-      <h2>Account Information</h2>
+      <h2>Tài khoản thông tin của bạn</h2>
 
       <form @submit.prevent="updateUseradmin">
         <div class="form-group">
-          <label for="username">Username</label>
+          <label for="username">Tên</label>
           <input type="text" v-model="user.username" id="username" required />
         </div>
 
@@ -15,12 +15,12 @@
         </div>
 
         <div class="form-group">
-          <label for="address">Address</label>
+          <label for="address">Địa chỉ</label>
           <input type="text" v-model="user.address" id="address" required />
         </div>
 
         <div class="form-group">
-          <label for="phone">Phone Number</label>
+          <label for="phone">SĐT</label>
           <input type="text" v-model="user.phone" id="phone" required />
         </div>
 
@@ -33,7 +33,7 @@
           <img :src="`http://localhost:5000/uploads/${user.image}`" alt="Ảnh đại diện" v-if="user.image" />
         </div>
 
-        <button type="submit">Update Information</button>
+        <button type="submit">Cập nhập</button>
       </form>
     </div>
   </section>

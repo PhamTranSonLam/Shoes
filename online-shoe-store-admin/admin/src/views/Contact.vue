@@ -20,7 +20,7 @@
           <td>{{ contact.content }}</td>
           <td>{{ formatDate(contact.date) }}</td>
           <td>
-            <button @click="viewDetail(contact.id)">Xem Chi Tiết</button>
+            <button @click="viewDetail(contact.id)" class="me-2">Xem Chi Tiết</button>
             <button @click="deleteContactForm(contact.id)">Xóa</button>
           </td>
         </tr>
@@ -40,32 +40,31 @@
     </div>
   </div>
 </template>
-
 <script>
 import axios from 'axios';
 
 export default {
   data() {
     return {
-      contacts: [],
-      selectedContact: null,
+      contacts: [], // Danh sách liên lạc
+      selectedContact: null, // Liên lạc được chọn để xem chi tiết
     };
   },
   methods: {
+    // Lấy danh sách liên lạc từ API
     async fetchContacts() {
       try {
         const response = await axios.get('http://localhost:5000/api/contact/');
-        this.contacts = response.data.contacts.map(contact => ({
-          ...contact,
-          date: contact.date ? new Date(contact.date) : null,
-        }));
+        this.contacts = response.data.contacts;
       } catch (error) {
         alert('Lỗi khi tải dữ liệu liên lạc');
       }
     },
+    // Hiển thị chi tiết liên lạc
     viewDetail(contactId) {
       this.selectedContact = this.contacts.find(contact => contact.id === contactId);
     },
+    // Xóa liên lạc
     async deleteContactForm(contactId) {
       if (confirm('Bạn có chắc muốn xóa liên lạc này?')) {
         try {
@@ -77,9 +76,12 @@ export default {
         }
       }
     },
+    // Định dạng ngày tháng
     formatDate(date) {
       if (!date) return 'Không xác định';
-      return new Date(date).toLocaleDateString('vi-VN', {
+      const parsedDate = new Date(date);
+      if (isNaN(parsedDate)) return 'Ngày không hợp lệ';
+      return parsedDate.toLocaleDateString('vi-VN', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -87,96 +89,184 @@ export default {
     },
   },
   mounted() {
-    this.fetchContacts();
+    this.fetchContacts(); // Gọi API khi component được gắn vào
   },
 };
 </script>
+<style scoped>
+/* Toàn bộ container */
+.contact-management {
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
+/* Tiêu đề chính */
+.contact-management h1 {
+  font-size: 28px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-bottom: 3px solid #4CAF50;
+  display: inline-block;
+  padding-bottom: 5px;
+}
 
-  
-  <style scoped>
-  .contact-management {
-    padding: 20px;
+/* Bảng danh sách liên lạc */
+.contact-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.contact-table th,
+.contact-table td {
+  padding: 12px 15px;
+  text-align: left;
+  color: #333;
+}
+
+.contact-table th {
+  background-color: #4CAF50;
+  color: white;
+  font-size: 16px;
+  text-transform: uppercase;
+  border-bottom: 3px solid #f2f2f2;
+}
+
+.contact-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.contact-table tr:hover {
+  background-color: #e8f5e9;
+  cursor: pointer;
+  transform: scale(1.01);
+  transition: 0.2s;
+}
+
+.contact-table td {
+  border-bottom: 1px solid #ddd;
+}
+
+/* Nút bấm */
+button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+button:first-of-type {
+  background-color: #4CAF50;
+  color: white;
+}
+
+button:first-of-type:hover {
+  background-color: #45a049;
+}
+
+button:last-of-type {
+  background-color: #f44336;
+  color: white;
+}
+
+button:last-of-type:hover {
+  background-color: #e53935;
+}
+
+/* Modal */
+.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  animation: scaleUp 0.3s ease-in-out;
+}
+
+.modal-content h2 {
+  font-size: 20px;
+  margin-top: 0;
+  color: #333;
+  text-align: center;
+  border-bottom: 2px solid #4CAF50;
+  padding-bottom: 10px;
+}
+
+.modal-content p {
+  margin: 10px 0;
+  line-height: 1.6;
+  color: #555;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 5px;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.close:hover {
+  background: #e53935;
+}
+
+/* Hiệu ứng */
+@keyframes fadeIn {
+  from {
+    background: rgba(0, 0, 0, 0);
   }
-  
-  .contact-management h1 {
-    font-size: 24px;
-    color: #333;
-    margin-bottom: 20px;
+  to {
+    background: rgba(0, 0, 0, 0.6);
   }
-  
-  .contact-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
   }
-  
-  .contact-table th, .contact-table td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: left;
+  to {
+    transform: scale(1);
+    opacity: 1;
   }
-  
-  .contact-table th {
-    background-color: #f4f4f4;
-    font-weight: bold;
-  }
-  
-  .contact-table tr:hover {
-    background-color: #f9f9f9;
-  }
-  
-  button {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    opacity: 0.8;
-  }
-  
-  button:first-of-type {
-    background-color: #4CAF50;
-    color: white;
-  }
-  
-  button:last-of-type {
-    background-color: #f44336;
-    color: white;
-  }
-  
-  .modal {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-  }
-  
-  .modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 5px;
-    width: 400px;
-    position: relative;
-  }
-  
-  .modal-content h2 {
-    margin-top: 0;
-  }
-  
-  .close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 18px;
-    cursor: pointer;
-  }
-  </style>
-  
+}
+</style>
+

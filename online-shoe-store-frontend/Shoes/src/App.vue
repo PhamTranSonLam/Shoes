@@ -21,8 +21,8 @@
           <img class="user-img me-2" :src="`http://localhost:5000/uploads/${item.image}`" alt="User Image">
           <span>{{ username.username }}</span>
           <div v-if="isDropdownVisible" class="logout bg-light p-2 border shadow">
-            <p><router-link to="/accountinformation" class="info">Thông tin tài khoản</router-link></p>
-            <p><router-link to="/Orderhistory" class="text-dark">Lịch sử đơn hàng</router-link></p>
+            <p><router-link to="/accountinformation" class="info text-decoration-none text-dark">Thông tin tài khoản</router-link></p>
+            <p><router-link to="/Orderhistory" class="text-dark text-decoration-none text-dark ">Lịch sử đơn hàng</router-link></p>
             <p class="text-dark" @click="showChangePasswordModal">Đổi mật khẩu</p>
             <p @click="logout">Đăng xuất</p>
           </div>

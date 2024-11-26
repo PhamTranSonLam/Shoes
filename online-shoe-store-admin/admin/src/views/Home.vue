@@ -47,6 +47,10 @@
       </div>
     </div>
 
+    
+  </div>
+
+  <div class="chart-container">
     <div class="chart-container">
       <div class="chart">
         <h1>Biểu đồ Doanh Thu Hàng Tuần</h1>
@@ -58,6 +62,7 @@
         <PieChart :chartData="pieChartData" :options="pieChartOptions" />
       </div>
     </div>
+
   </div>
 </template>
 
@@ -146,15 +151,26 @@ export default {
 <style>
 /* Trang chủ */
 .card--container {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 10px;
+    background: white;
+    width: 100%;
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+.chart-container {
+  background: #f5f6fa;
+    width: 100%;
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
 }
 
 .card--wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
 }
 
 .main--title {

@@ -70,7 +70,7 @@
         </div>
 
         <!-- Order Button -->
-        <button @click="submitOrder" :disabled="cartTotal === 0 || !isFormValid">Place Order</button>
+        <button @click="submitOrder" :disabled="cartTotal === 0 || !isFormValid">Thanh toán</button>
       </div>
     </div>
   </section>

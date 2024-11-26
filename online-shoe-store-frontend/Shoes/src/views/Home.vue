@@ -1,10 +1,10 @@
 <template>
     <section id="Home">
       <div class="container">
-        <h5>SẢN PHẨM MỚI</h5>
+        <h5 class="text-danger">SẢN PHẨM MỚI</h5>
         <h1><span>Giá Tốt Nhất</span>Năm Nay</h1>
-        <p>Shoomatic mang đến cho bạn sự thoải mái<br>trong việc đi bộ và luyện tập.</p>
-        <button>Mua Ngay</button>
+        <p class="text-dark fs-4">Shoomatic mang đến cho bạn sự thoải mái<br>trong việc đi bộ và luyện tập.</p>
+        <button class="btn btn-primary">Mua Ngay</button>
       </div>
     </section>
   
@@ -60,16 +60,18 @@
       <div class="row mx-auto container-fluid">
         <div v-for="product in adidasProducts" :key="product._id" class="product text-center col-lg-3 col-md-4 col-12">
           <img :src="`http://localhost:5000/${product.mainImage}`" alt="Product Image" class="img-fluid bg-light" />
+         
+          <router-link :to="{ name: 'ProductDetail', params: { id: product._id } }" class="text-decoration-none text-dark">
+            <h2 class="text-start fs-3">{{ product.name }}</h2>
+          </router-link>
+          <h4 class="text-start text-danger">{{ formatWithText(product.price) }}</h4>
           <div class="star">
             <i class="fas fa-star" v-for="n in 5" :key="n"></i>
           </div>
+          <p class="text-start">{{ product.description }}</p>
+          
           <router-link :to="{ name: 'ProductDetail', params: { id: product._id } }" class="btn">
-            <h2 class="p-name">{{ product.name }}</h2>
-          </router-link>
-          <p class="p-des">{{ product.description }}</p>
-          <h4 class="p-price">{{ formatPrice(product.price) }}</h4>
-          <router-link :to="{ name: 'ProductDetail', params: { id: product._id } }" class="btn">
-            <button class="buy-btn">See details</button>
+            <button class="buy-btn">Xem thêm</button>
           </router-link>
         </div>
       </div>
@@ -78,9 +80,9 @@
     <!-- Banner Section -->
     <section id="banner" class="my-5 pb-5">
       <div class="container">
-        <h4>MID SEA</h4>
-        <h1>BỘ SƯU TẬP MÙA THU<br>Giảm đến 20%</h1>
-        <button class="text-uppercase">Mua Ngay</button>
+        <h4 class="text-dark">MID SEA</h4>
+        <h1 class="text-danger">BỘ SƯU TẬP MÙA THU<br>Giảm đến 20%</h1>
+        <button class="btn btn-primary">Mua Ngay</button>
       </div>
     </section>
   
@@ -94,14 +96,16 @@
       <div class="row mx-auto container-fluid">
         <div v-for="product in nikeProducts" :key="product._id" class="product text-center col-lg-3 col-md-4 col-12">
           <img :src="`http://localhost:5000/${product.mainImage}`" alt="Product Image" class="img-fluid bg-light" />
+         
+          <router-link :to="{ name: 'ProductDetail', params: { id: product._id } }" class="text-decoration-none text-start">
+            <h2 class="text-dark fs-3">{{ product.name }}</h2>
+          </router-link>
+          <h4 class="text-start text-danger">{{ formatWithText(product.price) }}</h4>
           <div class="star">
             <i class="fas fa-star" v-for="n in 5" :key="n"></i>
           </div>
-          <router-link :to="{ name: 'ProductDetail', params: { id: product._id } }" class="btn">
-            <h2 class="p-name">{{ product.name }}</h2>
-          </router-link>
-          <p class="p-des">{{ product.description }}</p>
-          <h4 class="p-price">{{ formatPrice(product.price) }}</h4>
+          <p class="text-start">{{ product.description }}</p>
+         
           <router-link :to="{ name: 'ProductDetail', params: { id: product._id } }" class="btn">
             <button class="buy-btn">Xem chi tiết</button>
           </router-link>
@@ -119,14 +123,16 @@
       <div class="row mx-auto container-fluid">
         <div v-for="product in sneakersProducts" :key="product._id" class="product text-center col-lg-3 col-md-4 col-12">
           <img :src="`http://localhost:5000/${product.mainImage}`" alt="Product Image" class="img-fluid bg-light" />
-          <div class="star">
+         
+          <router-link :to="{ name: 'ProductDetail', params: { id: product._id } }" class="text-decoration-none text-dark">
+            <h2 class="text-start fs-3">{{ product.name }}</h2>
+          </router-link>
+          <h4 class="text-start text-danger">{{ formatWithText(product.price) }}</h4>
+           <div class="star">
             <i class="fas fa-star" v-for="n in 5" :key="n"></i>
           </div>
-          <router-link :to="{ name: 'ProductDetail', params: { id: product._id } }" class="btn">
-            <h2 class="p-name">{{ product.name }}</h2>
-          </router-link>
-          <p class="p-des">{{ product.description }}</p>
-          <h4 class="p-price">{{ formatPrice(product.price) }}</h4>
+          <p class="text-start">{{ product.description }}</p>
+         
           <router-link :to="{ name: 'ProductDetail', params: { id: product._id } }" class="btn">
             <button class="buy-btn">Xem chi tiết</button>
           </router-link>
@@ -179,7 +185,20 @@
   
       formatDate(date) {
         return new Date(date).toLocaleDateString('vi-VN');
+      },
+
+      formatVND(amount) {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+        }).format(amount);
+      },
+
+      formatWithText(amount) {
+        return amount.toLocaleString('vi-VN') + ' VND';
       }
+
+      
     }
   };
   </script>

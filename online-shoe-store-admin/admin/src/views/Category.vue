@@ -15,8 +15,8 @@
       <tbody>
         <tr v-for="category in categories" :key="category._id">
           <td>{{ category.name }}</td>
-          <td>
-            <button @click="editCategory(category)" class="edit-button">Sửa</button>
+          <td class="d-flex justify-content-center">
+            <button @click="editCategory(category)" class="edit-button me-2">Sửa</button>
             <button @click="deleteCategory(category._id)" class="delete-button">Xóa</button>
           </td>
         </tr>

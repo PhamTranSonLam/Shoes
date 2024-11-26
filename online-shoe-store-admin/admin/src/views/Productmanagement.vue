@@ -77,7 +77,7 @@
               <!-- Total Quantity -->
               <td>{{ calculateTotalQuantity(product.sizes) }}</td>
 
-              <td>
+              <td class="">
                 <router-link :to="`/editproduct/${product._id}`" class="btn btn-success btn-sm">Chỉnh sửa</router-link>
                 <button type="button" class="btn btn-danger btn-sm ml-2" @click="deleteProduct(product._id)">Xóa</button>
               </td>
@@ -201,10 +201,10 @@ export default {
 /* Container styling */
 .container {
   margin-top: 50px;
-  max-width: 1200px;
+   max-width: 1200px;
   margin-left: auto;
-  margin-right: auto;
-  padding: 20px;
+  margin-right: auto; 
+   padding: 20px;
   background-color: #f8f9fa;
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);

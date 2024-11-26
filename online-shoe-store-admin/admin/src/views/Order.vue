@@ -69,7 +69,7 @@
               </td>
               <td>{{ order.paymentMethod }}</td>
               <td>{{ new Date(order.createdAt).toLocaleString() }}</td>
-              <td>
+              <td class="d-flex">
                 <router-link :to="'/orderdetail/' + order._id" class="btn btn-success btn-sm">
                   Chi tiết
                 </router-link>
