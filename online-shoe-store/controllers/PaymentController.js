@@ -131,7 +131,7 @@ async vnpayReturn(req, res) {
               const updateBooking = await Order.findByIdAndUpdate(
                   orderId, // ID đơn hàng
                   {
-                      status: "Pending", // Cập nhật trạng thái thành công
+                      status: "Đang xử lý", // Cập nhật trạng thái thành công
                       paymentStatus: "Thành Công", // Cập nhật trạng thái thanh toán
                   },
                   { new: true } // Trả về bản cập nhật mới

@@ -55,16 +55,16 @@
                   </li>
                 </ul>
               </td>
-              <td>{{ order.totaldiscount }} VND</td>
+              <td>{{ formatCurrency(order.totalAmount) }} VNĐ</td>
               <td>
                 <select
                   v-model="order.status"
                   class="form-select"
                   @change="updateOrderStatus(order)"
                 >
-                  <option value="Đang xử lý">Đang xử lý</option>
-                  <option value="Đã giao">Đã giao</option>
-                  <option value="Đã hủy">Đã hủy</option>
+                  <option value="Đang xử lý" :disabled="order.status === 'Đã giao' || order.status === 'Đã hủy'">Đang xử lý</option>
+                  <option value="Đã giao" :disabled="order.status === 'Đã giao' || order.status === 'Đã hủy'">Đã giao</option>
+                  <option value="Đã hủy" :disabled="order.status === 'Đã giao' || order.status === 'Đã hủy'">Đã hủy</option>
                 </select>
               </td>
               <td>{{ order.paymentMethod }}</td>
@@ -90,12 +90,7 @@
         <li class="page-item" :class="{ disabled: currentPage === 1 }">
           <button class="page-link" @click="prevPage">Trước</button>
         </li>
-        <li
-          class="page-item"
-          v-for="page in totalPages"
-          :key="page"
-          :class="{ active: currentPage === page }"
-        >
+        <li class="page-item" v-for="page in totalPages" :key="page" :class="{ active: currentPage === page }">
           <button class="page-link" @click="goToPage(page)">{{ page }}</button>
         </li>
         <li class="page-item" :class="{ disabled: currentPage === totalPages }">
@@ -105,7 +100,6 @@
     </nav>
   </div>
 </template>
-
 
 <script>
 import axios from "axios";
@@ -136,6 +130,13 @@ export default {
     },
   },
   methods: {
+    // Hàm định dạng tiền tệ theo VNĐ
+    formatCurrency(amount) {
+      return new Intl.NumberFormat('vi-VN', { style: 'decimal' }).format(amount);
+      // return amount
+      //   ? amount.toLocaleString("vi-VN", { style: "currency", currency: "VND" })
+      //   : "0 VND";
+    },
     async fetchOrders() {
       this.loading = true;
       try {

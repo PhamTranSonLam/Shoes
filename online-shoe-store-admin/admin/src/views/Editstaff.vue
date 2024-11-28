@@ -10,62 +10,23 @@
               <form @submit.prevent="submitForm">
                 <div class="form-group mb-3">
                   <label for="username">Tên Nhân Viên</label>
-                  <input
-                    type="text"
-                    v-model="admin.username"
-                    class="form-control"
-                    id="username"
-                    placeholder="Nhập tên khách hàng"
-                    required
-                  />
+                  <input  type="text"  v-model="admin.username"  class="form-control"  id="username"  placeholder="Nhập tên khách hàng"  required  />
                 </div>
   
                 <div class="form-group mb-3">
                   <label for="email">Email</label>
-                  <input
-                    type="email"
-                    v-model="admin.email"
-                    class="form-control"
-                    id="email"
-                    placeholder="Nhập email"
-                    required
-                  />
+                  <input  type="email"  v-model="admin.email"  class="form-control"  id="email"  placeholder="Nhập email"  required  />
                 </div>
   
                 <div class="form-group mb-3">
                   <label for="address">Địa chỉ</label>
-                  <input
-                    type="text"
-                    v-model="admin.address"
-                    class="form-control"
-                    id="address"
-                    placeholder="Nhập địa chỉ"
-                    required
-                  />
+                  <input  type="text"  v-model="admin.address"  class="form-control"  id="address"  placeholder="Nhập địa chỉ"  required  />
                 </div>
                 <div class="form-group mb-3">
-                  <label for="address">Password</label>
-                  <input
-                    type="text"
-                    v-model="admin.password"
-                    class="form-control"
-                    id="password"
-                    placeholder="Password"
-                    required
-                  />
-                </div>
-  
-                <div class="form-group mb-3">
-                  <label for="phone">Số điện thoại</label>
-                  <input
-                    type="text"
-                    v-model="admin.phone"
-                    class="form-control"
-                    id="phone"
-                    placeholder="Nhập số điện thoại"
-                    required
-                  />
-                </div>
+                <label for="phone">Số điện thoại</label>
+                <input type="text" v-model="admin.phone" class="form-control" id="phone" placeholder="Nhập số điện thoại" required />
+                <p v-if="errors.phone" class="text-danger">{{ errors.phone }}</p>
+              </div>
   
                 <div class="form-group text-center">
                 <router-link to="/staff" class="btn btn-secondary">Quay lại</router-link>
@@ -83,60 +44,71 @@
   
   <script>
   import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        admin: {
-          username: '',
-          email: '',
-          address: '',
-          phone: ''
-        }
-      };
-    },
-    methods: {
-      async getAdmin() {
-        try {
-          const response = await axios.get(
-            `http://localhost:5000/api/authadmin/${this.$route.params.id}`
-          );
-          if (response.data) {
-            // Gán các trường từ dữ liệu trả về
-            this.admin = {
-              username: response.data.username || '',
-              email: response.data.email || '',
-              address: response.data.address || '',
-              phone: response.data.phone || ''
-            };
-          } else {
-            console.error('Dữ liệu không hợp lệ:', response.data);
-          }
-        } catch (error) {
-          console.error('Lỗi khi tải thông tin nhân viên:', error);
-        }
+
+export default {
+  data() {
+    return {
+      admin: {
+        username: '',
+        email: '',
+        address: '',
+        phone: ''
       },
-      async submitForm() {
-        const userId = this.$route.params.id; // Lấy ID khách hàng từ routers
-        try {
-          // Chỉ cập nhật các trường cần thiết
-          await axios.put(`http://localhost:5000/api/authadmin/update/${userId}`, {
-            username: this.admin.username,
-            email: this.admin.email,
-            phone: this.admin.phone,
-            address: this.admin.address
-          });
-          alert('Thông tin khách hàng đã được cập nhật thành công');
-          this.$router.push('/staff');
-        } catch (error) {
-          console.error('Lỗi khi cập nhật khách hàng:', error);
-        }
+      errors: {
+        phone: null
+      }
+    };
+  },
+  methods: {
+    validatePhone() {
+      const phoneRegex = /^[0-9]{10}$/; // Chỉ chấp nhận 10 chữ số
+      if (!phoneRegex.test(this.admin.phone)) {
+        this.errors.phone = 'Số điện thoại không hợp lệ. Vui lòng nhập 10 chữ số.';
+        return false;
+      }
+      this.errors.phone = null;
+      return true;
+    },
+    async submitForm() {
+      if (!this.validatePhone()) {
+        return; // Ngăn gửi form nếu số điện thoại không hợp lệ
+      }
+
+      const userId = this.$route.params.id; // Lấy ID khách hàng từ router
+      try {
+        await axios.put(`http://localhost:5000/api/authadmin/update/${userId}`, {
+          username: this.admin.username,
+          email: this.admin.email,
+          phone: this.admin.phone,
+          address: this.admin.address
+        });
+        alert('Thông tin khách hàng đã được cập nhật thành công');
+        this.$router.push('/staff');
+      } catch (error) {
+        console.error('Lỗi khi cập nhật khách hàng:', error);
       }
     },
-    mounted() {
-      this.getAdmin(); // Fetch user details when the page is loaded
+    async getAdmin() {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/authadmin/${this.$route.params.id}`);
+        if (response.data) {
+          this.admin = {
+            username: response.data.username || '',
+            email: response.data.email || '',
+            address: response.data.address || '',
+            phone: response.data.phone || ''
+          };
+        }
+      } catch (error) {
+        console.error('Lỗi khi tải thông tin nhân viên:', error);
+      }
     }
-  };
+  },
+  mounted() {
+    this.getAdmin();
+  }
+};
+
   </script>
   
   <style scoped>

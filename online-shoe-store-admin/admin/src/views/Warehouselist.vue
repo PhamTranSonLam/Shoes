@@ -1,216 +1,290 @@
 <template>
-    <div class="danhsachkho mt-5">
-      <!-- Search Input -->
-      <div class="row mb-4">
-        <div class="col-md-10">
-          <input type="text" class="form-control search-input" placeholder="Tìm kiếm sản phẩm" v-model="searchQuery" />
-        </div>
+  <div class="danhsachkho mt-5">
+    <!-- Search Input -->
+    <div class="row mb-4">
+      <div class="col-md-10">
+        <input
+          type="text"
+          class="form-control search-input"
+          placeholder="Tìm kiếm kho"
+          v-model="searchQuery"
+        />
       </div>
-  
-      <!-- Product Management Table -->
-      <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-          <h4>Danh sách kho</h4>
-          <button class="btn btn-primary btn-add-product" @click="openAddModal">Thêm mới</button>
-        </div>
-  
-        <div class="card-body">
-          <!-- Loading State -->
-          <div v-if="isLoading" class="text-center">
-            <p>Đang tải dữ liệu...</p>
-          </div>
-  
-          <!-- Table of Products -->
-          <table v-else class="table text-center">
-            <thead class="table-warning">
-              <tr>
-                <th scope="col">STT</th>
-                <th scope="col">Tên kho</th>
-                <th scope="col">Mô số lượng</th>
-                <th scope="col">Hành động</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(product, index) in paginatedProducts" :key="product.id">
-                <td>{{ index + 1 }}</td>
-                <td>{{ product.name }}</td>
-                <td>{{ product.description }}</td>
-                <td>
-                  <button type="button" class="btn btn-success btn-sm" @click="openEditModal(product)">Chỉnh sửa</button>
-                  <button type="button" class="btn btn-danger btn-sm ml-2" @click="deleteProduct(product.id)">Xóa</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-  
-      <!-- Edit Product Modal -->
-      <div v-if="showEditModal" class="modal fade show" tabindex="-1" style="display: block;" aria-labelledby="editProductModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="editProductModalLabel">Chỉnh sửa kho</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeEditModal"></button>
-            </div>
-            <div class="modal-body">
-              <form @submit.prevent="updateProduct">
-                <div class="mb-3">
-                  <label for="productName" class="form-label">Tên kho</label>
-                  <input type="text" class="form-control" id="productName" v-model="editProduct.name" required />
-                </div>
-                <div class="mb-3">
-                  <label for="productDescription" class="form-label">Số lượng</label>
-                  <textarea class="form-control" id="productDescription" v-model="editProduct.description" rows="3" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Cập nhật</button>
-                <button type="button" class="btn btn-secondary" @click="closeEditModal">Hủy</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-  
-      <!-- Add Product Modal -->
-      <div v-if="showAddModal" class="modal fade show" tabindex="-1" style="display: block;" aria-labelledby="addProductModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="addProductModalLabel">Thêm kho</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeAddModal"></button>
-            </div>
-            <div class="modal-body">
-              <form @submit.prevent="addProduct">
-                <div class="mb-3">
-                  <label for="newProductName" class="form-label">Tên kho</label>
-                  <input type="text" class="form-control" id="newProductName" v-model="newProduct.name" required />
-                </div>
-                <div class="mb-3">
-                  <label for="newProductDescription" class="form-label">Số lượng</label>
-                  <textarea class="form-control" id="newProductDescription" v-model="newProduct.description" rows="3" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Thêm mới</button>
-                <button type="button" class="btn btn-secondary" @click="closeAddModal">Hủy</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-  
-      <!-- Pagination Controls -->
-      <nav aria-label="Page navigation" class="mt-4">
-        <ul class="pagination justify-content-center">
-          <li class="page-item" :class="{ disabled: currentPage === 0 }">
-            <button class="page-link" @click="prevPage">Trước</button>
-          </li>
-          <li class="page-item" v-for="page in totalPages" :key="page" :class="{ active: currentPage === page - 1 }">
-            <button class="page-link" @click="goToPage(page - 1)">{{ page }}</button>
-          </li>
-          <li class="page-item" :class="{ disabled: currentPage === totalPages - 1 }">
-            <button class="page-link" @click="nextPage">Sau</button>
-          </li>
-        </ul>
-      </nav>
     </div>
-  </template>
+
+    <!-- Warehouse Management Table -->
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h4>Danh sách kho</h4>
+        <button class="btn btn-primary btn-add-product" @click="openAddModal">
+          Thêm mới
+        </button>
+      </div>
+
+      <div class="card-body">
+        <!-- Loading State -->
+        <div v-if="isLoading" class="text-center">
+          <p>Đang tải dữ liệu...</p>
+        </div>
+
+        <!-- Table of Warehouses -->
+        <table v-else class="table text-center">
+          <thead class="table-warning">
+            <tr>
+              <th scope="col">STT</th>
+              <th scope="col">Tên kho</th>
+              <th scope="col">Tên phiếu nhập</th>
+              <th scope="col">Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(warehouse, index) in paginatedWarehouses" :key="warehouse._id">
+              <td>{{ index + 1 }}</td>
+              <td>{{ warehouse.warehouse }}</td>
+              <td>{{ warehouse.name }}</td>
+              <td>
+                <button
+                  type="button"
+                  class="btn btn-success btn-sm"
+                  @click="openEditModal(warehouse)"
+                >
+                  Chỉnh sửa
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-danger btn-sm ms-2"
+                  @click="deleteWarehouse(warehouse._id)"
+                >
+                  Xóa
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Edit Warehouse Modal -->
+    <div v-if="showEditModal" class="modal fade show" tabindex="-1" style="display: block;" aria-labelledby="editWarehouseModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editWarehouseModalLabel">Chỉnh sửa kho</h5>
+            <button type="button" class="btn-close" aria-label="Close" @click="closeEditModal"></button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="updateWarehouse">
+              <div class="mb-3">
+                <label for="editWarehouseName" class="form-label">Tên kho</label>
+                <input
+                  type="text"
+                  id="editWarehouseName"
+                  class="form-control"
+                  v-model="selectedWarehouse.warehouse"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="editWarehouseDescription" class="form-label">Tên phiếu nhập</label>
+                <input
+                  type="text"
+                  id="editWarehouseDescription"
+                  class="form-control"
+                  v-model="selectedWarehouse.name"
+                />
+              </div>
+              <button type="submit" class="btn btn-primary">Cập nhật</button>
+              <button type="button" class="btn btn-secondary" @click="closeEditModal">Hủy</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Warehouse Modal -->
+    <div v-if="showAddModal" class="modal fade show" tabindex="-1" style="display: block;" aria-labelledby="addWarehouseModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addWarehouseModalLabel">Thêm kho</h5>
+            <button type="button" class="btn-close" aria-label="Close" @click="closeAddModal"></button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="addWarehouse">
+              <div class="mb-3">
+                <label for="newWarehouseName" class="form-label">Tên kho</label>
+                <input
+                  type="text"
+                  id="newWarehouseName"
+                  class="form-control"
+                  v-model="newWarehouse.warehouse"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="newWarehouseDescription" class="form-label">Tên phiếu nhập</label>
+                <input
+                  type="text"
+                  id="newWarehouseDescription"
+                  class="form-control"
+                  v-model="newWarehouse.name"
+                />
+              </div>
+              <button type="submit" class="btn btn-primary">Thêm mới</button>
+              <button type="button" class="btn btn-secondary" @click="closeAddModal">Hủy</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination Controls -->
+    <nav aria-label="Page navigation" class="mt-4">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" :class="{ disabled: currentPage === 0 }">
+          <button class="page-link" @click="prevPage">Trước</button>
+        </li>
+        <li
+          class="page-item"
+          v-for="page in totalPages"
+          :key="page"
+          :class="{ active: currentPage === page - 1 }"
+        >
+          <button class="page-link" @click="goToPage(page - 1)">
+            {{ page }}
+          </button>
+        </li>
+        <li class="page-item" :class="{ disabled: currentPage === totalPages - 1 }">
+          <button class="page-link" @click="nextPage">Sau</button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</template>
+
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
-      products: [],
       isLoading: false,
       searchQuery: '',
       currentPage: 0,
-      pageSize: 5,
-      showEditModal: false,
+      totalPages: 1,
+      warehouses: [],
+      paginatedWarehouses: [],
+      newWarehouse: { warehouse: '', name: '' },
+      selectedWarehouse: null,
       showAddModal: false,
-      editProduct: { name: '', description: '' },
-      newProduct: { name: '', description: '' }
+      showEditModal: false,
     };
   },
-  computed: {
-    filteredProducts() {
-      return this.products.filter(product =>
-        product.name.toLowerCase().includes(this.searchQuery.toLowerCase())
-      );
-    },
-    totalPages() {
-      return Math.ceil(this.filteredProducts.length / this.pageSize);
-    },
-    paginatedProducts() {
-      const start = this.currentPage * this.pageSize;
-      const end = start + this.pageSize;
-      return this.filteredProducts.slice(start, end);
-    }
-  },
   methods: {
-    fetchProducts() {
+    fetchWarehouses() {
       this.isLoading = true;
-      // Simulate API call
-      setTimeout(() => {
-        this.products = [
-          { id: 1, name: 'Kho A', description: '100 sản phẩm' },
-          { id: 2, name: 'Kho B', description: '150 sản phẩm' },
-          { id: 3, name: 'Kho C', description: '200 sản phẩm' },
-          // Add more products here
-        ];
-        this.isLoading = false;
-      }, 1000);
-    },
-    prevPage() {
-      if (this.currentPage > 0) {
-        this.currentPage--;
-      }
-    },
-    nextPage() {
-      if (this.currentPage < this.totalPages - 1) {
-        this.currentPage++;
-      }
-    },
-    goToPage(page) {
-      this.currentPage = page;
-    },
-    openEditModal(product) {
-      this.editProduct = { ...product };
-      this.showEditModal = true;
-    },
-    closeEditModal() {
-      this.showEditModal = false;
-      this.editProduct = { name: '', description: '' };
-    },
-    updateProduct() {
-      const index = this.products.findIndex(product => product.id === this.editProduct.id);
-      if (index !== -1) {
-        this.products[index] = { ...this.editProduct };
-      }
-      this.closeEditModal();
-    },
-    deleteProduct(id) {
-      const index = this.products.findIndex(product => product.id === id);
-      if (index !== -1) {
-        this.products.splice(index, 1);
-      }
+      axios
+        .get('http://localhost:5000/api/warehouse')
+        .then((response) => {
+          this.warehouses = response.data;
+          this.filteredWarehouses = this.warehouses;
+          this.calculateTotalPages();
+        })
+        .catch((error) => console.error('Lỗi khi tải kho:', error))
+        .finally(() => (this.isLoading = false));
     },
     openAddModal() {
       this.showAddModal = true;
     },
     closeAddModal() {
       this.showAddModal = false;
-      this.newProduct = { name: '', description: '' };
     },
-    addProduct() {
-      this.products.push({ id: Date.now(), ...this.newProduct });
+    addWarehouse() {
+      axios
+        .post('http://localhost:5000/api/warehouse', this.newWarehouse)
+        .then(() => this.fetchWarehouses())
+        .catch((error) => console.error('Lỗi khi thêm kho:', error));
       this.closeAddModal();
-    }
+    },
+    openEditModal(warehouse) {
+      this.selectedWarehouse = { ...warehouse };
+      this.showEditModal = true;
+    },
+    closeEditModal() {
+      this.showEditModal = false;
+    },
+    updateWarehouse() {
+      axios
+        .put(`http://localhost:5000/api/warehouse/${this.selectedWarehouse._id}`, this.selectedWarehouse)
+        .then(() => this.fetchWarehouses())
+        .catch((error) => console.error('Lỗi khi cập nhật kho:', error));
+      this.closeEditModal();
+    },
+    deleteWarehouse(id) {
+      axios
+        .delete(`http://localhost:5000/api/warehouse/${id}`)
+        .then(() => this.fetchWarehouses())
+        .catch((error) => console.error('Lỗi khi xóa kho:', error));
+    },
+    calculateTotalPages() {
+      this.totalPages = Math.ceil(this.filteredWarehouses.length / 10);
+      this.paginateWarehouses();
+    },
+    paginateWarehouses() {
+      const startIndex = this.currentPage * 10;
+      const endIndex = startIndex + 10;
+      this.paginatedWarehouses = this.filteredWarehouses.slice(startIndex, endIndex);
+    },
+    prevPage() {
+      if (this.currentPage > 0) {
+        this.currentPage -= 1;
+        this.paginateWarehouses();
+      }
+    },
+    nextPage() {
+      if (this.currentPage < this.totalPages - 1) {
+        this.currentPage += 1;
+        this.paginateWarehouses();
+      }
+    },
+    goToPage(page) {
+      this.currentPage = page;
+      this.paginateWarehouses();
+    },
+  },
+  watch: {
+    searchQuery(newQuery) {
+      this.filteredWarehouses = this.warehouses.filter((warehouse) =>
+        warehouse.warehouse.toLowerCase().includes(newQuery.toLowerCase())
+      );
+      this.calculateTotalPages();
+    },
   },
   mounted() {
-    this.fetchProducts();
-  }
+    this.fetchWarehouses();
+  },
 };
 </script>
-<style>
+
+<style scoped>
+/* Add styles for the modal and table */
 .danhsachkho {
-  margin: 2rem;
+  font-family: 'Arial', sans-serif;
+}
+
+.search-input {
+  font-size: 16px;
+  padding: 10px;
+}
+
+.table th {
+  background-color: #f8f9fa;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.pagination .page-item.disabled .page-link {
+  cursor: not-allowed;
 }
 </style>
-  

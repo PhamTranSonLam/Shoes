@@ -11,61 +11,26 @@
             <form @submit.prevent="submitForm">
               <div class="form-group mb-3">
                 <label for="username">Tên Nhân viên </label>
-                <input
-                  type="text"
-                  v-model="admin.username"
-                  class="form-control"
-                  id="username"
-                  placeholder="Nhập tên khách hàng"
-                  required
-                />
+                <input  type="text"  v-model="admin.username"  class="form-control"  id="username"  placeholder="Nhập tên khách hàng"  required  />
               </div>
 
               <div class="form-group mb-3">
                 <label for="email">Email</label>
-                <input
-                  type="email"
-                  v-model="admin.email"
-                  class="form-control"
-                  id="email"
-                  placeholder="Nhập email"
-                  required
-                />
+                <input  type="email"  v-model="admin.email"  class="form-control"  id="email"  placeholder="Nhập email"  required  />
               </div>
 
               <div class="form-group mb-3">
                 <label for="address">Địa chỉ</label>
-                <input
-                  type="text"
-                  v-model="admin.address"
-                  class="form-control"
-                  id="address"
-                  placeholder="Nhập địa chỉ"
-                  required
-                />
+                <input  type="text"  v-model="admin.address"  class="form-control"  id="address"  placeholder="Nhập địa chỉ"  required  />
               </div>
-              <div class="form-group mb-3">
-                <label for="address">Password</label>
-                <input
-                  type="text"
-                  v-model="admin.password"
-                  class="form-control"
-                  id="password"
-                  placeholder="Password"
-                  required
-                />
-              </div>
-
               <div class="form-group mb-3">
                 <label for="phone">Số điện thoại</label>
-                <input
-                  type="text"
-                  v-model="admin.phone"
-                  class="form-control"
-                  id="phone"
-                  placeholder="Nhập số điện thoại"
-                  required
-                />
+                <input  type="text"  v-model="admin.phone"  class="form-control"  id="phone"  placeholder="Nhập số điện thoại"  required  />
+                <p v-if="errors.phone" class="text-danger">{{ errors.phone }}</p>
+              </div>
+              <div class="form-group mb-3">
+                <label for="phone">Mật khẩu</label>
+                <input  type="text"  v-model="admin.password"  class="form-control"   placeholder="Nhập mật khẩu"  required  />
               </div>
 
               <div class="form-group text-center">
@@ -95,14 +60,31 @@ export default {
         email: '',
         address: '',
         phone: '',
-        password: '',
+        password:'',
+      },
+      errors: {
+        phone: null
       }
     };
   },
   methods: {
+    validatePhone() {
+      const phoneRegex = /^[0-9]{10}$/; // Chỉ chấp nhận 10 chữ số
+      if (!phoneRegex.test(this.admin.phone)) {
+        this.errors.phone = 'Số điện thoại không hợp lệ. Vui lòng nhập 10 chữ số.';
+        return false;
+      }
+      this.errors.phone = null;
+      return true;
+    },
     async submitForm() {
+      // Kiểm tra số điện thoại trước khi gửi form
+      if (!this.validatePhone()) {
+        return;
+      }
+
       try {
-        const response = await axios.post('http://localhost:5000/api/authadmin/register',this.admin);
+        const response = await axios.post('http://localhost:5000/api/authadmin/register', this.admin);
         alert('Nhân viên đã được thêm thành công');
         this.$router.push('/staff');
       } catch (error) {
@@ -110,6 +92,7 @@ export default {
       }
     }
   }
+
 };
 </script>
 

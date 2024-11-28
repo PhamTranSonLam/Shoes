@@ -23,49 +23,21 @@
   
                 <div class="form-group mb-3">
                   <label for="email">Email</label>
-                  <input
-                    type="email"
-                    v-model="user.email"
-                    class="form-control"
-                    id="email"
-                    placeholder="Nhập email"
-                    required
-                  />
+                  <input  type="email"   v-model="user.email"  class="form-control"  id="email"  placeholder="Nhập email"  required  />
                 </div>
   
                 <div class="form-group mb-3">
                   <label for="address">Địa chỉ</label>
-                  <input
-                    type="text"
-                    v-model="user.address"
-                    class="form-control"
-                    id="address"
-                    placeholder="Nhập địa chỉ"
-                    required
-                  />
+                  <input  type="text"  v-model="user.address"  class="form-control"  id="address"  placeholder="Nhập địa chỉ"  required  />
                 </div>
                 <div class="form-group mb-3">
-                  <label for="address">Password</label>
-                  <input
-                    type="text"
-                    v-model="user.password"
-                    class="form-control"
-                    id="password"
-                    placeholder="Password"
-                    required
-                  />
-                </div>
-  
+                <label for="phone">Mật khẩu</label>
+                <input  type="text"  v-model="user.password"  class="form-control"   placeholder="Nhập mật khẩu"  required  />
+              </div>
                 <div class="form-group mb-3">
                   <label for="phone">Số điện thoại</label>
-                  <input
-                    type="text"
-                    v-model="user.phone"
-                    class="form-control"
-                    id="phone"
-                    placeholder="Nhập số điện thoại"
-                    required
-                  />
+                  <input  type="text"  v-model="user.phone"  class="form-control"  id="phone"  placeholder="Nhập số điện thoại"  required  />
+                  <p v-if="errors.phone" class="text-danger">{{ errors.phone }}</p>
                 </div>
   
                 <div class="form-group text-center">
@@ -85,31 +57,50 @@
   </template>
   
   <script>
-  import axios from 'axios';
+  import axios from "axios";
   
   export default {
     data() {
       return {
         user: {
-          username: '',
-          email: '',
-          address: '',
-          phone: '',
-          password: '',
-        }
+          username: "",
+          email: "",
+          address: "",
+          phone: "",
+          password:'',
+        },
+        errors: {
+          phone: null,
+        },
       };
     },
     methods: {
-      async submitForm() {
-        try {
-          const response = await axios.post('http://localhost:5000/api/auth/register',this.user);
-          alert('Khách hàng đã được thêm thành công');
-          this.$router.push('/user');
-        } catch (error) {
-          console.error('Lỗi khi thêm khách hàng:', error);
+      validatePhone() {
+        const phoneRegex = /^[0-9]{10}$/; // Chỉ chấp nhận 10 chữ số
+        if (!phoneRegex.test(this.user.phone)) {
+          this.errors.phone = "Số điện thoại không hợp lệ. Vui lòng nhập 10 chữ số.";
+          return false;
         }
-      }
-    }
+        this.errors.phone = null;
+        return true;
+      },
+      async submitForm() {
+        if (!this.validatePhone()) {
+          return;
+        }
+  
+        try {
+          const response = await axios.post(
+            "http://localhost:5000/api/auth/register",
+            this.user
+          );
+          alert("Khách hàng đã được thêm thành công");
+          this.$router.push("/user");
+        } catch (error) {
+          console.error("Lỗi khi thêm khách hàng:", error);
+        }
+      },
+    },
   };
   </script>
   

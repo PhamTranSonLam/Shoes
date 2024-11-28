@@ -74,10 +74,10 @@
           <!-- Upload Additional Images -->
           <div class="mb-3">
             <label class="form-label">Tải lên 4 ảnh nhỏ</label>
-            <input type="file" class="form-control" @change="onAdditionalImagesSelected" multiple required />
-            <input type="file" class="form-control" @change="onAdditionalImagesSelected" multiple required />
-            <input type="file" class="form-control" @change="onAdditionalImagesSelected" multiple required />
-            <input type="file" class="form-control" @change="onAdditionalImagesSelected" multiple required />
+            <input type="file" class="form-control" @change="onAdditionalImagesSelected" multiple />
+            <input type="file" class="form-control" @change="onAdditionalImagesSelected" multiple  />
+            <input type="file" class="form-control" @change="onAdditionalImagesSelected" multiple  />
+            <input type="file" class="form-control" @change="onAdditionalImagesSelected" multiple  />
             <small class="form-text text-muted">Chọn tối đa 4 ảnh nhỏ.</small>
           </div>
 

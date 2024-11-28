@@ -12,60 +12,22 @@
                 <div class="form-group mb-3">
                   <label for="username">Tên khách hàng</label>
                   <input
-                    type="text"
-                    v-model="user.username"
-                    class="form-control"
-                    id="username"
-                    placeholder="Nhập tên khách hàng"
-                    required
-                  />
+                    type="text"  v-model="user.username"  class="form-control"  id="username"  placeholder="Nhập tên khách hàng"  required  />
                 </div>
   
                 <div class="form-group mb-3">
                   <label for="email">Email</label>
-                  <input
-                    type="email"
-                    v-model="user.email"
-                    class="form-control"
-                    id="email"
-                    placeholder="Nhập email"
-                    required
-                  />
+                  <input  type="email"  v-model="user.email"  class="form-control"  id="email"  placeholder="Nhập email"  required  />
                 </div>
   
                 <div class="form-group mb-3">
                   <label for="address">Địa chỉ</label>
-                  <input
-                    type="text"
-                    v-model="user.address"
-                    class="form-control"
-                    id="address"
-                    placeholder="Nhập địa chỉ"
-                    required
-                  />
+                  <input  type="text"  v-model="user.address"  class="form-control"  id="address"  placeholder="Nhập địa chỉ"  required  />
                 </div>
-                <div class="form-group mb-3">
-                  <label for="address">Password</label>
-                  <input
-                    type="text"
-                    v-model="user.password"
-                    class="form-control"
-                    id="password"
-                    placeholder="Nhập địa chỉ"
-                    required
-                  />
-                </div>
-  
                 <div class="form-group mb-3">
                   <label for="phone">Số điện thoại</label>
-                  <input
-                    type="text"
-                    v-model="user.phone"
-                    class="form-control"
-                    id="phone"
-                    placeholder="Nhập số điện thoại"
-                    required
-                  />
+                  <input  type="text"  v-model="user.phone"  class="form-control"  id="phone"  placeholder="Nhập số điện thoại"  required  />
+                  <p v-if="errors.phone" class="text-danger">{{ errors.phone }}</p>
                 </div>
   
                 <div class="form-group text-center">
@@ -82,60 +44,79 @@
   </template>
   
   <script>
-  import axios from 'axios';
+  import axios from "axios";
   
   export default {
     data() {
       return {
         user: {
-          username: '',
-          email: '',
-          address: '',
-          phone: ''
-        }
+          username: "",
+          email: "",
+          address: "",
+          phone: "",
+        },
+        errors: {
+          phone: null,
+        },
       };
     },
     methods: {
+      validatePhone() {
+        const phoneRegex = /^[0-9]{10}$/; // Chỉ chấp nhận 10 chữ số
+        if (!phoneRegex.test(this.user.phone)) {
+          this.errors.phone =
+            "Số điện thoại không hợp lệ. Vui lòng nhập 10 chữ số.";
+          return false;
+        }
+        this.errors.phone = null;
+        return true;
+      },
       async getUser() {
         try {
           const response = await axios.get(
             `http://localhost:5000/api/auth/${this.$route.params.id}`
           );
           if (response.data) {
-            // Gán các trường từ dữ liệu trả về
             this.user = {
-              username: response.data.username || '',
-              email: response.data.email || '',
-              address: response.data.address || '',
-              phone: response.data.phone || ''
+              username: response.data.username || "",
+              email: response.data.email || "",
+              address: response.data.address || "",
+              phone: response.data.phone || "",
             };
           } else {
-            console.error('Dữ liệu không hợp lệ:', response.data);
+            console.error("Dữ liệu không hợp lệ:", response.data);
           }
         } catch (error) {
-          console.error('Lỗi khi tải thông tin khách hàng:', error);
+          console.error("Lỗi khi tải thông tin khách hàng:", error);
         }
       },
       async submitForm() {
+        if (!this.validatePhone()) {
+          return;
+        }
+  
         const userId = this.$route.params.id; // Lấy ID khách hàng từ router
         try {
-          // Chỉ cập nhật các trường cần thiết
           await axios.put(`http://localhost:5000/api/auth/update/${userId}`, {
             username: this.user.username,
             email: this.user.email,
             phone: this.user.phone,
-            address: this.user.address
+            address: this.user.address,
           });
-          alert('Thông tin khách hàng đã được cập nhật thành công');
-          this.$router.push('/user');
+          alert("Thông tin khách hàng đã được cập nhật thành công");
+          this.$router.push("/user");
         } catch (error) {
-          console.error('Lỗi khi cập nhật khách hàng:', error);
+          if (error.response && error.response.data) {
+            console.error("Lỗi từ backend:", error.response.data);
+          } else {
+            console.error("Lỗi không xác định:", error);
+          }
         }
-      }
+      },
     },
     mounted() {
       this.getUser(); // Fetch user details when the page is loaded
-    }
+    },
   };
   </script>
   

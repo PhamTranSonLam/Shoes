@@ -35,7 +35,7 @@
               <td>{{ voucher.code }}</td>
               <td>{{ voucher.discountType === 'percent' ? 'Phần trăm' : 'Số tiền cố định' }}</td>
               <td>{{ voucher.discountValue }}{{ voucher.discountType === 'percent' ? '%' : ' VNĐ' }}</td>
-              <td>{{ voucher.minOrderValue }} VNĐ</td>
+              <td>{{ formatCurrency(voucher.minOrderValue) }} VNĐ</td>
               <td>{{ formatDate(voucher.startDate) }}</td>
               <td>{{ formatDate(voucher.endDate) }}</td>
               <td>{{ voucher.usageLimit }}</td>
@@ -125,6 +125,9 @@ export default {
       if (!dateString) return 'N/A';
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
       return new Date(dateString).toLocaleDateString('vi-VN', options);
+    },
+    formatCurrency(amount) {
+      return new Intl.NumberFormat('vi-VN', { style: 'decimal' }).format(amount);
     },
     filterVouchers() {
       this.currentPage = 1; // Reset page to 1 when filtering

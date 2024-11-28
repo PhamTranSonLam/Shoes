@@ -22,7 +22,7 @@ exports.register = async (req, res) => {
             <p>Cảm ơn bạn đã đăng ký. Vui lòng bảo mật thông tin tài khoản của bạn.</p>`
         })
     } catch (err) {
-        res.status(400).json({ message: 'lỗi'});
+        res.status(400).json({ message: err.message});
     }
 };
 

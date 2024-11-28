@@ -3,7 +3,6 @@
     <h2>Lịch sử đặt hàng của bạn</h2>
     <p>Kiểm tra các lần mua hàng trước và chi tiết đơn hàng bên dưới.</p>
   </section>
-
   <section id="order-history">
     <h2> Lịch sử đặt hàng của {{ user.username }}</h2>
     <div v-if="orders.length > 0" class="order-list">
@@ -12,8 +11,9 @@
           <h3>Mã đơn hàng #{{ order._id }}</h3>
           <div class="order-actions">
             <button v-if="order.status === 'Đã giao'" class="review-button" @click="openReviewModal(order)">Đánh giá</button>
-            
           </div>
+          <button
+              v-if="order.status === 'Đang xử lý'"  class="cancel-button"  @click=" updateOrderStatus(order)">  Hủy đơn hàng</button>
         </div>
         <p><strong>Ngày:</strong> {{ new Date(order.createdAt).toLocaleString() }}</p>
         <p><strong>Tổng cộng:</strong> {{ formatPrice(order.totalAmount) }}</p>
@@ -138,7 +138,7 @@ export default {
     },
     async updateOrderStatus(order) {
       try {
-        const newStatus = prompt("Nhập trạng thái mới cho đơn hàng (ví dụ: 'Đang xử lý', 'Đã giao', v.v.):");
+        const newStatus = "Đã hủy"
         if (newStatus) {
           await axios.put(`http://localhost:5000/api/orders/status/${order._id}`, {
             status: newStatus,
