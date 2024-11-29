@@ -38,7 +38,10 @@ const createReview = async (req, res) => {
 const getReviewByUser = async (req, res) => {
     try {
         const { userId } = req.params;
-        const review = await Review.find({ user: userId }).populate('user').populate('feedback.staff');
+        const review = await Review.find({ user: userId }).populate('user').populate({
+            path: 'feedback.staff',
+            select: 'username image',
+        });
         res.status(200).json(review);
     } catch (error) {
         console.error("Error creating review:", error.message || error);

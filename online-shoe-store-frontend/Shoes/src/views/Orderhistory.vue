@@ -13,10 +13,10 @@
             <button v-if="order.status === 'Đã giao'" class="review-button" @click="openReviewModal(order)">Đánh giá</button>
           </div>
           <button
-              v-if="order.status === 'Đang xử lý'"  class="cancel-button"  @click=" updateOrderStatus(order)">  Hủy đơn hàng</button>
+              v-if="order.status === 'Đang xử lý'"  class="btn btn-danger"  @click=" updateOrderStatus(order)">  Hủy đơn hàng</button>
         </div>
         <p><strong>Ngày:</strong> {{ new Date(order.createdAt).toLocaleString() }}</p>
-        <p><strong>Tổng cộng:</strong> {{ formatPrice(order.totalAmount) }}</p>
+        <p><strong>Tổng cộng:</strong> {{ formatPrice( order.totaldiscount || order.totalAmount) }}</p>
 
         <h4>Sản phẩm đã đặt:</h4>
         <div v-for="item in order.items" :key="item.product._id" class="order-item-details">

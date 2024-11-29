@@ -40,7 +40,6 @@ class PaymentController {
       let ipAddr = req.headers["x-forwarded-for"];
       req.connection.remoteAddress;
       req.socket.remoteAddress || req.connection.socket.remoteAddress;
-
       let tmnCode = config.vnp_TmnCode;
       let secretKey = config.vnp_HashSecret;
       let vnpUrl = config.vnp_Url;
@@ -66,7 +65,7 @@ class PaymentController {
       vnp_Params["vnp_OrderInfo"] =
         "Thanh toán đặt hàng: " + dataBooking.data.orderId;
       vnp_Params["vnp_OrderType"] = "Thanh toan VNPAY";
-      vnp_Params["vnp_Amount"] = dataBooking.data.order.totalAmount * 100; // Tổng giá trị booking
+      vnp_Params["vnp_Amount"] = dataBooking.data.order.totaldiscount * 100; // Tổng giá trị booking
       vnp_Params["vnp_ReturnUrl"] = returnUrl;
       vnp_Params["vnp_IpAddr"] = ipAddr;
       vnp_Params["vnp_CreateDate"] = createDate;
@@ -141,20 +140,46 @@ async vnpayReturn(req, res) {
                   // Gửi email xác nhận đơn hàng
                   const email = updateBooking.user.email; // Giả sử bạn đã lưu email trong đơn hàng
                   const username = updateBooking.user.username; // Giả sử bạn đã lưu tên người dùng trong đơn hàng
-                  const totalAmount = updateBooking.totalAmount;
+                  const totaldiscount = updateBooking.totaldiscount;
                   const createAt = updateBooking.createdAt;
                   await sendMail.sendMail({
-                      email: email,
-                      subject: "Chúc mừng bạn đã thanh toán thành công",
-                      html: `<h1>Chào mừng bạn đến với website của chúng tôi</h1>
-                             <p>Đơn hàng của bạn đã được xác nhận!</p>
-                             <p>Mã đơn hàng: ${orderId}</p>
-                             <p>Tên khách hàng: ${username}</p>
-                              <p>Tổng số tiền: ${totalAmount} VNĐ</p>
-                              <p>Ngày đặt hàng: ${createAt}</p>
-              
-                             <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.</p>`,
+                    email: email,
+                    subject: "Chúc mừng bạn đã thanh toán thành công",
+                    html: `
+                      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+                        <header style="background-color: #4CAF50; color: #fff; padding: 20px; text-align: center;">
+                          <h1 style="margin: 0; font-size: 24px;">Chào mừng bạn đến với website của chúng tôi</h1>
+                        </header>
+                        <div style="padding: 20px;">
+                          <p style="font-size: 16px; color: #333;">Đơn hàng của bạn đã được xác nhận!</p>
+                          <table style="width: 100%; margin: 20px 0; border-collapse: collapse;">
+                            <tr style="background-color: #f9f9f9;">
+                              <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold; color: #555;">Mã đơn hàng:</td>
+                              <td style="padding: 10px; border: 1px solid #ddd; color: #333;">${orderId}</td>
+                            </tr>
+                            <tr>
+                              <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold; color: #555;">Tên khách hàng:</td>
+                              <td style="padding: 10px; border: 1px solid #ddd; color: #333;">${username}</td>
+                            </tr>
+                            <tr style="background-color: #f9f9f9;">
+                              <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold; color: #555;">Tổng số tiền:</td>
+                              <td style="padding: 10px; border: 1px solid #ddd; color: #333;">${totaldiscount} VNĐ</td>
+                            </tr>
+                            <tr>
+                              <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold; color: #555;">Ngày đặt hàng:</td>
+                              <td style="padding: 10px; border: 1px solid #ddd; color: #333;">${createAt}</td>
+                            </tr>
+                          </table>
+                          <p style="font-size: 16px; color: #333; margin: 20px 0;">Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.</p>
+                          <p style="font-size: 14px; color: #888;">Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi qua email hoặc hotline.</p>
+                        </div>
+                        <footer style="background-color: #4CAF50; color: #fff; text-align: center; padding: 10px;">
+                          <p style="margin: 0; font-size: 14px;">© 2024 Website của chúng tôi. Tất cả các quyền được bảo lưu.</p>
+                        </footer>
+                      </div>
+                    `,
                   });
+                  
 
                   return res.status(200).json({
                       statusCode: 200,

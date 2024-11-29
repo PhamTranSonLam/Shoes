@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar" :class="{ expanded: isExpanded }" @click="toggleSidebar">
     <div class="logo">
-      <img src="../assets/img/girl_dp1.jpg" alt="Logo" />
+      <img src="../assets/img/S0.png" alt="Logo" />
     </div>
     <ul class="menu">
       <li>

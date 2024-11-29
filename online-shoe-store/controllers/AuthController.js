@@ -13,15 +13,27 @@ exports.register = async (req, res) => {
         await sendMail.sendMail({
             email: email, 
             subject: "Chúc mừng bạn đăng ký thành công",
-            html: `<h1>Chào mừng bạn đến với website của chúng tôi</h1>
-            <ul>
-              <li>
-              Tài khoản: ${username}
-              </li>
-            </ul>
-            <p>Cảm ơn bạn đã đăng ký. Vui lòng bảo mật thông tin tài khoản của bạn.</p>`
-        })
-        
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+                <header style="background-color: #4CAF50; color: #fff; padding: 20px; text-align: center;">
+                  <h1 style="margin: 0; font-size: 24px;">Chào mừng bạn đến với website của chúng tôi</h1>
+                </header>
+                <div style="padding: 20px;">
+                  <p style="font-size: 16px; color: #333;">Chúc mừng bạn đã đăng ký thành công!</p>
+                  <ul style="list-style-type: none; padding: 0;">
+                    <li style="background-color: #f9f9f9; padding: 10px; border: 1px solid #ddd; margin-bottom: 10px;">
+                      <strong>Tài khoản:</strong> ${username}
+                    </li>
+                  </ul>
+                  <p style="font-size: 16px; color: #333; margin-top: 20px;">Cảm ơn bạn đã đăng ký. Vui lòng bảo mật thông tin tài khoản của bạn.</p>
+                </div>
+                <footer style="background-color: #4CAF50; color: #fff; text-align: center; padding: 10px;">
+                  <p style="margin: 0; font-size: 14px;">© 2024 Website của chúng tôi. Tất cả các quyền được bảo lưu.</p>
+                </footer>
+              </div>
+            `,
+          });
+          
     } catch (err) {
         res.status(400).json({ message: err.message });
     }

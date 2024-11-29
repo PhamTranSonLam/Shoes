@@ -28,7 +28,7 @@
   
           <!-- Table of Products -->
           <table v-else class="table text-center">
-            <thead class="table-warning">
+            <thead class="table-warning text-success">
               <tr>
                 <th>STT</th>
                 <th>Mã phiếu nhập</th>
@@ -271,7 +271,153 @@ export default {
 };
 </script>
 <style>
+/* Container styling */
 .phieubnhap {
   margin: 2rem;
+  font-family: 'Roboto', sans-serif;
 }
+
+/* Search input styling */
+.search-input {
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  padding: 0.5rem;
+  transition: border-color 0.3s;
+}
+
+.search-input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
+/* Card styling */
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  background-color: #007bff;
+  color: #fff;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  padding: 1rem;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table thead {
+  background-color: #f8f9fa;
+}
+
+table th,
+table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+.table-warning th {
+  color: #856404;
+  background-color: #fff3cd;
+}
+
+/* Button styling */
+button {
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.btn-success {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+/* Pagination styling */
+.pagination .page-link {
+  color: #007bff;
+  border: 1px solid #dee2e6;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.pagination .page-link:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.pagination .active .page-link {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+/* Modal styling */
+.modal-content {
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  background-color: #007bff;
+  color: #fff;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.modal-header .btn-close {
+  color: #fff;
+}
+
+.modal-body input {
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  transition: border-color 0.3s;
+}
+
+.modal-body input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
 </style>

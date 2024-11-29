@@ -16,7 +16,7 @@
       <div v-else class="dropdown">
         <a class="btn btn-info dropdown-toggle" href="#" role="button" id="dropdownMenuLink" 
           data-bs-toggle="dropdown" aria-expanded="false"> 
-          Welcome {{ username.username }}
+          Welcome {{ item.username }}
           <img :src="`http://localhost:5000/uploads/${item.image}`" alt="User image" class="user-img">
         </a>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">

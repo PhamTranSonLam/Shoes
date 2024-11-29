@@ -31,7 +31,7 @@
 
         <!-- Table of Warehouses -->
         <table v-else class="table text-center">
-          <thead class="table-warning">
+          <thead class="table-warning text-success">
             <tr>
               <th scope="col">STT</th>
               <th scope="col">Tên mặt hàng</th>
@@ -306,41 +306,142 @@ export default {
 <style scoped>
 .chitietphieunhap {
   margin: 2rem;
-}
-.search-input {
-  border-radius: 5px;
-  padding: 10px;
-  font-size: 1.2rem;
+  font-family: 'Roboto', sans-serif;
+  color: #333;
 }
 
-.table th,
-.table td {
-  vertical-align: middle;
+.search-input {
+  border-radius: 10px;
+  padding: 12px 15px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
+.card {
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .card-header {
-  background-color: #f8f9fa;
+  background-color: #f1f1f1;
+  border-bottom: 2px solid #007bff;
+  padding: 15px;
+  font-size: 1.25rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header h4 {
+  margin: 0;
+}
+
+.card-body {
+  padding: 15px;
+}
+
+.table {
+  margin-top: 1rem;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.table thead {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.table thead th {
+  font-size: 1rem;
+  padding: 12px;
+  text-align: center;
+}
+
+.table tbody tr {
+  transition: all 0.3s ease;
+}
+
+.table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+.table td {
+  text-align: center;
+  padding: 10px;
+}
+
+.btn {
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
 }
 
 .btn-add-product {
   background-color: #28a745;
-  color: white;
+  color: #fff;
+  transition: all 0.3s ease;
 }
 
-.page-item.disabled .page-link {
-  pointer-events: none;
+.btn-add-product:hover {
+  background-color: #218838;
 }
 
-.pagination {
-  margin-top: 1rem;
+.pagination .page-link {
+  color: #007bff;
+  transition: all 0.3s ease;
+}
+
+.pagination .page-link:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.modal-content {
+  border-radius: 15px;
+  padding: 20px;
 }
 
 .modal-header {
-  background-color: #007bff;
-  color: white;
+  border-bottom: 1px solid #ddd;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
-.modal-body input {
-  margin-bottom: 10px;
+.modal-body {
+  padding: 15px 20px;
 }
+
+.modal-body .form-control {
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 1rem;
+}
+
+.modal-body .form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-footer .btn {
+  border-radius: 8px;
+  padding: 8px 15px;
+}
+
 </style>

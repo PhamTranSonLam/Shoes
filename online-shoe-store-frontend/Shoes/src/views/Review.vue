@@ -5,7 +5,7 @@
     <!-- Danh sách đánh giá của người dùng -->
     <div v-if="reviews && reviews.length" v-for="review in reviews" :key="review.id" class="review">
       <div class="user-avatar">
-        <img src="../assets/img/gir_dp3.jpg" alt="User Avatar" />
+        <img :src="`http://localhost:5000/uploads/${review.user.image}`" alt="User Avatar" />
       </div>
       <div class="review-content">
         <div class="review-header">

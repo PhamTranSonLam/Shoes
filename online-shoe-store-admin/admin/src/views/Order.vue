@@ -55,7 +55,8 @@
                   </li>
                 </ul>
               </td>
-              <td>{{ formatCurrency(order.totalAmount) }} VNĐ</td>
+              <td>{{ formatCurrency( order.totaldiscount || order.totalAmount) }} VNĐ</td>
+              
               <td>
                 <select
                   v-model="order.status"

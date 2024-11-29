@@ -12,40 +12,40 @@
       </div>
     </div>
     <div v-else>
-      <section class="form my-5 mx-5">
-        <div class="container">
-          <div class="row no-gutters">
+      <section class="form my-5 mx-5 ">
+        <div class="d-flex justify-content-center align-item-center ">
+          <div class="row">
             <div class="col-lg-5">
-              <img class="img-fluid" src="../assets/img/backgradmin1.jpg" alt="Shoes">
+              <img class="img-fluid" src="../src/assets/img/S1.webp" alt="Shoes">
             </div>
-            <div class="col-lg-7 px-5 pt-5">
+            <div class="col-lg-7 px-5 pt-5 ">
               <h1 class="font-weight-bold py-3">Shoes</h1>
-              <h4>Sign into your account</h4>
+              <h4>Đăng nhập vào tài khoản</h4>
               <form @submit.prevent="loginadmin">
                 <div class="form-row">
                   <div class="col-lg-7">
                     <input
-                      type="text" placeholder="Username" v-model="username" class="form-control my-3 p-4"/>
+                      type="text" placeholder="Nhập tên..." v-model="username" class="form-control my-3 p-4"/>
                   </div>
                 </div>
                 <div class="form-row">
                   <div class="col-lg-7">
                     <input
-                      type="password" placeholder="Password" v-model="password" class="form-control my-3 p-4"
+                      type="password" placeholder="Nhập mật khẩu..." v-model="password" class="form-control my-3 p-4"
                     />
                   </div>
                 </div>
                 <div class="form-row">
                   <div class="col-lg-7">
-                    <button @click="loginadmin" class="btn1 mt-3 mb-4">Login</button>
+                    <button @click="loginadmin" class="btn1 mt-3 mb-4">Đăng nhập</button>
                   </div>
                 </div>
 
-                <a href="#">Forgot password?</a>
+                <!-- <a href="#">Forgot password?</a>
                 <p>
                   Don't have an account?
                   <router-link to="/register">Register here</router-link>
-                </p>
+                </p> -->
               </form>
               <!--Notification Banner-->
               <div

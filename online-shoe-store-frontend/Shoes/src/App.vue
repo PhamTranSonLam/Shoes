@@ -14,9 +14,14 @@
       </ul>
       <div class="icons">
         <i class="fa-solid fa-heart"></i>
-        <router-link to="/Cart">
-          <i class="fa-solid fa-cart-shopping"></i>
-        </router-link>
+        <div class="cart-container d-flex align-items-center">
+            <router-link to="/Cart" class="cart-icon">
+              <i class="fa-solid fa-cart-shopping"></i>
+            </router-link>
+            <div class="cart-count">{{ cart }}</div>
+          </div>
+
+        
         <div v-if="username" class="user-link" @click="toggleDropdown">
           <img class="user-img me-2" :src="`http://localhost:5000/uploads/${item.image}`" alt="User Image">
           <span>{{ username.username }}</span>
@@ -29,8 +34,8 @@
         </div>
 
         <div v-if="!username">
-          <router-link to="/auth/login" class="auth-button">Đăng Nhập</router-link>
-          <router-link to="/auth/register" class="auth-button register">Đăng Ký</router-link>
+          <router-link to="/auth/login" class="auth-button text-decoration-none me-2">Đăng Nhập</router-link>
+          <router-link to="/auth/register" class="auth-button register text-decoration-none">Đăng Ký</router-link>
         </div>
       </div>
     </nav>
@@ -135,6 +140,7 @@ export default {
         type: ''
       },
       item:[],
+      cart:0,
     };
   },
   computed: {
@@ -194,17 +200,39 @@ export default {
     async getByUser() {
       try {
         const userId = this.userStore.user._id;
-        console.log(userId)
+        // console.log(userId)
         const response = await axios.get(`http://localhost:5000/api/auth/${userId}`);
         this.item = response.data;
-        console.log(this.item)
+        // console.log(this.item)
       } catch (error) {
         
       }
+    },
+    async getCart() {
+  try {
+    const userId = this.userStore.user._id;  // Lấy ID người dùng
+    const response = await axios.get(`http://localhost:5000/api/cart/${userId}`);
+
+    // Kiểm tra xem response.data có tồn tại và có phải là mảng không
+    if (response.data && Array.isArray(response.data.items)) {
+      // Đếm tổng số sản phẩm trong giỏ hàng bằng cách cộng dồn quantity của từng item
+      this.cart = response.data.items.reduce((total, item) => total + item.quantity, 0);
+    } else {
+      this.cart = 0;  // Nếu không có giỏ hàng, đặt lại số lượng về 0
     }
+  } catch (error) {
+    console.error("Lỗi khi lấy giỏ hàng:", error);
+    this.cart = 0;  // Đặt lại số lượng giỏ hàng khi có lỗi
+  }
+}
+
+
+
+
   },
   mounted() {
     this.getByUser();
+    this.getCart();
   }
 };
 </script>
@@ -441,6 +469,40 @@ footer {
 .search_bar button:hover {
   background-color: #a5007d;
 }
+
+.cart-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.cart-icon {
+  position: relative;
+  font-size: 24px;
+  color: #333;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.cart-icon:hover {
+  color: #007bff;
+}
+
+.cart-count {
+  position: absolute;
+  top: -10px;
+  right: -16px;
+  background-color: #ff0000;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 50%;
+  padding: 4px 6px;
+  min-width: 20px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
 
   </style>
   

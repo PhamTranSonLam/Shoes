@@ -278,7 +278,9 @@ export default {
 .table th {
   background-color: #f8f9fa;
 }
-
+.card-header {
+  background-color: #28a745;
+}
 .pagination .page-item.active .page-link {
   background-color: #007bff;
   border-color: #007bff;
