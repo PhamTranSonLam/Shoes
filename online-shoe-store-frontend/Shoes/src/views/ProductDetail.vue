@@ -27,7 +27,7 @@
         <h6>Trang chủ / Shoes</h6>
         <h3 class="py-4">{{ product.name }}</h3>
         <h2>{{ product.price | currency }} VNĐ</h2>
-        <p>Số lượng:{{ calculateTotalQuantity(product.sizes) }}</p>
+        <p>Số lượng: {{ calculateTotalQuantity(product.sizes) }}</p>
 
         <!-- Chọn kích thước -->
         <select class="my-3" v-model="selectedSize">
@@ -47,9 +47,7 @@
       </div>
     </div>
   </section>
-
 </template>
-
 
 <script>
 import axios from 'axios';
@@ -70,7 +68,6 @@ export default {
       },
       mainImage: '',   // Hình ảnh chính
       selectedSize: '',
-
       quantity: 1,
       productId: this.$route.params.id,
       relatedProducts: [], // Sản phẩm liên quan
@@ -81,13 +78,11 @@ export default {
   mounted() {
     this.fetchProductDetails();
     this.fetchRelatedProducts(); 
-
   },
   methods: {
     // Lấy chi tiết sản phẩm
     async fetchProductDetails() {
       try {
-        
         const response = await axios.get(`http://localhost:5000/api/product/${this.productId}`);
         this.product = response.data;
         this.mainImage = `http://localhost:5000/${response.data.mainImage}`; // Gán ảnh chính
@@ -96,8 +91,6 @@ export default {
         console.log('Lỗi khi tải chi tiết sản phẩm:', error);
       }
     },
-
-   
 
     // Lấy sản phẩm liên quan
     async fetchRelatedProducts() {
@@ -123,42 +116,42 @@ export default {
 
     // Thêm sản phẩm vào giỏ hàng
     async addToCart() {
-  try {
-    const userStore = useUserStore();
+      try {
+        const userStore = useUserStore();
 
-    // Kiểm tra xem người dùng đã đăng nhập chưa
-    if (!userStore.isAuthenticated) {
-      alert('Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.');
-      this.$router.push({ name: 'Login'}); // Chuyển hướng tới trang đăng nhập
-      return;
-    }
+        // Kiểm tra xem người dùng đã đăng nhập chưa
+        if (!userStore.isAuthenticated) {
+          alert('Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.');
+          this.$router.push({ name: 'Login'}); // Chuyển hướng tới trang đăng nhập
+          return;
+        }
 
-    // Kiểm tra kích thước sản phẩm
-    if (!this.selectedSize) {
-      alert('Vui lòng chọn kích thước sản phẩm.');
-      return;
-    }
+        // Kiểm tra kích thước sản phẩm
+        if (!this.selectedSize) {
+          alert('Vui lòng chọn kích thước sản phẩm.');
+          return;
+        }
 
-    // Gửi yêu cầu thêm sản phẩm vào giỏ hàng
-    await axios.post(
-      'http://localhost:5000/api/cart/add',
-      {
-        userId: userStore.user._id,
-        productId: this.product._id,
-        size: this.selectedSize,
-        quantity: this.quantity,
-        mainImage: this.mainImage,
-      },
-      { headers: { Authorization: `Bearer ${userStore.token}` } }
-    );
+        // Gửi yêu cầu thêm sản phẩm vào giỏ hàng
+        await axios.post(
+          'http://localhost:5000/api/cart/add',
+          {
+            userId: userStore.user._id,
+            productId: this.product._id,
+            size: this.selectedSize,
+            quantity: this.quantity,
+            mainImage: this.mainImage,
+          },
+          { headers: { Authorization: `Bearer ${userStore.token}` } }
+        );
 
-    alert('Sản phẩm đã được thêm vào giỏ hàng thành công!');
-    this.$router.push({ name: 'Cart' });
-  } catch (error) {
-    console.error('Lỗi khi thêm sản phẩm vào giỏ hàng:', error.response ? error.response.data : error.message);
-    alert('Thêm sản phẩm vào giỏ hàng thất bại. Vui lòng thử lại.');
-  }
-},
+        alert('Sản phẩm đã được thêm vào giỏ hàng thành công!');
+        this.$router.push({ name: 'Cart' });
+      } catch (error) {
+        console.error('Lỗi khi thêm sản phẩm vào giỏ hàng:', error.response ? error.response.data : error.message);
+        alert('Thêm sản phẩm vào giỏ hàng thất bại. Vui lòng thử lại.');
+      }
+    },
 
     // Tính tổng số lượng sản phẩm theo kích thước
     calculateTotalQuantity(sizes) {
@@ -234,7 +227,7 @@ h3.py-4 {
 
 h2 {
   font-size: 22px;
-  color: black;
+  color: red;
   margin: 10px 0;
   font-weight: bold;
 }

@@ -16,7 +16,7 @@
               v-if="order.status === 'Đang xử lý'"  class="btn btn-danger"  @click=" updateOrderStatus(order)">  Hủy đơn hàng</button>
         </div>
         <p><strong>Ngày:</strong> {{ new Date(order.createdAt).toLocaleString() }}</p>
-        <p><strong>Tổng cộng:</strong> {{ formatPrice( order.totaldiscount || order.totalAmount) }}</p>
+        <p><strong>Tổng cộng:</strong> {{ formatPrice( order.totaldiscount || order.totalAmount) }} VNĐ</p>
 
         <h4>Sản phẩm đã đặt:</h4>
         <div v-for="item in order.items" :key="item.product._id" class="order-item-details">
@@ -25,7 +25,7 @@
             <span class="product-name">{{ item.product.name }}</span>
             <span><strong>Số lượng:</strong> {{ item.quantity }}</span>
             <span><strong>Kích thước:</strong> {{ item.sizes }}</span>
-            <span><strong>Giá:</strong> {{ formatPrice(item.product.price) }}</span>
+            <span><strong>Giá:</strong> {{ formatPrice(parseInt(item.price)|| item.product.price) }} VNĐ</span>
             <span><strong>Trạng thái:</strong> {{ order.status }}</span>
             <p>Dự kiến giao hàng từ 3 đến 5 ngày</p>
           </div>
@@ -97,7 +97,7 @@ export default {
       }
     },
     formatPrice(value) {
-      return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+      return value.toLocaleString( { style: 'currency', currency: 'VND' });
     },
     openReviewModal(order) {
       this.selectedOrder = order;

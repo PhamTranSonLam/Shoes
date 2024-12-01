@@ -43,9 +43,14 @@
             <div class="cart-item-details">
               <span class="product-name">{{ item.product.name }}</span>
               <div class="quantity-control">
-                <input type="number" v-model.number="item.quantity" @change="updateQuantity(item.product._id, item.quantity)" min="1" />
+                <input
+                  type="number"
+                  v-model.number="item.quantity"
+                  @change="updateQuantity(item.product._id, item.quantity)"
+                  min="1"
+                />
               </div>
-              <span class="product-price">{{ formatPrice(item.product.priceAfterDiscount || item.product.price) }}</span>
+              <span class="product-price">{{ formatPrice(item.price) }}</span>
             </div>
           </div>
 
@@ -54,7 +59,11 @@
             <div class="voucher-container">
               <h3>Nhập mã giảm giá</h3>
               <input
-                v-model="voucherCode"type="text" placeholder="Nhập mã voucher" class="voucher-input"/>
+                v-model="voucherCode"
+                type="text"
+                placeholder="Nhập mã voucher"
+                class="voucher-input"
+              />
               <button @click="applyVoucher" class="apply-button">Áp dụng</button>
               <p v-if="discount" class="discount-message">
                 Giảm giá: {{ formatPrice(discount) }}
@@ -96,8 +105,7 @@ export default {
   computed: {
     cartTotal() {
       return this.cartItems.reduce((total, item) => {
-        const priceAfterDiscount = item.product.priceAfterDiscount || item.product.price;
-        return total + (priceAfterDiscount * item.quantity);
+        return total + item.price * item.quantity;
       }, 0);
     },
     isFormValid() {
@@ -117,7 +125,12 @@ export default {
             Authorization: `Bearer ${this.UserStore.token}`
           }
         });
-        this.cartItems = response.data.items;
+
+        // Add price for each item
+        this.cartItems = response.data.items.map(item => ({
+          ...item,
+          price: item.product.priceAfterDiscount || item.product.price
+        }));
       } catch (error) {
         console.error('Error fetching cart items:', error);
       }
@@ -176,10 +189,10 @@ export default {
           phone: this.userInfo.phone,
         },
         paymentMethod: this.paymentMethod,
-        totalAmount: this.cartTotal, // Apply discount to the total
+        totalAmount: this.cartTotal,
         voucher: this.voucherCode,
-        discount:this.discount,
-        totaldiscount:this.cartTotal - this.discount,
+        discount: this.discount,
+        totalDiscount: this.cartTotal - this.discount,
         status: "Đang xử lý", // Default status
       };
 
@@ -222,10 +235,6 @@ export default {
   },
 };
 </script>
-
-
-
-
 
 
 

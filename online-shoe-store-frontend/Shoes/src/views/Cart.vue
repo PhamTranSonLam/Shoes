@@ -20,18 +20,26 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in cartItems" :key="item._id">
+        <tr v-for="(item, index) in cartItems" :key="item._id">
           <td>
             <a href="#" @click.prevent="removeFromCart(item._id)">
               <i class="far fa-times-circle"></i>
             </a>
           </td>
-          <td><img v-if="item.product" :src="item.mainImage" :alt="item.product.name" class="img-fluid bg-light" /></td>
+          <td>
+            <img v-if="item.product" :src="item.mainImage" :alt="item.product.name" class="img-fluid bg-light" />
+          </td>
           <td>{{ item.product.name }}</td>
           <td>{{ item.size }}</td>
           <td>{{ formatPrice(item.product.price) }}</td>
           <td>
-            <input type="number" v-model.number="item.quantity" @change="updateQuantity(item._id, item.quantity)" min="1" />
+            <input
+              type="number"
+              v-model.number="item.quantity"
+              @change="updateQuantity(item._id, item.quantity)"
+              min="1"
+              :max="item.max"
+            />
           </td>
           <td>{{ formatPrice(item.product.price * item.quantity) }}</td>
         </tr>
@@ -66,8 +74,8 @@
 </template>
 
 <script>
-import axios from 'axios';
-import { useUserStore } from '../store/user';
+import axios from "axios";
+import { useUserStore } from "../store/user";
 
 export default {
   data() {
@@ -75,22 +83,38 @@ export default {
       cartItems: [],
       UserStore: useUserStore(),
       discount: 50000, // Example discount, adjust as needed
+      productQuantities: []
     };
   },
   computed: {
     cartTotal() {
-      // Tổng giá trị giỏ hàng (trước khi giảm giá)
       return this.cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0);
     },
     finalTotal() {
-      // Tổng giá trị giỏ hàng sau khi giảm giá
-      return Math.max(this.cartTotal - this.discount, 0); // Đảm bảo tổng không âm
+      return Math.max(this.cartTotal - this.discount, 0); // Ensure total is not negative
     },
   },
   mounted() {
     this.fetchCartItems();
   },
   methods: {
+    // async fetchProductDetails(item, index) {
+    //   console.log(item)
+    //   try {
+    //     const response = await axios.get(`http://localhost:5000/api/product/${item.product?._id}`);
+    //     const product = response.data;
+
+    //     // Tìm kích thước phù hợp và lấy số lượng
+    //     const sizeDetail = product.sizes.find((element) => element.size === item.size);
+    //     const quantity = sizeDetail ? sizeDetail.quantity : 0;
+    //     console.log('chạy: ' + quantity)
+    //     // Lưu trữ số lượng vào productQuantities
+    //     this.productQuantities = [...this.productQuantities, quantity];
+    //   } catch (error) {
+    //     console.error("Lỗi khi tải chi tiết sản phẩm:", error);
+    //   }
+    // },
+
     async fetchCartItems() {
       try {
         const userId = this.UserStore.user._id;
@@ -100,12 +124,18 @@ export default {
           },
         });
         this.cartItems = response.data.items || [];
+        console.log(response.data.items)
+        this.cartItems.forEach((item, index) => {
+          const size = item.product.sizes.filter(it => it.size == item.size);
+          this.cartItems[index].max = item.quantity + size[0].quantity;
+        });
+        
       } catch (error) {
-        console.error('Lỗi khi tải giỏ hàng:', error);
+        console.error("Lỗi khi tải giỏ hàng:", error);
       }
     },
     async removeFromCart(productId) {
-      const confirmation = confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?');
+      const confirmation = confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?");
       if (!confirmation) return;
 
       try {
@@ -116,32 +146,55 @@ export default {
         });
         this.fetchCartItems();
       } catch (error) {
-        console.error('Lỗi khi xóa sản phẩm khỏi giỏ hàng:', error);
+        console.error("Lỗi khi xóa sản phẩm khỏi giỏ hàng:", error);
       }
     },
     async updateQuantity(productId, quantity) {
-      if (quantity < 1) return;
+      const product = this.cartItems.find((item) => item._id === productId);
+
+      // Kiểm tra số lượng không được vượt quá tồn kho
+      if (quantity > product.product.quantity) {
+        alert(`Số lượng không được vượt quá tồn kho: ${product.product.quantity}`);
+        this.cartItems = this.cartItems.map((item) =>
+          item._id === productId ? { ...item, quantity: product.product.quantity } : item
+        );
+        return;
+      }
+
+      if (quantity < 1) {
+        alert("Số lượng không thể nhỏ hơn 1!");
+        this.cartItems = this.cartItems.map((item) =>
+          item._id === productId ? { ...item, quantity: 1 } : item
+        );
+        return;
+      }
 
       try {
-        await axios.put(`http://localhost:5000/api/cart/update/${productId}`, { quantity }, {
-          headers: {
-            Authorization: `Bearer ${this.UserStore.token}`,
-          },
-        });
+        await axios.put(
+          `http://localhost:5000/api/cart/update/${productId}`,
+          { quantity },
+          {
+            headers: {
+              Authorization: `Bearer ${this.UserStore.token}`,
+            },
+          }
+        );
         this.fetchCartItems();
       } catch (error) {
-        console.error('Lỗi khi cập nhật số lượng:', error);
+        console.error("Lỗi khi cập nhật số lượng:", error);
       }
     },
     formatPrice(value) {
-      return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+      return value.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
     },
     checkout() {
-      this.$router.push({ name: 'Checkout' });
+      this.$router.push({ name: "Checkout" });
     },
   },
 };
 </script>
+
+
 
 <style>
 /* Page header styling */

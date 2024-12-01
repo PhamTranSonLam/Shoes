@@ -6,7 +6,7 @@ const router = express.Router();
 
 // GET route for adding a menu
 router.get('/', ReviewController.getAllReview);
-router.get('/', ReviewController.getReviewByUser);
+// router.get('/', ReviewController.getReviewByUser);
 router.get('/:userId', ReviewController.getReviewById);
 router.post('/', ReviewController.createReview);
 

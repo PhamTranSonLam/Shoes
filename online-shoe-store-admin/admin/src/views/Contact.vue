@@ -13,15 +13,15 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(contact, index) in contacts" :key="contact.id">
+        <tr v-for="(contact, index) in contacts" :key="contact._id">
           <td>{{ index + 1 }}</td>
           <td>{{ contact.username }}</td>
           <td>{{ contact.phone }}</td>
           <td>{{ contact.content }}</td>
-          <td>{{ formatDate(contact.date) }}</td>
+          <td>{{ formatDate(contact.createdAt) }}</td> <!-- Dùng createdAt -->
           <td>
-            <button @click="viewDetail(contact.id)" class="me-2">Xem Chi Tiết</button>
-            <button @click="deleteContactForm(contact.id)">Xóa</button>
+            <button @click="viewDetail(contact._id)" class="me-2">Xem Chi Tiết</button>
+            <button @click="deleteContactForm(contact._id)">Xóa</button>
           </td>
         </tr>
       </tbody>
@@ -35,11 +35,12 @@
         <p><strong>Tên Người Dùng:</strong> {{ selectedContact.username }}</p>
         <p><strong>Số Điện Thoại:</strong> {{ selectedContact.phone }}</p>
         <p><strong>Nội Dung:</strong> {{ selectedContact.content }}</p>
-        <p><strong>Ngày Gửi:</strong> {{ formatDate(selectedContact.date) }}</p>
+        <p><strong>Ngày Gửi:</strong> {{ formatDate(selectedContact.createdAt) }}</p> <!-- Dùng createdAt -->
       </div>
     </div>
   </div>
 </template>
+
 <script>
 import axios from 'axios';
 
@@ -62,14 +63,14 @@ export default {
     },
     // Hiển thị chi tiết liên lạc
     viewDetail(contactId) {
-      this.selectedContact = this.contacts.find(contact => contact.id === contactId);
+      this.selectedContact = this.contacts.find(contact => contact._id === contactId);
     },
     // Xóa liên lạc
     async deleteContactForm(contactId) {
       if (confirm('Bạn có chắc muốn xóa liên lạc này?')) {
         try {
           await axios.delete(`http://localhost:5000/api/contact/${contactId}`);
-          this.contacts = this.contacts.filter(contact => contact.id !== contactId);
+          this.contacts = this.contacts.filter(contact => contact._id !== contactId);
           alert('Đã xóa liên lạc thành công');
         } catch (error) {
           alert('Lỗi khi xóa liên lạc');
@@ -93,6 +94,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 /* Toàn bộ container */
 .contact-management {

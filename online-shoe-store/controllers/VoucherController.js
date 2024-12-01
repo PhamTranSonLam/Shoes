@@ -2,7 +2,7 @@ const Voucher = require("../models/Voucher");
 
 // Tạo mới một voucher
 exports.createVoucher = async (req, res) => {
-  const { code, discountType, discountValue, minOrderValue, startDate, endDate, usageLimit } = req.body;
+  const { code, discountType, discountValue, minOrderValue, startDate, endDate, usageLimit, timesUsed } = req.body;
   try {
     const newVoucher = new Voucher({
       code,
@@ -12,6 +12,7 @@ exports.createVoucher = async (req, res) => {
       startDate,
       endDate,
       usageLimit,
+      timesUsed
     });
     await newVoucher.save();
     res.status(201).json({ message: "Voucher đã được tạo thành công", voucher: newVoucher });
@@ -81,7 +82,7 @@ exports.getAllVoucher = async (req, res) => {
 };
 // Chỉnh sửa một voucher
 exports.editVoucher = async (req, res) => {
-  const { code, discountType, discountValue, minOrderValue, startDate, endDate, usageLimit, } = req.body;
+  const { code, discountType, discountValue, minOrderValue, startDate, endDate, usageLimit, timesUsed, } = req.body;
   try {
     const voucher = await Voucher.findByIdAndUpdate(
       req.params.id, // Tìm theo ID trong URL
@@ -91,7 +92,8 @@ exports.editVoucher = async (req, res) => {
         minOrderValue,
         startDate,
         endDate,
-        usageLimit
+        usageLimit,
+        timesUsed,
       },
       { new: true } // Trả về bản ghi đã cập nhật (thay vì bản ghi cũ)
     );

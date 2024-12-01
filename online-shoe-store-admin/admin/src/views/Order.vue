@@ -2,20 +2,23 @@
   <div class="container mt-5">
     <!-- Thanh Tìm kiếm -->
     <div class="col-md-10 mb-4">
-      <input
-        type="text"
-        class="form-control search-input"
-        placeholder="Tìm kiếm đơn hàng"
-        v-model="searchTerm"
-        @input="filterOrders"
-      />
+      <input type="text" class="form-control search-input" placeholder="Tìm kiếm đơn hàng" v-model="searchTerm" @input="filterOrders" />
     </div>
 
     <!-- Danh sách đơn hàng -->
     <div class="card shadow-sm">
       <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="mb-0">Danh sách Đơn hàng</h4>
-        <div>
+        <div class="check" >
+          <input type="date" id="date" name="date" v-model="selectedDate" @change="filterOrdersByDate" />
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Trạng thái</button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#" @click.prevent="filterByStatus('Đang xử lý')">Đang xử lý</a></li>
+              <li><a class="dropdown-item" href="#" @click.prevent="filterByStatus('Đã giao')">Đã giao</a></li>
+              <li><a class="dropdown-item" href="#" @click.prevent="filterByStatus('Đã hủy')">Đã hủy</a></li>
+            </ul>
+          </div>
           <button class="btn btn-info btn-sm">
             <router-link to="/bill" class="text-decoration-none text-white">Hóa đơn</router-link>
           </button>
@@ -55,14 +58,9 @@
                   </li>
                 </ul>
               </td>
-              <td>{{ formatCurrency( order.totaldiscount || order.totalAmount) }} VNĐ</td>
-              
+              <td>{{ formatCurrency(order.totaldiscount || order.totalAmount) }} VNĐ</td>
               <td>
-                <select
-                  v-model="order.status"
-                  class="form-select"
-                  @change="updateOrderStatus(order)"
-                >
+                <select v-model="order.status" class="form-select" @change="updateOrderStatus(order)">
                   <option value="Đang xử lý" :disabled="order.status === 'Đã giao' || order.status === 'Đã hủy'">Đang xử lý</option>
                   <option value="Đã giao" :disabled="order.status === 'Đã giao' || order.status === 'Đã hủy'">Đã giao</option>
                   <option value="Đã hủy" :disabled="order.status === 'Đã giao' || order.status === 'Đã hủy'">Đã hủy</option>
@@ -71,12 +69,8 @@
               <td>{{ order.paymentMethod }}</td>
               <td>{{ new Date(order.createdAt).toLocaleString() }}</td>
               <td class="d-flex">
-                <router-link :to="'/orderdetail/' + order._id" class="btn btn-success btn-sm">
-                  Chi tiết
-                </router-link>
-                <button type="button" class="btn btn-danger btn-sm" @click="deleteOrder(order._id)">
-                  Xóa
-                </button>
+                <router-link :to="'/orderdetail/' + order._id" class="btn btn-success btn-sm">Chi tiết</router-link>
+                <button type="button" class="btn btn-danger btn-sm" @click="deleteOrder(order._id)">Xóa</button>
               </td>
             </tr>
           </tbody>
@@ -108,19 +102,42 @@ import axios from "axios";
 export default {
   data() {
     return {
-      orders: [], // Lưu trữ tất cả các đơn hàng
+      orders: [],
       searchTerm: "",
+      selectedDate: "",
       currentPage: 1,
       pageSize: 5,
       loading: true,
       errorMessage: "",
+      selectedStatus: "",
     };
   },
   computed: {
     filteredOrders() {
-      return this.orders.filter((order) =>
-        order.shippingInfo.username.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
+      let orders = this.orders;
+
+      // Filter by customer name
+      if (this.searchTerm) {
+        orders = orders.filter((order) =>
+          order.shippingInfo.username.toLowerCase().includes(this.searchTerm.toLowerCase())
+        );
+      }
+
+      // Filter by selected date
+      if (this.selectedDate) {
+        const selectedDateFormatted = this.selectedDate;
+        orders = orders.filter(order => {
+          const orderDate = new Date(order.createdAt).toISOString().split('T')[0];
+          return orderDate === selectedDateFormatted;
+        });
+      }
+
+      // Filter by status
+      if (this.selectedStatus) {
+        orders = orders.filter(order => order.status === this.selectedStatus);
+      }
+
+      return orders;
     },
     paginatedOrders() {
       const startIndex = (this.currentPage - 1) * this.pageSize;
@@ -131,12 +148,8 @@ export default {
     },
   },
   methods: {
-    // Hàm định dạng tiền tệ theo VNĐ
     formatCurrency(amount) {
       return new Intl.NumberFormat('vi-VN', { style: 'decimal' }).format(amount);
-      // return amount
-      //   ? amount.toLocaleString("vi-VN", { style: "currency", currency: "VND" })
-      //   : "0 VND";
     },
     async fetchOrders() {
       this.loading = true;
@@ -205,9 +218,7 @@ export default {
       });
 
       let csvContent = "data:text/csv;charset=utf-8," + headers.join(",") + "\n";
-      rows.forEach((row) => {
-        csvContent += row.join(",") + "\n";
-      });
+      csvContent += rows.map((row) => row.join(",")).join("\n");
 
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement("a");
@@ -216,18 +227,28 @@ export default {
       document.body.appendChild(link);
       link.click();
     },
+    filterOrders() {
+      this.currentPage = 1;
+    },
+    filterByStatus(status) {
+      this.selectedStatus = status;
+      this.currentPage = 1;
+    },
+    filterOrdersByDate() {
+      this.currentPage = 1;
+    },
+    goToPage(page) {
+      this.currentPage = page;
+    },
     prevPage() {
       if (this.currentPage > 1) {
-        this.currentPage--;
+        this.currentPage -= 1;
       }
     },
     nextPage() {
       if (this.currentPage < this.totalPages) {
-        this.currentPage++;
+        this.currentPage += 1;
       }
-    },
-    goToPage(page) {
-      this.currentPage = page;
     },
   },
   created() {
@@ -235,6 +256,7 @@ export default {
   },
 };
 </script>
+
 
 
 
@@ -273,6 +295,7 @@ export default {
   overflow: hidden;
 }
 
+
 /* Card Header */
 .card-header {
   background-color: #f8f9fa;
@@ -281,7 +304,20 @@ export default {
   font-size: 1.25rem;
   border-bottom: 2px solid #28a745;
 }
+#date {
+  width: 100%;
+  max-width: 150px;
+  padding: 10px 10px;
+  font-size: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background-color: #ffffff;
 
+}
+
+.check {
+  display: flex;
+}
 /* Table Styling */
 .table {
   margin: 0;

@@ -43,7 +43,11 @@
                 <div class="form-group mb-3">
                     <label for="usageLimit">Giới hạn lần sử dụng</label>
                     <input v-model="vouchers.usageLimit" type="number" placeholder="Giới hạn lần sử dụng" />
-              </div>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="timesUsed">Số lần đã sử dụng</label>
+                    <input v-model="vouchers.timesUsed" type="number" placeholder="Số lần đã sử dụng" />
+                </div>
   
                 <div class="form-group text-center">
                   <router-link to="/voucher" class="btn btn-secondary">
@@ -76,6 +80,7 @@
           startDate: '',
           endDate: '',
           usageLimit: '',
+          timesUsed:'',
         },
       };
     },

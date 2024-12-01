@@ -31,7 +31,7 @@
             <li v-for="item in order.items" :key="item._id" class="list-group-item">
               <strong class="text-dark">Tên sản phẩm: {{ item.product.name }}</strong>
               <p class="mb-0"><strong>Số lượng:</strong> <span class="text-muted">{{ item.quantity }}</span></p>
-              <p class="mb-0"><strong>Giá:</strong> <span class="text-muted">{{ item.product.price }} VND</span></p>
+              <p class="mb-0"><strong>Giá:</strong> <span class="text-muted">{{ parseInt(item.price) }} VND</span></p>
             </li>
           </ul>
         </div>

@@ -60,7 +60,7 @@ export default {
       try { 
         const userStore = useUserStore();
         const userId = userStore.user._id;
-        const response = await axios.get(`http://localhost:5000/api/review/${userId}`);
+        const response = await axios.get(`http://localhost:5000/api/review/`);
         this.reviews = response.data;
       } catch (error) {
         console.error('Error fetching reviews:', error);

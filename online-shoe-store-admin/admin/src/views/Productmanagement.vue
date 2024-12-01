@@ -50,13 +50,7 @@
                 </div>
                 <!-- Small Images -->
                 <div class="small-images mt-2">
-                  <img 
-                    v-for="(smallImage, idx) in product.smallImages" 
-                    :key="idx" 
-                    :src="`http://localhost:5000/${smallImage}`" 
-                    alt="Small Product Image" 
-                    class="img-thumbnail" 
-                    style="width: 50px; height: 50px; margin-right: 5px;" />
+                  <img  v-for="(smallImage, idx) in product.smallImages" :key="idx" :src="`http://localhost:5000/${smallImage}`" alt="Small Product Image"   class="img-thumbnail"   style="width: 50px; height: 50px; margin-right: 5px;" />
                 </div>
               </td>
 
@@ -66,13 +60,14 @@
                   <span v-for="(size, idx) in product.sizes" :key="idx" class="size-container">
                     <span class="size-value">Kích thước: {{ size.size }}</span>
                     <span class="quantity-badge">Số lượng: {{ size.quantity }}</span>
-                    <span v-if="idx !== product.sizes.length - 1">, </span>
+                    <span v-if="idx !== product.sizes.length - 1"> </span>
                   </span>
                 </span>
                 <span v-else>{{ product.sizes }}</span>
               </td>
 
-              <td>{{ product.price }}</td>
+              <!-- Đơn giá đã định dạng -->
+              <td>{{ formatPrice(product.price) }} VNĐ</td>
 
               <!-- Total Quantity -->
               <td>{{ calculateTotalQuantity(product.sizes) }}</td>
@@ -150,6 +145,11 @@ export default {
       }
     },
 
+    // Định dạng giá tiền với dấu phẩy và đơn vị tiền tệ
+    formatPrice(price) {
+      return price.toLocaleString({ style: 'currency', currency: 'VND' });
+    },
+
     calculateTotalQuantity(sizes) {
       if (Array.isArray(sizes)) {
         return sizes.reduce((total, size) => total + size.quantity, 0);
@@ -192,7 +192,6 @@ export default {
   }
 };
 </script>
-
 
 
 
