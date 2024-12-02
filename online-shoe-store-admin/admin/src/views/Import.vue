@@ -68,7 +68,7 @@
       </div>
     </div>
 
-    <!-- Edit Product Modal -->
+    <!-- Modal for Editing -->
     <div
       v-if="showEditModal"
       class="modal fade show"
@@ -80,9 +80,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="editProductModalLabel">
-              Chỉnh sửa phiếu nhập
-            </h5>
+            <h5 class="modal-title" id="editProductModalLabel">Chỉnh sửa phiếu nhập</h5>
             <button
               type="button"
               class="btn-close"
@@ -124,7 +122,7 @@
       </div>
     </div>
 
-    <!-- Add Product Modal -->
+    <!-- Add New Product Modal -->
     <div
       v-if="showAddModal"
       class="modal fade show"
@@ -273,21 +271,21 @@ export default {
 };
 </script>
 
-
-
-<style>
-/* Container styling */
+<style scoped>
+/* Container Styling */
 .phieubnhap {
   margin: 2rem;
   font-family: 'Roboto', sans-serif;
 }
 
-/* Search input styling */
+/* Search Input Styling */
 .search-input {
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  padding: 0.5rem;
+  border: 2px solid #e0e0e0;
+  width: 30%;
+  border-radius: 50px;
+  padding: 0.8rem;
   transition: border-color 0.3s;
+  background-color: #f9f9f9;
 }
 
 .search-input:focus {
@@ -296,133 +294,103 @@ export default {
   box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
 }
 
-/* Card styling */
+/* Card Styling */
 .card {
   border: none;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
+/* Card Header */
 .card-header {
-  background-color: #007bff;
+  background-color: #28a745;
   color: #fff;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
-  padding: 1rem;
+  padding: 1.2rem;
+  font-size: 1.2rem;
 }
 
+/* Card Body */
 .card-body {
   padding: 1.5rem;
 }
 
-/* Table styling */
-table {
+/* Table Styling */
+.table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-table thead {
+.table th,
+.table td {
+  padding: 1rem;
+  border: 1px solid #ddd;
+}
+
+.table th {
   background-color: #f8f9fa;
 }
 
-table th,
-table td {
-  padding: 1rem;
-  border-bottom: 1px solid #e9ecef;
-}
-
-table tbody tr:hover {
+.table-warning {
   background-color: #f1f1f1;
 }
 
-.table-warning th {
-  color: #856404;
-  background-color: #fff3cd;
-}
-
-/* Button styling */
-button {
-  border: none;
+.table .btn {
   border-radius: 8px;
   padding: 0.5rem 1rem;
-  transition: background-color 0.3s, transform 0.2s;
 }
 
-.btn-primary {
-  background-color: #007bff;
-  color: #fff;
+.btn-add-product {
+  font-size: 1rem;
+  padding: 0.5rem 1.5rem;
+  border-radius: 8px;
 }
 
-.btn-primary:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px);
+.btn-add-product:hover {
+  background-color: #28a745;;
+  transition: background-color 0.3s;
 }
 
-.btn-success {
-  background-color: #28a745;
-  color: #fff;
-}
-
-.btn-success:hover {
-  background-color: #218838;
-}
-
-.btn-danger {
-  background-color: #dc3545;
-  color: #fff;
-}
-
-.btn-danger:hover {
-  background-color: #c82333;
-}
-
-/* Pagination styling */
-.pagination .page-link {
-  color: #007bff;
-  border: 1px solid #dee2e6;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.pagination .page-link:hover {
-  background-color: #007bff;
-  color: #fff;
-}
-
-.pagination .active .page-link {
-  background-color: #007bff;
-  color: #fff;
-  border-color: #007bff;
-}
-
-/* Modal styling */
+/* Modal Styling */
 .modal-content {
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  padding: 1.5rem;
 }
 
 .modal-header {
-  background-color: #007bff;
+  background-color: #28a745;;
   color: #fff;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+  font-size: 1.5rem;
 }
 
-.modal-header .btn-close {
-  color: #fff;
+.modal-body {
+  padding: 2rem;
 }
 
-.modal-body input {
-  border: 2px solid #ccc;
+.modal-body .form-label {
+  font-weight: bold;
+}
+
+.form-control {
   border-radius: 8px;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
+  padding: 0.8rem;
+  border: 2px solid #ddd;
   transition: border-color 0.3s;
 }
 
-.modal-body input:focus {
-  border-color: #007bff;
-  outline: none;
+.form-control:focus {
+  background-color: #e6f0e8;
   box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
 }
 
+.btn-secondary {
+  background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
 </style>

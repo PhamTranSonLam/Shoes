@@ -133,8 +133,7 @@ export default {
         }
 
         // Gửi yêu cầu thêm sản phẩm vào giỏ hàng
-        await axios.post(
-          'http://localhost:5000/api/cart/add',
+        await axios.post('http://localhost:5000/api/cart/add',
           {
             userId: userStore.user._id,
             productId: this.product._id,

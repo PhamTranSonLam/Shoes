@@ -20,7 +20,7 @@
         <div v-if="loading" class="text-center p-3">
           <p>Đang tải dữ liệu...</p>
         </div>
-        
+
         <!-- Kiểm tra xem người dùng đã đăng nhập chưa -->
         <div v-if="!user">
           <p class="text-center">Vui lòng đăng nhập để xem đánh giá.</p>
@@ -62,11 +62,11 @@
             </tr>
           </tbody>
         </table>
-        
+
         <div v-if="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
       </div>
     </div>
-    
+
     <!-- Phân trang -->
     <nav aria-label="Page navigation" class="mt-4">
       <ul class="pagination justify-content-center">
@@ -105,7 +105,7 @@
 
 <script>
 import axios from 'axios';
-import { useUserStore } from '../store/user'; // Importing Pinia store
+import { useUserStore } from '../store/user';
 
 export default {
   data() {
@@ -130,7 +130,7 @@ export default {
       return this.filteredReviews.slice(start, start + this.pageSize);
     },
     user() {
-      return this.UserStore.user; // Checking if the user is logged in
+      return this.UserStore.user;
     }
   },
   methods: {
@@ -166,7 +166,6 @@ export default {
       modal.show();
     },
     async submitfeedbackUser() {
-      console.log(this.user._id)
       if (this.selectedReview) {
         try {
           await axios.post(`http://localhost:5000/api/review/${this.selectedReview._id}/comment`, {
@@ -175,10 +174,10 @@ export default {
             feedbackAt: '12/5/2002',
           });
           alert('Phản hồi đã được gửi thành công.');
-          this.fetchReviews(); // Tải lại danh sách đánh giá
-          this.feedbackComment = ''; // Đặt lại trường nhập
+          this.fetchReviews();
+          this.feedbackComment = '';
           const modal = bootstrap.Modal.getInstance(document.getElementById('feedbackModal'));
-          modal.hide(); // Đóng modal
+          modal.hide();
         } catch (error) {
           this.errorMessage = 'Không thể gửi phản hồi.';
         }
@@ -220,6 +219,7 @@ export default {
   }
 };
 </script>
+
 
 
   <style scoped>

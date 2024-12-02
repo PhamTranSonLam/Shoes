@@ -159,72 +159,107 @@ export default {
 
 
   
-  <style scoped>
-  .body {
-    background-image: url('../assets/img/loging_bg.png'); /* Đường dẫn tới ảnh nền */
-  }
-  
-  #account-info {
-    padding: 40px;
-    max-width: 600px;
-    margin: 100px auto 60px auto;
-    background-color: rgba(255, 255, 255, 0.8); /* Đặt màu nền với độ trong suốt để thấy ảnh nền phía sau */
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  h2 {
-    color: #333;
-    margin-bottom: 25px;
-    font-weight: bold;
-    text-align: center;
-  }
-  
-  .form-group {
-    margin-bottom: 20px;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 1rem;
-    color: #333;
-  }
-  
-  .form-group input {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-    background-color: #f9f9f9;
-    transition: border-color 0.3s ease;
-  }
-  
-  .form-group input:focus {
-    border-color: #6c14d0;
-    outline: none;
-  }
-  
-  button {
-    background: linear-gradient(to right, #c72092, #6c14d0);
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
-    width: 100%;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  button:hover {
-    background: #6c14d0;
-  }
-  
-  button:focus {
-    outline: none;
-  }
-  </style>
-  
+<style scoped>
+.body {
+  background-image: url('../assets/img/loging_bg.png'); /* Đường dẫn tới ảnh nền */
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+}
+
+#account-info {
+  padding: 40px;
+  max-width: 600px;
+  margin: 100px auto 60px auto;
+  background-color: rgba(255, 255, 255, 0.8); /* Đặt màu nền với độ trong suốt để thấy ảnh nền phía sau */
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 25px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 1rem;
+  color: #333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+  border-color: #6c14d0;
+  outline: none;
+}
+
+button {
+  background: linear-gradient(to right, #c72092, #6c14d0);
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  width: 100%;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: #6c14d0;
+}
+
+button:focus {
+  outline: none;
+}
+
+/* Hiển thị ảnh đại diện xem trước */
+.profile-picture-preview {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.profile-picture-preview img {
+  max-width: 150px;
+  max-height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
+}
+
+/* Cải thiện style cho input file */
+.form-group input[type="file"] {
+  padding: 10px;
+  background-color: #f1f1f1;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.form-group input[type="file"]:focus {
+  border-color: #6c14d0;
+  outline: none;
+}
+</style>

@@ -15,7 +15,7 @@
     <!-- Warehouse Management Table -->
     <div class="card">
       <div class="card-header d-flex justify-content-between align-items-center">
-        <h4>Danh sách kho</h4>
+        <h4 class="text-white">Danh sách kho</h4>
         <button class="btn btn-primary btn-add-product" @click="openAddModal">
           Thêm mới
         </button>
@@ -29,7 +29,7 @@
 
         <!-- Table of Warehouses -->
         <table v-else class="table text-center">
-          <thead class="table-warning">
+          <thead class="table-header">
             <tr>
               <th scope="col">STT</th>
               <th scope="col">Tên kho</th>
@@ -64,7 +64,7 @@
       </div>
     </div>
 
-    <!-- Edit Warehouse Modal -->
+    <!-- Modal components for Edit and Add -->
     <div v-if="showEditModal" class="modal fade show" tabindex="-1" style="display: block;" aria-labelledby="editWarehouseModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -100,7 +100,6 @@
       </div>
     </div>
 
-    <!-- Add Warehouse Modal -->
     <div v-if="showAddModal" class="modal fade show" tabindex="-1" style="display: block;" aria-labelledby="addWarehouseModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -252,9 +251,10 @@ export default {
   },
   watch: {
     searchQuery(newQuery) {
-      this.filteredWarehouses = this.warehouses.filter((warehouse) =>
-        warehouse.warehouse.toLowerCase().includes(newQuery.toLowerCase())
-      );
+      this.filteredWarehouses = this.warehouses.filter((warehouse) => {
+        return warehouse.warehouse.toLowerCase().includes(newQuery.toLowerCase()) || 
+               warehouse.name.toLowerCase().includes(newQuery.toLowerCase());
+      });
       this.calculateTotalPages();
     },
   },
@@ -265,28 +265,80 @@ export default {
 </script>
 
 <style scoped>
-/* Add styles for the modal and table */
 .danhsachkho {
-  font-family: 'Arial', sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .search-input {
-  font-size: 16px;
+  border-radius: 50px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   padding: 10px;
+  width: 30%;
 }
 
-.table th {
-  background-color: #f8f9fa;
-}
 .card-header {
-  background-color: #28a745;
-}
-.pagination .page-item.active .page-link {
-  background-color: #007bff;
-  border-color: #007bff;
+  background-color: #28a745;;
+  color: white;
 }
 
-.pagination .page-item.disabled .page-link {
+.btn-add-product {
+  border-radius: 50px;
+}
+
+.table-header {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+.table th,
+.table td {
+  vertical-align: middle;
+}
+
+.pagination .page-item .page-link {
+  border-radius: 25px;
+}
+
+.modal-content {
+  border-radius: 8px;
+}
+
+.form-control {
+  border-radius: 10px;
+}
+
+.card-body {
+  background-color: #f9f9f9;
+}
+
+.card {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.page-link {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.page-item.active .page-link {
+  background-color: #1a73e8;
+  color: white;
+}
+
+.page-item.disabled .page-link {
+  background-color: #ddd;
   cursor: not-allowed;
+}
+
+.btn-close {
+  background: transparent;
+  border: none;
+}
+
+@media (max-width: 768px) {
+  .pagination {
+    font-size: 14px;
+  }
 }
 </style>

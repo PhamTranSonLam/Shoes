@@ -83,7 +83,6 @@ export default {
           this.notification.type = 'success';
           // Handle successful login, e.g., store token, redirect, etc.
           setTimeout(() => {
-           
           }, 2000);
         }
       } catch (err) {

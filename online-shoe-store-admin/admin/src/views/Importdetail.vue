@@ -3,35 +3,33 @@
     <!-- Search Input -->
     <div class="row mb-4">
       <div class="col-md-10">
-        <input  type="text"  class="form-control search-input"  placeholder="Tìm kiếm phiếu nhập"  v-model="searchQuery"  />
+        <input type="text" class="form-control search-input" placeholder="Tìm kiếm phiếu nhập" v-model="searchQuery" />
       </div>
     </div>
 
     <!-- Warehouse Management Table -->
-    <div class="card">
+    <div class="card custom-card">
       <div class="card-header d-flex justify-content-between align-items-center">
-        <h4>Chi tiết phiếu nhập</h4>
-        <select 
-          class="form-select"   aria-label="Default select example" v-model="idSelected" @change="getOne">
+        <h4 class="card-title">Chi tiết phiếu nhập</h4>
+        <select class="form-select custom-select" aria-label="Default select example" v-model="idSelected" @change="getOne">
           <option value="" selected>Chọn phiếu nhập</option>
-          <option   v-for="warehouse in warehouses" :key="warehouse._id" :value="warehouse._id">
+          <option v-for="warehouse in warehouses" :key="warehouse._id" :value="warehouse._id">
             {{ warehouse.name }}
           </option>
         </select>
 
         <button class="btn btn-primary btn-add-product" @click="openAddModal">Thêm mới</button>
-        
       </div>
 
       <div class="card-body">
         <!-- Loading State -->
         <div v-if="isLoading" class="text-center">
-          <p>Đang tải dữ liệu...</p>
+          <p class="loading-text">Đang tải dữ liệu...</p>
         </div>
 
         <!-- Table of Warehouses -->
-        <table v-else class="table text-center">
-          <thead class="table-warning text-success">
+        <table v-else class="table table-hover table-bordered">
+          <thead class="table-light">
             <tr>
               <th scope="col">STT</th>
               <th scope="col">Tên mặt hàng</th>
@@ -90,8 +88,10 @@
                 <label class="form-label">Vị trí</label>
                 <input type="text" v-model="newWarehouse.location" class="form-control" required />
               </div>
-              <button type="submit" class="btn btn-primary">Thêm mới</button>
-              <button type="button" class="btn btn-secondary" @click="closeAddModal">Hủy</button>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Thêm mới</button>
+                <button type="button" class="btn btn-secondary" @click="closeAddModal">Hủy</button>
+              </div>
             </form>
           </div>
         </div>
@@ -128,8 +128,10 @@
                 <label class="form-label">Vị trí</label>
                 <input type="text" v-model="editWarehouse.location" class="form-control" required />
               </div>
-              <button type="submit" class="btn btn-primary">Cập nhật</button>
-              <button type="button" class="btn btn-secondary" @click="closeEditModal">Hủy</button>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Cập nhật</button>
+                <button type="button" class="btn btn-secondary" @click="closeEditModal">Hủy</button>
+              </div>
             </form>
           </div>
         </div>
@@ -142,12 +144,7 @@
         <li class="page-item" :class="{ disabled: currentPage === 0 }">
           <button class="page-link" @click="prevPage">Trước</button>
         </li>
-        <li
-          class="page-item"
-          v-for="page in totalPages"
-          :key="page"
-          :class="{ active: currentPage === page - 1 }"
-        >
+        <li class="page-item" v-for="page in totalPages" :key="page" :class="{ active: currentPage === page - 1 }">
           <button class="page-link" @click="goToPage(page - 1)">{{ page }}</button>
         </li>
         <li class="page-item" :class="{ disabled: currentPage === totalPages - 1 }">
@@ -311,8 +308,9 @@ export default {
 }
 
 .search-input {
-  border-radius: 10px;
-  padding: 12px 15px;
+  border-radius: 8px;
+   width: 30%;
+  padding: 12px 18px;
   font-size: 1rem;
   border: 1px solid #ddd;
   transition: all 0.3s ease;
@@ -320,128 +318,84 @@ export default {
 
 .search-input:focus {
   border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-  outline: none;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.25);
 }
 
-.card {
-  border-radius: 15px;
-  overflow: hidden;
+.custom-card {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  margin-top: 1.5rem;
 }
 
 .card-header {
-  background-color: #f1f1f1;
-  border-bottom: 2px solid #007bff;
-  padding: 15px;
+  background-color: rgba(222, 236, 241, 0.467);
+  border-bottom: 1px solid #ddd;
+  padding: 16px 24px;
+}
+
+.card-title {
   font-size: 1.25rem;
-  font-weight: bold;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  color: #007bff;
 }
 
-.card-header h4 {
-  margin: 0;
+.custom-select {
+  width: 200px;
 }
 
-.card-body {
-  padding: 15px;
+.loading-text {
+  font-size: 1.1rem;
+  color: #007bff;
 }
 
 .table {
-  margin-top: 1rem;
-  border-radius: 10px;
-  overflow: hidden;
-  background-color: #fff;
+  border-collapse: separate;
+  border-spacing: 0 1rem;
 }
 
-.table thead {
-  background-color: #007bff;
-  color: #fff;
-}
-
-.table thead th {
-  font-size: 1rem;
-  padding: 12px;
-  text-align: center;
-}
-
-.table tbody tr {
-  transition: all 0.3s ease;
-}
-
-.table tbody tr:hover {
-  background-color: #f1f1f1;
-}
-
-.table td {
-  text-align: center;
-  padding: 10px;
-}
-
-.btn {
-  border-radius: 5px;
-  padding: 8px 12px;
-  font-size: 0.9rem;
-}
-
-.btn-add-product {
-  background-color: #28a745;
-  color: #fff;
-  transition: all 0.3s ease;
-}
-
-.btn-add-product:hover {
-  background-color: #218838;
-}
-
-.pagination .page-link {
-  color: #007bff;
-  transition: all 0.3s ease;
-}
-
-.pagination .page-link:hover {
-  background-color: #007bff;
-  color: #fff;
-}
-
-.modal-content {
-  border-radius: 15px;
-  padding: 20px;
-}
-
-.modal-header {
-  border-bottom: 1px solid #ddd;
-  font-size: 1.2rem;
+.table th {
+  background-color: #f0f0f0;
   font-weight: bold;
 }
 
-.modal-body {
-  padding: 15px 20px;
+.table td, .table th {
+  vertical-align: middle;
+  padding: 12px 16px;
 }
 
-.modal-body .form-control {
-  border-radius: 8px;
-  padding: 10px;
+.table-hover tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.btn-add-product {
+  padding: 10px 20px;
   font-size: 1rem;
-}
-
-.modal-body .form-control:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-  outline: none;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-.modal-footer .btn {
   border-radius: 8px;
-  padding: 8px 15px;
 }
 
+.pagination {
+  margin-top: 2rem;
+}
+
+.page-link {
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+}
+
+.page-link:hover {
+  background-color: #0056b3;
+}
+
+.page-item.disabled .page-link {
+  background-color: #ccc;
+  color: #6c757d;
+}
+
+.page-item.active .page-link {
+  background-color: #0056b3;
+  color: #fff;
+}
 </style>

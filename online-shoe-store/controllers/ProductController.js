@@ -20,29 +20,29 @@ exports.createProduct = async (req, res) => {
     const product = new Product(req.body);
     const { name, category, description, price, quantity, sizes } = req.body;
 
-    // If sizes is a string, parse it into an array
+    // Nếu sizes là một chuỗi, hãy phân tích nó thành một mảng
     const parsedSizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes;
     product.sizes = parsedSizes;
 
     try {
-        // Handle images (make sure you check the field names)
+       // Xử lý hình ảnh (đảm bảo bạn kiểm tra tên trường)
         if (req.files) {
-            // Handle the main image (should be a single file uploaded under the field 'image')
+           // Xử lý hình ảnh chính (phải là một tệp duy nhất được tải lên trong trường 'hình ảnh')
             if (req.files['image']) {
                 product.mainImage = req.files['image'][0]?.path; // Main image
             }
 
-            // Handle small images (should be uploaded under the field 'additionalImages')
+           // Xử lý hình ảnh nhỏ (nên được tải lên trong trường 'additionalImages')
             if (req.files['additionalImages']) {
                 product.smallImages = req.files['additionalImages']
                     .slice(0, 4) // Get a maximum of 4 small images
-                    .map(file => file.path); // Extract the file path for each image
+                    .map(file => file.path); // Trích xuất đường dẫn tệp cho mỗi hình ảnh
             }
         }
 
         // Save the new product to the database
         const newProduct = await product.save();
-        res.status(201).json(newProduct); // Send the saved product in the response
+        res.status(201).json(newProduct); // Gửi sản phẩm đã lưu trong phản hồi
     } catch (err) {
         res.status(400).json({ message: err.message });
     }

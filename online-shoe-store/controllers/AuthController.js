@@ -47,6 +47,7 @@ exports.login = async (req, res) => {
         if (!user) {
             return res.status(400).json({ message: 'Invalid username or password' });
         }
+        // so sánh mật khẩu
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
             return res.status(400).json({ message: 'Invalid username or password' });
