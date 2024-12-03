@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       chartData: {
-        labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        labels: ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"],
         datasets: [
           {
             label: "Doanh thu (triệu đồng)",
@@ -75,7 +75,7 @@ export default {
     async fetchWeeklyRevenue() {
       try {
         const response = await axios.get('http://localhost:5000/api/orders/weekly-revenue');
-        const labels = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+        const labels = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"];
         const datasets = response.data; // Dữ liệu doanh thu theo tháng
         const newData = this.chartData.datasets // `data.revenue` là mảng chứa doanh thu cho các ngày trong tuần
 

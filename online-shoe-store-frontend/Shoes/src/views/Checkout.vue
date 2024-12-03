@@ -192,7 +192,7 @@ export default {
         totalAmount: this.cartTotal,
         voucher: this.voucherCode,
         discount: this.discount,
-        totalDiscount: this.cartTotal - this.discount,
+        totaldiscount: this.cartTotal - this.discount,
         status: "Đang xử lý", // Default status
       };
 

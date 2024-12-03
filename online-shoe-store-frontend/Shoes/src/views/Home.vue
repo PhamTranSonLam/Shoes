@@ -16,7 +16,7 @@
         <div class="voucher-list">
           <div class="voucher-item" v-for="voucher in vouchers" :key="voucher._id">
             <p>Giảm {{ voucher.discountValue }}% or{{ voucher.discountType }} đơn hàng trên {{ voucher.minOrderValue }}VND</p>
-            <p>Mã ưu đãi số lượng có hạng: {{ voucher.usageLimit }} lượt và đã xử dụng: {{ voucher.timesUsed }}</p>
+            <p>Mã ưu đãi số lượng có hạng: {{ voucher.usageLimit }} lượt và đã sử dụng: {{ voucher.timesUsed }}</p>
             <p>Thời gian bắt đầu từ: {{ formatDate(voucher.startDate) }} đến {{ formatDate(voucher.endDate) }}</p>
             <p class="voucher-code">Mã code: {{ voucher.code }}</p>
           </div>

@@ -9,7 +9,7 @@
           Gợi ý lựa chọn sản phẩm
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#" @click="suggestProducts('best-selling')">Sản phẩm bán chạy nhất</a></li>
+          <!-- <li><a class="dropdown-item" href="#" @click="suggestProducts('best-selling')">Sản phẩm bán chạy nhất</a></li> -->
           <li><a class="dropdown-item" href="#" @click="suggestProducts('newest')">Sản phẩm mới nhất</a></li>
           <li><a class="dropdown-item" href="#" @click="suggestProducts('high-to-low')">Giá từ cao đến thấp</a></li>
           <li><a class="dropdown-item" href="#" @click="suggestProducts('low-to-high')">Giá từ thấp đến cao</a></li>
@@ -148,14 +148,16 @@ export default {
       const query = this.searchQuery.toLowerCase();
       this.filteredProducts = this.products.filter(product => 
         product.name.toLowerCase().includes(query) || 
+        (product.price).toString().toLowerCase().includes(query) || 
+        product.category.toLowerCase().includes(query) || 
         product.description.toLowerCase().includes(query)
       );
     },
     suggestProducts(criteria) {
       switch(criteria) {
-        case 'best-selling':
-          this.filteredProducts = this.products.sort((a, b) => b.sales - a.sales); // Giả sử mỗi sản phẩm có thuộc tính 'sales'
-          break;
+        // case 'best-selling':
+        //   this.filteredProducts = this.products.sort((a, b) => b.sales - a.sales); // Giả sử mỗi sản phẩm có thuộc tính 'sales'
+        //   break;
         case 'newest':
           this.filteredProducts = this.products.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sắp xếp theo ngày tạo
           break;

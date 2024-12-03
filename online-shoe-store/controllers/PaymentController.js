@@ -65,7 +65,7 @@ class PaymentController {
       vnp_Params["vnp_OrderInfo"] =
         "Thanh toán đặt hàng: " + dataBooking.data.orderId;
       vnp_Params["vnp_OrderType"] = "Thanh toan VNPAY";
-      vnp_Params["vnp_Amount"] = dataBooking.data.order.totaldiscount * 100; // Tổng giá trị booking
+      vnp_Params["vnp_Amount"] = parseInt( dataBooking.data.order.totaldiscount) * 100; // Tổng giá trị booking
       vnp_Params["vnp_ReturnUrl"] = returnUrl;
       vnp_Params["vnp_IpAddr"] = ipAddr;
       vnp_Params["vnp_CreateDate"] = createDate;
